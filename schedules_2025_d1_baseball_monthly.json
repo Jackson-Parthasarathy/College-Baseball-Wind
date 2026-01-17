@@ -1,0 +1,1216 @@
+{
+  "sport": "baseball",
+  "division": "d1",
+  "year": 2025,
+  "base_url": "http://localhost:3000",
+  "fetched_months": [
+    "02",
+    "03",
+    "04",
+    "05",
+    "06"
+  ],
+  "total_contest_dates": 150,
+  "gameDates": [
+    {
+      "contest_date": "2-1-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 0,
+      "season": "2024",
+      "day": "1"
+    },
+    {
+      "contest_date": "2-2-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 0,
+      "season": "2024",
+      "day": "2"
+    },
+    {
+      "contest_date": "2-3-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 0,
+      "season": "2024",
+      "day": "3"
+    },
+    {
+      "contest_date": "2-4-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 0,
+      "season": "2024",
+      "day": "4"
+    },
+    {
+      "contest_date": "2-5-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 0,
+      "season": "2024",
+      "day": "5"
+    },
+    {
+      "contest_date": "2-6-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 0,
+      "season": "2024",
+      "day": "6"
+    },
+    {
+      "contest_date": "2-7-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 0,
+      "season": "2024",
+      "day": "7"
+    },
+    {
+      "contest_date": "2-8-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 0,
+      "season": "2024",
+      "day": "8"
+    },
+    {
+      "contest_date": "2-9-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 0,
+      "season": "2024",
+      "day": "9"
+    },
+    {
+      "contest_date": "2-10-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 0,
+      "season": "2024",
+      "day": "10"
+    },
+    {
+      "contest_date": "2-11-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 0,
+      "season": "2024",
+      "day": "11"
+    },
+    {
+      "contest_date": "2-12-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 0,
+      "season": "2024",
+      "day": "12"
+    },
+    {
+      "contest_date": "02-13-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 87,
+      "season": "2024",
+      "day": "13"
+    },
+    {
+      "contest_date": "02-14-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 190,
+      "season": "2024",
+      "day": "14"
+    },
+    {
+      "contest_date": "02-15-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 130,
+      "season": "2024",
+      "day": "15"
+    },
+    {
+      "contest_date": "02-16-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 67,
+      "season": "2024",
+      "day": "16"
+    },
+    {
+      "contest_date": "02-17-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 54,
+      "season": "2024",
+      "day": "17"
+    },
+    {
+      "contest_date": "02-18-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 27,
+      "season": "2024",
+      "day": "18"
+    },
+    {
+      "contest_date": "02-19-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 8,
+      "season": "2024",
+      "day": "19"
+    },
+    {
+      "contest_date": "02-20-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 72,
+      "season": "2024",
+      "day": "20"
+    },
+    {
+      "contest_date": "02-21-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 144,
+      "season": "2024",
+      "day": "21"
+    },
+    {
+      "contest_date": "02-22-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 178,
+      "season": "2024",
+      "day": "22"
+    },
+    {
+      "contest_date": "02-23-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 79,
+      "season": "2024",
+      "day": "23"
+    },
+    {
+      "contest_date": "02-24-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 58,
+      "season": "2024",
+      "day": "24"
+    },
+    {
+      "contest_date": "02-25-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 54,
+      "season": "2024",
+      "day": "25"
+    },
+    {
+      "contest_date": "02-26-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 26,
+      "season": "2024",
+      "day": "26"
+    },
+    {
+      "contest_date": "02-27-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 97,
+      "season": "2024",
+      "day": "27"
+    },
+    {
+      "contest_date": "02-28-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 62,
+      "season": "2024",
+      "day": "28"
+    },
+    {
+      "contest_date": "03-01-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 171,
+      "season": "2024",
+      "day": "01"
+    },
+    {
+      "contest_date": "03-02-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 57,
+      "season": "2024",
+      "day": "02"
+    },
+    {
+      "contest_date": "03-03-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 53,
+      "season": "2024",
+      "day": "03"
+    },
+    {
+      "contest_date": "03-04-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 64,
+      "season": "2024",
+      "day": "04"
+    },
+    {
+      "contest_date": "03-05-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 23,
+      "season": "2024",
+      "day": "05"
+    },
+    {
+      "contest_date": "03-06-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 99,
+      "season": "2024",
+      "day": "06"
+    },
+    {
+      "contest_date": "03-07-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 161,
+      "season": "2024",
+      "day": "07"
+    },
+    {
+      "contest_date": "03-08-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 159,
+      "season": "2024",
+      "day": "08"
+    },
+    {
+      "contest_date": "03-09-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 57,
+      "season": "2024",
+      "day": "09"
+    },
+    {
+      "contest_date": "03-10-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 76,
+      "season": "2024",
+      "day": "10"
+    },
+    {
+      "contest_date": "03-11-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 75,
+      "season": "2024",
+      "day": "11"
+    },
+    {
+      "contest_date": "03-12-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 26,
+      "season": "2024",
+      "day": "12"
+    },
+    {
+      "contest_date": "03-13-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 92,
+      "season": "2024",
+      "day": "13"
+    },
+    {
+      "contest_date": "03-14-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 159,
+      "season": "2024",
+      "day": "14"
+    },
+    {
+      "contest_date": "03-15-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 160,
+      "season": "2024",
+      "day": "15"
+    },
+    {
+      "contest_date": "03-16-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 54,
+      "season": "2024",
+      "day": "16"
+    },
+    {
+      "contest_date": "03-17-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 58,
+      "season": "2024",
+      "day": "17"
+    },
+    {
+      "contest_date": "03-18-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 77,
+      "season": "2024",
+      "day": "18"
+    },
+    {
+      "contest_date": "03-19-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 22,
+      "season": "2024",
+      "day": "19"
+    },
+    {
+      "contest_date": "03-20-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 102,
+      "season": "2024",
+      "day": "20"
+    },
+    {
+      "contest_date": "03-21-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 148,
+      "season": "2024",
+      "day": "21"
+    },
+    {
+      "contest_date": "03-22-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 156,
+      "season": "2024",
+      "day": "22"
+    },
+    {
+      "contest_date": "03-23-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 53,
+      "season": "2024",
+      "day": "23"
+    },
+    {
+      "contest_date": "03-24-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 67,
+      "season": "2024",
+      "day": "24"
+    },
+    {
+      "contest_date": "03-25-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 80,
+      "season": "2024",
+      "day": "25"
+    },
+    {
+      "contest_date": "03-26-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 18,
+      "season": "2024",
+      "day": "26"
+    },
+    {
+      "contest_date": "03-27-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 79,
+      "season": "2024",
+      "day": "27"
+    },
+    {
+      "contest_date": "03-28-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 166,
+      "season": "2024",
+      "day": "28"
+    },
+    {
+      "contest_date": "03-29-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 168,
+      "season": "2024",
+      "day": "29"
+    },
+    {
+      "contest_date": "03-30-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 46,
+      "season": "2024",
+      "day": "30"
+    },
+    {
+      "contest_date": "3-31-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 0,
+      "season": "2024",
+      "day": "31"
+    },
+    {
+      "contest_date": "04-01-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 72,
+      "season": "2024",
+      "day": "01"
+    },
+    {
+      "contest_date": "04-02-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 12,
+      "season": "2024",
+      "day": "02"
+    },
+    {
+      "contest_date": "04-03-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 89,
+      "season": "2024",
+      "day": "03"
+    },
+    {
+      "contest_date": "04-04-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 150,
+      "season": "2024",
+      "day": "04"
+    },
+    {
+      "contest_date": "04-05-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 135,
+      "season": "2024",
+      "day": "05"
+    },
+    {
+      "contest_date": "04-06-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 67,
+      "season": "2024",
+      "day": "06"
+    },
+    {
+      "contest_date": "04-07-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 77,
+      "season": "2024",
+      "day": "07"
+    },
+    {
+      "contest_date": "04-08-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 55,
+      "season": "2024",
+      "day": "08"
+    },
+    {
+      "contest_date": "04-09-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 27,
+      "season": "2024",
+      "day": "09"
+    },
+    {
+      "contest_date": "04-10-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 84,
+      "season": "2024",
+      "day": "10"
+    },
+    {
+      "contest_date": "04-11-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 150,
+      "season": "2024",
+      "day": "11"
+    },
+    {
+      "contest_date": "04-12-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 150,
+      "season": "2024",
+      "day": "12"
+    },
+    {
+      "contest_date": "04-13-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 72,
+      "season": "2024",
+      "day": "13"
+    },
+    {
+      "contest_date": "04-14-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 79,
+      "season": "2024",
+      "day": "14"
+    },
+    {
+      "contest_date": "04-15-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 46,
+      "season": "2024",
+      "day": "15"
+    },
+    {
+      "contest_date": "04-16-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 66,
+      "season": "2024",
+      "day": "16"
+    },
+    {
+      "contest_date": "04-17-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 136,
+      "season": "2024",
+      "day": "17"
+    },
+    {
+      "contest_date": "04-18-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 152,
+      "season": "2024",
+      "day": "18"
+    },
+    {
+      "contest_date": "04-19-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 96,
+      "season": "2024",
+      "day": "19"
+    },
+    {
+      "contest_date": "04-20-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 20,
+      "season": "2024",
+      "day": "20"
+    },
+    {
+      "contest_date": "04-21-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 71,
+      "season": "2024",
+      "day": "21"
+    },
+    {
+      "contest_date": "04-22-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 59,
+      "season": "2024",
+      "day": "22"
+    },
+    {
+      "contest_date": "04-23-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 24,
+      "season": "2024",
+      "day": "23"
+    },
+    {
+      "contest_date": "04-24-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 84,
+      "season": "2024",
+      "day": "24"
+    },
+    {
+      "contest_date": "04-25-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 157,
+      "season": "2024",
+      "day": "25"
+    },
+    {
+      "contest_date": "04-26-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 145,
+      "season": "2024",
+      "day": "26"
+    },
+    {
+      "contest_date": "04-27-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 70,
+      "season": "2024",
+      "day": "27"
+    },
+    {
+      "contest_date": "04-28-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 61,
+      "season": "2024",
+      "day": "28"
+    },
+    {
+      "contest_date": "04-29-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 50,
+      "season": "2024",
+      "day": "29"
+    },
+    {
+      "contest_date": "04-30-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 19,
+      "season": "2024",
+      "day": "30"
+    },
+    {
+      "contest_date": "05-01-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 74,
+      "season": "2024",
+      "day": "01"
+    },
+    {
+      "contest_date": "05-02-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 140,
+      "season": "2024",
+      "day": "02"
+    },
+    {
+      "contest_date": "05-03-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 159,
+      "season": "2024",
+      "day": "03"
+    },
+    {
+      "contest_date": "05-04-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 61,
+      "season": "2024",
+      "day": "04"
+    },
+    {
+      "contest_date": "05-05-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 43,
+      "season": "2024",
+      "day": "05"
+    },
+    {
+      "contest_date": "05-06-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 36,
+      "season": "2024",
+      "day": "06"
+    },
+    {
+      "contest_date": "05-07-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 14,
+      "season": "2024",
+      "day": "07"
+    },
+    {
+      "contest_date": "05-08-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 80,
+      "season": "2024",
+      "day": "08"
+    },
+    {
+      "contest_date": "05-09-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 141,
+      "season": "2024",
+      "day": "09"
+    },
+    {
+      "contest_date": "05-10-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 153,
+      "season": "2024",
+      "day": "10"
+    },
+    {
+      "contest_date": "05-11-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 62,
+      "season": "2024",
+      "day": "11"
+    },
+    {
+      "contest_date": "05-12-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 30,
+      "season": "2024",
+      "day": "12"
+    },
+    {
+      "contest_date": "05-13-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 18,
+      "season": "2024",
+      "day": "13"
+    },
+    {
+      "contest_date": "05-14-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 94,
+      "season": "2024",
+      "day": "14"
+    },
+    {
+      "contest_date": "05-15-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 143,
+      "season": "2024",
+      "day": "15"
+    },
+    {
+      "contest_date": "05-16-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 141,
+      "season": "2024",
+      "day": "16"
+    },
+    {
+      "contest_date": "05-17-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 49,
+      "season": "2024",
+      "day": "17"
+    },
+    {
+      "contest_date": "05-18-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 3,
+      "season": "2024",
+      "day": "18"
+    },
+    {
+      "contest_date": "05-19-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 1,
+      "season": "2024",
+      "day": "19"
+    },
+    {
+      "contest_date": "05-20-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 28,
+      "season": "2024",
+      "day": "20"
+    },
+    {
+      "contest_date": "05-21-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 67,
+      "season": "2024",
+      "day": "21"
+    },
+    {
+      "contest_date": "05-22-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 69,
+      "season": "2024",
+      "day": "22"
+    },
+    {
+      "contest_date": "05-23-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 63,
+      "season": "2024",
+      "day": "23"
+    },
+    {
+      "contest_date": "05-24-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 52,
+      "season": "2024",
+      "day": "24"
+    },
+    {
+      "contest_date": "05-25-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 16,
+      "season": "2024",
+      "day": "25"
+    },
+    {
+      "contest_date": "5-26-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 0,
+      "season": "2024",
+      "day": "26"
+    },
+    {
+      "contest_date": "5-27-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 0,
+      "season": "2024",
+      "day": "27"
+    },
+    {
+      "contest_date": "5-28-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 0,
+      "season": "2024",
+      "day": "28"
+    },
+    {
+      "contest_date": "5-29-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 0,
+      "season": "2024",
+      "day": "29"
+    },
+    {
+      "contest_date": "05-30-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 32,
+      "season": "2024",
+      "day": "30"
+    },
+    {
+      "contest_date": "05-31-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 32,
+      "season": "2024",
+      "day": "31"
+    },
+    {
+      "contest_date": "06-01-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 32,
+      "season": "2024",
+      "day": "01"
+    },
+    {
+      "contest_date": "06-02-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 6,
+      "season": "2024",
+      "day": "02"
+    },
+    {
+      "contest_date": "6-3-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 0,
+      "season": "2024",
+      "day": "3"
+    },
+    {
+      "contest_date": "6-4-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 0,
+      "season": "2024",
+      "day": "4"
+    },
+    {
+      "contest_date": "6-5-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 0,
+      "season": "2024",
+      "day": "5"
+    },
+    {
+      "contest_date": "06-06-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 5,
+      "season": "2024",
+      "day": "06"
+    },
+    {
+      "contest_date": "06-07-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 8,
+      "season": "2024",
+      "day": "07"
+    },
+    {
+      "contest_date": "06-08-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 8,
+      "season": "2024",
+      "day": "08"
+    },
+    {
+      "contest_date": "06-09-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 1,
+      "season": "2024",
+      "day": "09"
+    },
+    {
+      "contest_date": "6-10-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 0,
+      "season": "2024",
+      "day": "10"
+    },
+    {
+      "contest_date": "6-11-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 0,
+      "season": "2024",
+      "day": "11"
+    },
+    {
+      "contest_date": "6-12-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 0,
+      "season": "2024",
+      "day": "12"
+    },
+    {
+      "contest_date": "06-13-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 2,
+      "season": "2024",
+      "day": "13"
+    },
+    {
+      "contest_date": "06-14-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 2,
+      "season": "2024",
+      "day": "14"
+    },
+    {
+      "contest_date": "06-15-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 2,
+      "season": "2024",
+      "day": "15"
+    },
+    {
+      "contest_date": "06-16-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 2,
+      "season": "2024",
+      "day": "16"
+    },
+    {
+      "contest_date": "06-17-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 3,
+      "season": "2024",
+      "day": "17"
+    },
+    {
+      "contest_date": "06-18-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 2,
+      "season": "2024",
+      "day": "18"
+    },
+    {
+      "contest_date": "6-19-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 0,
+      "season": "2024",
+      "day": "19"
+    },
+    {
+      "contest_date": "6-20-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 0,
+      "season": "2024",
+      "day": "20"
+    },
+    {
+      "contest_date": "06-21-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 1,
+      "season": "2024",
+      "day": "21"
+    },
+    {
+      "contest_date": "06-22-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 1,
+      "season": "2024",
+      "day": "22"
+    },
+    {
+      "contest_date": "6-23-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 0,
+      "season": "2024",
+      "day": "23"
+    },
+    {
+      "contest_date": "6-24-2025",
+      "year": "2025",
+      "weekday": "Tue",
+      "games": 0,
+      "season": "2024",
+      "day": "24"
+    },
+    {
+      "contest_date": "6-25-2025",
+      "year": "2025",
+      "weekday": "Wed",
+      "games": 0,
+      "season": "2024",
+      "day": "25"
+    },
+    {
+      "contest_date": "6-26-2025",
+      "year": "2025",
+      "weekday": "Thu",
+      "games": 0,
+      "season": "2024",
+      "day": "26"
+    },
+    {
+      "contest_date": "6-27-2025",
+      "year": "2025",
+      "weekday": "Fri",
+      "games": 0,
+      "season": "2024",
+      "day": "27"
+    },
+    {
+      "contest_date": "6-28-2025",
+      "year": "2025",
+      "weekday": "Sat",
+      "games": 0,
+      "season": "2024",
+      "day": "28"
+    },
+    {
+      "contest_date": "6-29-2025",
+      "year": "2025",
+      "weekday": "Sun",
+      "games": 0,
+      "season": "2024",
+      "day": "29"
+    },
+    {
+      "contest_date": "6-30-2025",
+      "year": "2025",
+      "weekday": "Mon",
+      "games": 0,
+      "season": "2024",
+      "day": "30"
+    }
+  ]
+}

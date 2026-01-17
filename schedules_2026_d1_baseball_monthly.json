@@ -1,0 +1,9 @@
+{
+  "sport": "baseball",
+  "division": "d1",
+  "year": 2026,
+  "base_url": "http://localhost:3000",
+  "fetched_months": [],
+  "total_contest_dates": 0,
+  "gameDates": []
+}
