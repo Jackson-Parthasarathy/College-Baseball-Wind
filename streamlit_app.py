@@ -9,7 +9,7 @@ from typing import Optional, Tuple
 
 import pandas as pd
 import streamlit as st
-import pydeck as pdk
+# Mapping disabled for now
 
 
 # =========================
@@ -32,14 +32,7 @@ HOME_SCORE_COL = "home_score"
 AWAY_SCORE_COL = "away_score"
 ID_COL = "game_id"
 
-# Map defaults
-DEFAULT_VIEW_STATE = pdk.ViewState(
-    latitude=37.8, longitude=-96.9, zoom=3.8, pitch=30
-)
-
-# Colors (RGBA) for map markers
-COLOR_HOME = [0, 168, 232, 180]   # light blue
-COLOR_AWAY = [255, 111, 97, 180]  # coral
+# Map defaults (disabled)
 
 
 # =========================
@@ -58,71 +51,11 @@ def check_password() -> bool:
         return True  # no password configured
 
     with st.sidebar:
-        st.subheader("🔐 Login")
-        pw = st.text_input("Password", type="password")
-        if pw == app_pw:
-            st.success("Authenticated")
-            return True
-        elif pw:
-            st.error("Incorrect password")
-            return False
-        else:
-            st.info("Enter the password to continue")
-            return False
-
-
-# =========================
-# ------- DATA I/O --------
-# =========================
-
-@st.cache_data(show_spinner=True)
-def load_data(path: str) -> pd.DataFrame:
-    """Load and normalize data to the expected schema.
-
-    Supports:
-    - ESPN aggregated CSV in this repo (espn_2025_* files)
-      Columns: event_id, event_date, home, away, stadium, City, State, lat, lon,
-               tz_name, event_dt_local, local_date, local_time
-    - Pre-normalized CSV with the expected schema.
-    """
-    ext = os.path.splitext(path)[1].lower()
-    if ext == ".csv":
-        df = pd.read_csv(path)
-    elif ext == ".parquet":
-        df = pd.read_parquet(path)
-    else:
-        raise ValueError("Unsupported data format. Use .csv or .parquet")
-
-    # If data already conforms, do minimal parsing
-    if DATE_COL in df.columns and LAT_COL in df.columns and LON_COL in df.columns:
-        df[DATE_COL] = pd.to_datetime(df[DATE_COL], errors="coerce").dt.date
-        for c in (LAT_COL, LON_COL):
-            df[c] = pd.to_numeric(df[c], errors="coerce")
-        return df
-
-    # Otherwise, normalize ESPN schema → expected columns
-    df = df.copy()
-
-    # Date
-    if "local_date" in df.columns:
-        df[DATE_COL] = pd.to_datetime(df["local_date"], errors="coerce").dt.date
-    elif "event_date" in df.columns:
-        df[DATE_COL] = pd.to_datetime(df["event_date"], errors="coerce").dt.date
-    else:
-        df[DATE_COL] = pd.NaT
-
-    # Coordinates
-    if "lat" in df.columns and "lon" in df.columns:
-        df[LAT_COL] = pd.to_numeric(df["lat"], errors="coerce")
-        df[LON_COL] = pd.to_numeric(df["lon"], errors="coerce")
-
-    # Teams
-    if "home" in df.columns:
-        df[HOME_COL] = df["home"]
+        # Map view disabled for now
     if "away" in df.columns:
         df[AWAY_COL] = df["away"]
 
-    # Venue and location
+        map_style="mapbox://styles/mapbox/dark-v11",
     if "stadium" in df.columns:
         df[VENUE_COL] = df["stadium"]
     if "City" in df.columns:
@@ -131,11 +64,12 @@ def load_data(path: str) -> pd.DataFrame:
         df[STATE_COL] = df["State"]
 
     # IDs
-    if "event_id" in df.columns:
-        df[ID_COL] = df["event_id"]
-
-    # Conference and scores may be absent; create empty columns for UI consistency
-    if CONF_COL not in df.columns:
+        table_cols = [VENUE_COL, CITY_COL, STATE_COL, "games", "first_date_str", "last_date_str"]
+        st.dataframe(
+            agg[table_cols],
+            use_container_width=True,
+            hide_index=True
+        )
         df[CONF_COL] = ""
     if HOME_SCORE_COL not in df.columns:
         df[HOME_SCORE_COL] = pd.NA
@@ -416,13 +350,11 @@ def main():
     # KPIs
     kpi_tiles(fdf)
 
-    # Tabs
-    t1, t2, t3 = st.tabs(["Map", "Games", "Teams"])
+    # Tabs (without map)
+    t1, t2 = st.tabs(["Games", "Teams"])
     with t1:
-        map_view(fdf)
-    with t2:
         games_table(fdf)
-    with t3:
+    with t2:
         team_spotlight(fdf)
 
     # Footer
