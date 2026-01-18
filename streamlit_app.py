@@ -8,8 +8,13 @@ from datetime import datetime, date
 from zoneinfo import ZoneInfo
 import math
 import glob
-import folium
-import streamlit.components.v1 as components
+pip install folium
+try:
+    import folium
+    import streamlit.components.v1 as components
+    FOLIUM_AVAILABLE = True
+except Exception:
+    FOLIUM_AVAILABLE = False
 
 # Optional timezone finder
 try:
@@ -212,6 +217,9 @@ def build_live_df(stads: pd.DataFrame) -> pd.DataFrame:
 
 # ---------- Testing/Demo view ----------
 def _render_top5_map(df_top: pd.DataFrame):
+    if not FOLIUM_AVAILABLE:
+        st.info("Map rendering is unavailable (install 'folium' to enable).")
+        return
     pts = df_top.dropna(subset=["latitude", "longitude"]).copy()
     if pts.empty:
         st.info("No coordinates available to render map.")
