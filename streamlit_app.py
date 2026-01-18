@@ -209,13 +209,16 @@ def build_live_df(stads: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 # ---------- Testing/Demo view ----------
-def top5_view(df: pd.DataFrame):
-    st.subheader("Top 5 Stadiums by Azimuth-Aligned Wind")
+def top5_view(df: pd.DataFrame, heading_date: str | None = None):
+    title = "Top 5 Stadiums by Azimuth-Aligned Wind"
+    if heading_date:
+        title = f"{title} — {heading_date}"
+    st.subheader(title)
     if df.empty:
         st.info("No rows to display.")
         return
     needed = [
-        "Stadium","latitude","longitude","Azimuth_deg",
+        "Stadium","Team","latitude","longitude","Azimuth_deg",
         "Wind_Speed_10m_mph","Wind_Component_Azimuth_mph",
         "azimuth_comp_abs_mph","azimuth_direction","Forecast_Time_Local","Timezone"
     ]
@@ -250,6 +253,28 @@ def main():
         except FileNotFoundError as e:
             st.error(str(e))
             st.stop()
+        # Ensure Home team (from stadium master) and derive a common forecast date
+        try:
+            master = load_stadium_master()
+            # Merge to add Team where missing
+            if "Team" not in df_mode.columns:
+                df_mode = df_mode.merge(master[["Stadium","Team"]], on="Stadium", how="left")
+            else:
+                # Fill missing Team values from master
+                df_mode = df_mode.merge(master[["Stadium","Team"]], on="Stadium", how="left", suffixes=("", "_master"))
+                df_mode["Team"] = df_mode["Team"].fillna(df_mode.get("Team_master"))
+                if "Team_master" in df_mode.columns:
+                    df_mode = df_mode.drop(columns=["Team_master"])
+        except Exception:
+            pass
+        # Compute heading date from Forecast_Time_Local if available (most common date)
+        heading_date = None
+        if "Forecast_Time_Local" in df_mode.columns:
+            dt = pd.to_datetime(df_mode["Forecast_Time_Local"], errors="coerce")
+            if dt.notna().any():
+                dates = dt.dt.date.dropna()
+                if not dates.empty:
+                    heading_date = str(dates.mode().iloc[0])
     elif mode == "Demo":
         try:
             df_mode = load_demo_data()
@@ -292,7 +317,7 @@ def main():
         df_mode = df_mode[mask]
 
     # Show Top 5
-    top5_view(df_mode)
+    top5_view(df_mode, heading_date=heading_date if mode == "Testing" else None)
 
     # Caption
     if mode == "Testing":
