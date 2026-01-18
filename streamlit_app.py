@@ -8,6 +8,8 @@ from datetime import datetime, date
 from zoneinfo import ZoneInfo
 import math
 import glob
+import folium
+import streamlit.components.v1 as components
 
 # Optional timezone finder
 try:
@@ -209,7 +211,41 @@ def build_live_df(stads: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 # ---------- Testing/Demo view ----------
-def top5_view(df: pd.DataFrame, heading_date: str | None = None):
+def _render_top5_map(df_top: pd.DataFrame):
+    pts = df_top.dropna(subset=["latitude", "longitude"]).copy()
+    if pts.empty:
+        st.info("No coordinates available to render map.")
+        return
+    center_lat = float(pts["latitude"].mean())
+    center_lon = float(pts["longitude"].mean())
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=5, tiles="OpenStreetMap")
+    max_mag = max(1.0, float(pts["azimuth_comp_abs_mph"].max()))
+    for _, r in pts.iterrows():
+        mag = float(r.get("azimuth_comp_abs_mph", 0.0) or 0.0)
+        ratio = min(1.0, mag / max_mag)
+        red = int(255 * ratio)
+        green = int(255 * (1.0 - ratio))
+        color = f"#{red:02x}{green:02x}50"
+        popup_html = (
+            f"<b>{r.get('Stadium','')}</b><br/>"
+            f"Team: {r.get('Team','')}<br/>"
+            f"Azimuth Comp: {float(r.get('Wind_Component_Azimuth_mph', np.nan)) if pd.notna(r.get('Wind_Component_Azimuth_mph')) else np.nan:.1f} mph<br/>"
+            f"Wind: {float(r.get('Wind_Speed_10m_mph', np.nan)) if pd.notna(r.get('Wind_Speed_10m_mph')) else np.nan:.1f} mph<br/>"
+            f"Time: {r.get('Forecast_Time_Local','')} ({r.get('Timezone','')})"
+        )
+        folium.CircleMarker(
+            location=[float(r["latitude"]), float(r["longitude"])],
+            radius=8,
+            color=color,
+            fill=True,
+            fill_color=color,
+            fill_opacity=0.8,
+            popup=folium.Popup(html=popup_html, max_width=300),
+        ).add_to(m)
+    components.html(m.get_root().render(), height=500, scrolling=False)
+
+
+def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool = False):
     title = "Top 5 Stadiums by Wind"
     if heading_date:
         title = f"{title} — {heading_date}"
@@ -241,6 +277,9 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None):
         ]
     ).properties(height=220)
     st.altair_chart(chart, use_container_width=True)
+    if show_map:
+        st.markdown("**Forecast Map (Top 5)**")
+        _render_top5_map(df_top)
 
 # ---------- Main ----------
 def main():
@@ -317,7 +356,11 @@ def main():
         df_mode = df_mode[mask]
 
     # Show Top 5
-    top5_view(df_mode, heading_date=heading_date if mode == "Testing" else None)
+    top5_view(
+        df_mode,
+        heading_date=heading_date if mode == "Testing" else None,
+        show_map=(mode == "Testing"),
+    )
 
     # Caption
     if mode == "Testing":
