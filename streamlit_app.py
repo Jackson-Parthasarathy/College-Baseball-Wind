@@ -55,11 +55,65 @@ def check_password() -> bool:
         return True  # no password configured
 
     with st.sidebar:
-        # Map view disabled for now
+        st.subheader("🔐 Login")
+        pw = st.text_input("Password", type="password")
+        if pw == app_pw:
+            st.success("Authenticated")
+            return True
+        elif pw:
+            st.error("Incorrect password")
+            return False
+        else:
+            st.info("Enter the password to continue")
+            return False
+@st.cache_data(show_spinner=True)
+def load_data(path: str) -> pd.DataFrame:
+    """Load and normalize data to the expected schema.
+
+    Supports:
+    - ESPN aggregated CSV in this repo (espn_2025_* files)
+      Columns: event_id, event_date, home, away, stadium, City, State, lat, lon,
+               tz_name, event_dt_local, local_date, local_time
+    - Pre-normalized CSV with the expected schema.
+    """
+    ext = os.path.splitext(path)[1].lower()
+    if ext == ".csv":
+        df = pd.read_csv(path)
+    elif ext == ".parquet":
+        df = pd.read_parquet(path)
+    else:
+        raise ValueError("Unsupported data format. Use .csv or .parquet")
+
+    # If data already conforms, do minimal parsing
+    if DATE_COL in df.columns and LAT_COL in df.columns and LON_COL in df.columns:
+        df[DATE_COL] = pd.to_datetime(df[DATE_COL], errors="coerce").dt.date
+        for c in (LAT_COL, LON_COL):
+            df[c] = pd.to_numeric(df[c], errors="coerce")
+        return df
+
+    # Otherwise, normalize ESPN schema → expected columns
+    df = df.copy()
+
+    # Date
+    if "local_date" in df.columns:
+        df[DATE_COL] = pd.to_datetime(df["local_date"], errors="coerce").dt.date
+    elif "event_date" in df.columns:
+        df[DATE_COL] = pd.to_datetime(df["event_date"], errors="coerce").dt.date
+    else:
+        df[DATE_COL] = pd.NaT
+
+    # Coordinates
+    if "lat" in df.columns and "lon" in df.columns:
+        df[LAT_COL] = pd.to_numeric(df["lat"], errors="coerce")
+        df[LON_COL] = pd.to_numeric(df["lon"], errors="coerce")
+
+    # Teams
+    if "home" in df.columns:
+        df[HOME_COL] = df["home"]
     if "away" in df.columns:
         df[AWAY_COL] = df["away"]
 
-        map_style="mapbox://styles/mapbox/dark-v11",
+    # Venue and location
     if "stadium" in df.columns:
         df[VENUE_COL] = df["stadium"]
     if "City" in df.columns:
@@ -68,12 +122,11 @@ def check_password() -> bool:
         df[STATE_COL] = df["State"]
 
     # IDs
-        table_cols = [VENUE_COL, CITY_COL, STATE_COL, "games", "first_date_str", "last_date_str"]
-        st.dataframe(
-            agg[table_cols],
-            use_container_width=True,
-            hide_index=True
-        )
+    if "event_id" in df.columns:
+        df[ID_COL] = df["event_id"]
+
+    # Conference and scores may be absent; create empty columns for UI consistency
+    if CONF_COL not in df.columns:
         df[CONF_COL] = ""
     if HOME_SCORE_COL not in df.columns:
         df[HOME_SCORE_COL] = pd.NA
@@ -410,66 +463,7 @@ def kpi_tiles(df: pd.DataFrame):
     c4.metric("Date span", span)
 
 
-def map_view(df: pd.DataFrame):
-    st.subheader("🗺️ Map")
-
-    if not {LAT_COL, LON_COL}.issubset(df.columns):
-        st.info("No latitude/longitude columns found to render the map.")
-        return
-
-    map_df = df.dropna(subset=[LAT_COL, LON_COL]).copy()
-    if map_df.empty:
-        st.info("No geocoded rows to display.")
-        return
-
-    # Marker layer per venue (aggregate to avoid tons of overlapping points)
-    group_cols = [VENUE_COL, CITY_COL, STATE_COL, LAT_COL, LON_COL]
-    for c in [VENUE_COL, CITY_COL, STATE_COL]:
-        if c not in map_df.columns:
-            map_df[c] = ""
-
-    agg = (map_df
-           .groupby(group_cols, dropna=True)
-           .agg(
-               games=(ID_COL, "count") if ID_COL in map_df.columns else (DATE_COL, "count"),
-               first_date=(DATE_COL, "min") if DATE_COL in map_df.columns else (DATE_COL, "min"),
-               last_date=(DATE_COL, "max") if DATE_COL in map_df.columns else (DATE_COL, "max"),
-           )
-           .reset_index())
-
-    tooltip_text = [
-        f"{row.get(VENUE_COL, '')} — {row.get(CITY_COL, '')}, {row.get(STATE_COL, '')}\n"
-        f"Games: {row['games']}\n"
-        f"Dates: {row.get('first_date','')} → {row.get('last_date','')}"
-        for _, row in agg.iterrows()
-    ]
-    agg["tooltip"] = tooltip_text
-
-    scatter = pdk.Layer(
-        "ScatterplotLayer",
-        data=agg,
-        get_position=[LON_COL, LAT_COL],
-        get_fill_color=COLOR_HOME,
-        get_radius=12000,
-        pickable=True,
-        auto_highlight=True,
-    )
-
-    r = pdk.Deck(
-        map_style="mapbox://styles/mapbox/dark-v11",
-        initial_view_state=DEFAULT_VIEW_STATE,
-        layers=[scatter],
-        tooltip={"text": "{tooltip}"},
-    )
-
-    st.pydeck_chart(r)
-
-    with st.expander("Show venue table"):
-        st.dataframe(
-            agg[[VENUE_COL, CITY_COL, STATE_COL, "games", "first_date", "last_date"]],
-            use_container_width=True,
-            hide_index=True
-        )
+# Map view removed per request
 
 
 def games_table(df: pd.DataFrame):
@@ -586,7 +580,7 @@ def main():
 
     # Footer
     st.markdown("---")
-    st.caption("Built with Streamlit and PyDeck. Data © You.")
+    st.caption("Built with Streamlit. Data © You.")
 
 
 if __name__ == "__main__":
