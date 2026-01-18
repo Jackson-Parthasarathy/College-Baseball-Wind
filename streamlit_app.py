@@ -4,9 +4,11 @@ import numpy as np
 import altair as alt
 from pathlib import Path
 import requests
-from datetime import datetime
+from datetime import datetime, date
 from zoneinfo import ZoneInfo
 import math
+import glob
+from timezonefinder import TimezoneFinder
 
 st.set_page_config(page_title="College Baseball Wind — Testing", layout="wide")
 
@@ -78,7 +80,7 @@ def top5_view(df: pd.DataFrame):
 
     # Display summary table
     show_cols = [
-        "Stadium", "Azimuth_deg", "Wind_Speed_10m_mph", "Wind_Component_Azimuth_mph",
+        "Stadium", "home", "away", "Azimuth_deg", "Wind_Speed_10m_mph", "Wind_Component_Azimuth_mph",
         "azimuth_direction", "Forecast_Time_Local", "Timezone"
     ]
     st.dataframe(df_top[show_cols], use_container_width=True)
@@ -104,6 +106,7 @@ def top5_view(df: pd.DataFrame):
 OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
 SESSION = requests.Session()
 RAD = math.pi / 180.0
+TF = TimezoneFinder()
 
 
 def wind_components(ws, wd_from_deg, az_deg):
@@ -233,6 +236,180 @@ def build_live_df(stads: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+# --- ESPN games + venue match integration for date-specific forecasts ---
+@st.cache_data(show_spinner=False)
+def load_games_espx(year: int = 2026, path: str | None = None) -> pd.DataFrame:
+    if path is None:
+        path = f"espn_{year}_college_baseball_games.csv"
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"ESPN games CSV not found: {path}")
+    df = pd.read_csv(p)
+    return df
+
+
+def norm_name(s: str) -> str:
+    s = str(s) if pd.notna(s) else ""
+    s = s.strip().lower()
+    s = (
+        s.replace("—", "-")
+         .replace("–", "-")
+         .replace("’", "'")
+         .replace("“", '"')
+         .replace("”", '"')
+    )
+    s = " ".join(s.split())
+    return s
+
+
+@st.cache_data(show_spinner=False)
+def load_match_csv() -> pd.DataFrame:
+    # Prefer a venue match report file, fallback to any *stadium*match*.csv
+    candidates = []
+    candidates += glob.glob("*venue_match_report.csv")
+    candidates += glob.glob("*stadium*match*.csv")
+    if not candidates:
+        raise FileNotFoundError("No stadium match CSV found (expected '*venue_match_report.csv' or '*stadium*match*.csv').")
+    # Choose the most recent by modified time
+    candidates = sorted(candidates, key=lambda x: Path(x).stat().st_mtime, reverse=True)
+    p = Path(candidates[0])
+    df = pd.read_csv(p)
+    # Normalize columns
+    # Ensure espn_venue_norm
+    if "espn_venue_norm" not in df.columns:
+        if "espn_venue" in df.columns:
+            df["espn_venue_norm"] = df["espn_venue"].astype(str).apply(norm_name)
+        else:
+            raise KeyError("Match CSV missing 'espn_venue' or 'espn_venue_norm'.")
+    # Find stadium final/matched column
+    stad_col = None
+    for cand in ["stadium final", "stadium_final", "matched_stadium", "stadium"]:
+        if cand in df.columns:
+            stad_col = cand
+            break
+    if stad_col is None:
+        raise KeyError("Match CSV missing stadium mapping column (e.g., 'stadium final', 'matched_stadium').")
+    df = df.rename(columns={stad_col: "stadium_final"})
+    df["stadium_final_norm"] = df["stadium_final"].astype(str).apply(norm_name)
+    return df[["espn_venue_norm", "stadium_final", "stadium_final_norm"]]
+
+
+def join_games_to_stadiums(games: pd.DataFrame, match_df: pd.DataFrame, stadiums_master: pd.DataFrame) -> pd.DataFrame:
+    g = games.copy()
+    # Normalize venue
+    g["venue_norm"] = g.get("venue", pd.Series(dtype=str)).astype(str).apply(norm_name)
+    # Join with match
+    g = g.merge(match_df, left_on="venue_norm", right_on="espn_venue_norm", how="left")
+    # Join with stadium master using normalized stadium name
+    stadiums_master["stadium_norm"] = stadiums_master.get("Stadium", stadiums_master.get("Team", "")).astype(str).apply(norm_name)
+    g = g.merge(stadiums_master, left_on="stadium_final_norm", right_on="stadium_norm", how="left", suffixes=("", "_stad"))
+    return g
+
+
+def parse_event_utc(ts: str) -> datetime | None:
+    try:
+        return datetime.strptime(ts, "%Y-%m-%dT%H:%MZ").replace(tzinfo=ZoneInfo("UTC"))
+    except Exception:
+        try:
+            return datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+        except Exception:
+            return None
+
+
+def tz_from_latlon(lat, lon):
+    if pd.isna(lat) or pd.isna(lon):
+        return None
+    try:
+        return TF.timezone_at(lng=float(lon), lat=float(lat))
+    except Exception:
+        return None
+
+
+def get_fc_nearest_to_local_time(lat: float, lon: float, target_local_dt: datetime) -> dict:
+    params = {
+        "latitude": float(lat),
+        "longitude": float(lon),
+        "hourly": "wind_speed_10m,wind_direction_10m",
+        "timezone": "auto",
+        "windspeed_unit": "ms",
+    }
+    r = SESSION.get(OPEN_METEO_URL, params=params, timeout=20)
+    r.raise_for_status()
+    data = r.json()
+    tzname = data.get("timezone", "UTC")
+    times = data["hourly"]["time"]
+    speeds = data["hourly"]["wind_speed_10m"]
+    dirs_from = data["hourly"]["wind_direction_10m"]
+    # Convert timestamps to timezone-aware using the API's timezone
+    diffs = []
+    for i, t in enumerate(times):
+        dt = datetime.fromisoformat(t).replace(tzinfo=ZoneInfo(tzname))
+        diffs.append((abs((dt - target_local_dt).total_seconds()), i))
+    idx = min(diffs)[1]
+    return {
+        "time": times[idx],
+        "timezone": tzname,
+        "ws_ms": float(speeds[idx]),
+        "wd_from_deg": float(dirs_from[idx]),
+    }
+
+
+def build_live_games_for_date(target: date) -> pd.DataFrame:
+    # Load ESPN games for the year
+    games = load_games_espx(year=target.year)
+    # Filter by date (UTC date in event_date)
+    games["event_dt_utc"] = games.get("event_date", pd.Series(dtype=str)).apply(parse_event_utc)
+    games["event_date_only"] = games["event_dt_utc"].apply(lambda x: x.date() if pd.notna(x) else None)
+    games_day = games[games["event_date_only"] == target].copy()
+    if games_day.empty:
+        return pd.DataFrame()
+    # Load match CSV and stadium master
+    match_df = load_match_csv()
+    stads_master = load_stadium_master()
+    # Join to attach stadium_final + coords + azimuth
+    gm = join_games_to_stadiums(games_day, match_df, stads_master)
+    # Resolve timezone from lat/lon
+    gm["tz_name"] = gm.apply(lambda r: tz_from_latlon(r.get("latitude"), r.get("longitude")), axis=1)
+    # Convert event time to local
+    gm["event_dt_local"] = gm.apply(
+        lambda r: r["event_dt_utc"].astimezone(ZoneInfo(r["tz_name"])) if (pd.notna(r["event_dt_utc"]) and pd.notna(r["tz_name"])) else None,
+        axis=1
+    )
+    # Fetch forecast nearest to local game time and compute components
+    rows = []
+    for _, r in gm.iterrows():
+        lat = r.get("latitude")
+        lon = r.get("longitude")
+        az = r.get("Azimuth_deg")
+        local_dt = r.get("event_dt_local")
+        if pd.isna(lat) or pd.isna(lon) or pd.isna(az) or local_dt is None:
+            continue
+        try:
+            fc = get_fc_nearest_to_local_time(float(lat), float(lon), local_dt)
+        except Exception:
+            continue
+        comp_az, comp_ns, comp_ew = wind_components(fc["ws_ms"], fc["wd_from_deg"], float(az))
+        rows.append({
+            "Stadium": r.get("stadium_final") or r.get("Stadium") or r.get("venue"),
+            "home": r.get("home"),
+            "away": r.get("away"),
+            "Azimuth_deg": az,
+            "latitude": lat,
+            "longitude": lon,
+            "Forecast_Time_Local": fc["time"],
+            "Timezone": fc["timezone"],
+            "Wind_Speed_10m_ms": fc["ws_ms"],
+            "Wind_Speed_10m_mph": fc["ws_ms"] * 2.23694,
+            "Wind_Direction_From_deg": fc["wd_from_deg"],
+            "Wind_Component_Azimuth_ms": comp_az,
+            "Wind_Component_Azimuth_mph": comp_az * 2.23694,
+            "Component_Along_Azimuth_abs_ms": abs(comp_az),
+            "azimuth_comp_abs_mph": abs(comp_az) * 2.23694,
+            "azimuth_direction": ("toward azimuth" if comp_az >= 0 else "opposite azimuth"),
+        })
+    return pd.DataFrame(rows)
+
+
 st.title("College Baseball Wind")
 
 # Mode toggle
@@ -245,10 +422,12 @@ if mode == "Testing":
         st.error(str(e))
         st.stop()
 else:
-    with st.spinner("Computing live winds per stadium..."):
+    # Sidebar date picker for Live mode
+    selected_date = st.sidebar.date_input("Select date", value=date(2026, 2, 13))
+    target_date = selected_date
+    with st.spinner(f"Computing winds for games on {target_date.isoformat()}..."):
         try:
-            stads = load_stadium_master()
-            df_mode = build_live_df(stads)
+            df_mode = build_live_games_for_date(target_date)
         except Exception as e:
             st.error(f"Live mode error: {e}")
             st.stop()
@@ -276,7 +455,7 @@ top5_view(df_mode)
 if mode == "Testing":
     st.caption("Testing mode uses local noon forecast per stadium (Open-Meteo).")
 else:
-    st.caption("Live mode ranks stadiums using the hour closest to now (Open-Meteo).")
+    st.caption("Live mode uses the selected date and forecasts nearest to each game's local start time (Open-Meteo).")
 # streamlit_app.py
 # ----------------
 # Division I Baseball Dashboard with map, filters, and optional password.
