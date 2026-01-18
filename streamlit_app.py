@@ -1,3 +1,282 @@
+import streamlit as st
+import pandas as pd
+import numpy as np
+import altair as alt
+from pathlib import Path
+import requests
+from datetime import datetime
+from zoneinfo import ZoneInfo
+import math
+
+st.set_page_config(page_title="College Baseball Wind — Testing", layout="wide")
+
+@st.cache_data(show_spinner=False)
+def load_testing_data(path: str = "stadium_wind_testing.csv") -> pd.DataFrame:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"Testing dataset not found: {path}")
+    df = pd.read_csv(p)
+    # Normalize expected columns
+    rename_map = {
+        "Lat": "latitude",
+        "Long": "longitude",
+        "Azimuth": "Azimuth_deg",
+    }
+    df = df.rename(columns=rename_map)
+    # Coerce to numeric where relevant
+    for c in [
+        "latitude",
+        "longitude",
+        "Azimuth_deg",
+        "Wind_Speed_10m_ms",
+        "Wind_Speed_10m_mph",
+        "Wind_Direction_From_deg",
+        "Wind_Component_Azimuth_ms",
+        "Wind_Component_Azimuth_mph",
+        "Component_Along_Azimuth_abs_ms",
+    ]:
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce")
+    # Derive handy ranking metric (mph absolute)
+    if "Wind_Component_Azimuth_mph" in df.columns:
+        df["azimuth_comp_abs_mph"] = df["Wind_Component_Azimuth_mph"].abs()
+    elif "Wind_Component_Azimuth_ms" in df.columns:
+        df["azimuth_comp_abs_mph"] = (df["Wind_Component_Azimuth_ms"] * 2.23694).abs()
+    else:
+        df["azimuth_comp_abs_mph"] = np.nan
+    # Direction label: blowing toward azimuth vs opposite
+    def direction_label(val):
+        if pd.isna(val):
+            return "unknown"
+        return "toward azimuth" if val >= 0 else "opposite azimuth"
+    if "Wind_Component_Azimuth_mph" in df.columns:
+        df["azimuth_direction"] = df["Wind_Component_Azimuth_mph"].apply(direction_label)
+    else:
+        df["azimuth_direction"] = np.nan
+    return df
+
+
+def top5_view(df: pd.DataFrame):
+    st.subheader("Top 5 Stadiums by Azimuth-Aligned Wind (Testing — Noon Tomorrow)")
+    if df.empty:
+        st.info("No rows in testing dataset.")
+        return
+    # Ensure columns
+    needed = ["stadium_final", "Stadium", "latitude", "longitude", "Azimuth_deg",
+              "Wind_Speed_10m_mph", "Wind_Component_Azimuth_mph",
+              "azimuth_comp_abs_mph", "azimuth_direction", "Forecast_Time_Local", "Timezone"]
+    for c in needed:
+        if c not in df.columns:
+            # Provide fallback if Stadium missing
+            if c == "Stadium" and "stadium_final" in df.columns:
+                df["Stadium"] = df["stadium_final"]
+            else:
+                # create empty column to avoid errors
+                df[c] = np.nan
+    # Sort and select
+    df_top = df.dropna(subset=["azimuth_comp_abs_mph"]).sort_values("azimuth_comp_abs_mph", ascending=False).head(5)
+
+    # Display summary table
+    show_cols = [
+        "Stadium", "Azimuth_deg", "Wind_Speed_10m_mph", "Wind_Component_Azimuth_mph",
+        "azimuth_direction", "Forecast_Time_Local", "Timezone"
+    ]
+    st.dataframe(df_top[show_cols], use_container_width=True)
+
+    # Small bar chart: abs azimuth component mph
+    chart = alt.Chart(df_top).mark_bar().encode(
+        x=alt.X("azimuth_comp_abs_mph:Q", title="|Azimuth Component| (mph)"),
+        y=alt.Y("Stadium:N", sort="-x", title="Stadium"),
+        color=alt.Color("azimuth_direction:N", title="Direction"),
+        tooltip=[
+            alt.Tooltip("Stadium", title="Stadium"),
+            alt.Tooltip("Wind_Component_Azimuth_mph", title="Azimuth Comp (mph)"),
+            alt.Tooltip("Wind_Speed_10m_mph", title="Wind Speed (mph)"),
+            alt.Tooltip("Azimuth_deg", title="Azimuth (deg)"),
+            alt.Tooltip("Forecast_Time_Local", title="Local Time"),
+            alt.Tooltip("Timezone", title="TZ")
+        ]
+    ).properties(height=220)
+    st.altair_chart(chart, use_container_width=True)
+
+
+# --- Live mode helpers ---
+OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
+SESSION = requests.Session()
+RAD = math.pi / 180.0
+
+
+def wind_components(ws, wd_from_deg, az_deg):
+    if ws is None or pd.isna(ws) or wd_from_deg is None or pd.isna(wd_from_deg) or az_deg is None or pd.isna(az_deg):
+        return (np.nan, np.nan, np.nan)
+    wt_deg = (wd_from_deg + 180.0) % 360.0  # FROM -> TOWARD
+    wt = wt_deg * RAD
+    az = az_deg * RAD
+    w_ex = math.sin(wt)
+    w_ny = math.cos(wt)
+    a_ex = math.sin(az)
+    a_ny = math.cos(az)
+    comp_along_az = ws * (w_ex * a_ex + w_ny * a_ny)
+    comp_ns = ws * w_ny
+    comp_ew = ws * w_ex
+    return (comp_along_az, comp_ns, comp_ew)
+
+
+@st.cache_data(show_spinner=False)
+def load_stadium_master(path: str = "Stadium_list_final.csv") -> pd.DataFrame:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"Stadium list not found: {path}")
+    df = pd.read_csv(p, encoding="cp1252")
+    cols = list(df.columns)
+    if "Azimuth" not in df.columns:
+        raise ValueError("Azimuth column not found in Stadium_list_final.csv")
+    az_idx = cols.index("Azimuth")
+    lat_col, lon_col = None, None
+    for i in range(az_idx + 1, len(cols)):
+        name = str(cols[i]).strip().lower()
+        if name in ("lat", "latitude") and lat_col is None:
+            lat_col = cols[i]
+        elif name in ("long", "longitude", "lon") and lon_col is None:
+            lon_col = cols[i]
+        if lat_col and lon_col:
+            break
+    if lat_col is None or lon_col is None:
+        # Fallback: try anywhere
+        for c in df.columns:
+            n = str(c).strip().lower()
+            if n in ("lat", "latitude") and lat_col is None:
+                lat_col = c
+            elif n in ("long", "longitude", "lon") and lon_col is None:
+                lon_col = c
+    if lat_col is None or lon_col is None:
+        raise ValueError("Could not find latitude/longitude columns in Stadium_list_final.csv")
+
+    # Clean azimuth
+    def parse_azimuth(x):
+        if pd.isna(x):
+            return np.nan
+        s = str(x)
+        s = "".join(ch for ch in s if ch.isdigit() or ch == ".")
+        try:
+            return float(s) % 360.0
+        except Exception:
+            return np.nan
+
+    df["Azimuth_deg"] = df["Azimuth"].apply(parse_azimuth)
+    df = df.rename(columns={lat_col: "latitude", lon_col: "longitude"})
+    # Keep essential columns
+    keep = [c for c in ["Stadium", "Team", "Azimuth_deg", "latitude", "longitude"] if c in df.columns]
+    out = df[keep].dropna(subset=["Azimuth_deg", "latitude", "longitude"]).copy()
+    return out
+
+
+def get_live_hour(lat: float, lon: float):
+    params = {
+        "latitude": float(lat),
+        "longitude": float(lon),
+        "hourly": "wind_speed_10m,wind_direction_10m",
+        "timezone": "auto",
+        "windspeed_unit": "ms",
+    }
+    r = SESSION.get(OPEN_METEO_URL, params=params, timeout=20)
+    r.raise_for_status()
+    data = r.json()
+    tzname = data.get("timezone", "UTC")
+    times = data["hourly"]["time"]
+    speeds = data["hourly"]["wind_speed_10m"]
+    dirs_from = data["hourly"]["wind_direction_10m"]
+    now_local = datetime.now(ZoneInfo(tzname))
+    # pick closest hour to now
+    diffs = []
+    for i, t in enumerate(times):
+        dt = datetime.fromisoformat(t).replace(tzinfo=ZoneInfo(tzname))
+        diffs.append((abs((dt - now_local).total_seconds()), i))
+    idx = min(diffs)[1]
+    return {
+        "time": times[idx],
+        "timezone": tzname,
+        "ws_ms": float(speeds[idx]),
+        "wd_from_deg": float(dirs_from[idx]),
+    }
+
+
+def build_live_df(stads: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for _, r in stads.iterrows():
+        lat = r["latitude"]
+        lon = r["longitude"]
+        az = r["Azimuth_deg"]
+        try:
+            fc = get_live_hour(lat, lon)
+        except Exception:
+            # Skip on failures
+            continue
+        comp_az, comp_ns, comp_ew = wind_components(fc["ws_ms"], fc["wd_from_deg"], az)
+        stadium_name = r.get("Stadium") or r.get("Team") or "Unknown"
+        rows.append({
+            "Stadium": stadium_name,
+            "Azimuth_deg": az,
+            "latitude": lat,
+            "longitude": lon,
+            "Forecast_Time_Local": fc["time"],
+            "Timezone": fc["timezone"],
+            "Wind_Speed_10m_ms": fc["ws_ms"],
+            "Wind_Speed_10m_mph": fc["ws_ms"] * 2.23694,
+            "Wind_Direction_From_deg": fc["wd_from_deg"],
+            "Wind_Component_Azimuth_ms": comp_az,
+            "Wind_Component_Azimuth_mph": comp_az * 2.23694,
+            "Component_Along_Azimuth_abs_ms": abs(comp_az),
+            "azimuth_comp_abs_mph": abs(comp_az) * 2.23694,
+            "azimuth_direction": ("toward azimuth" if comp_az >= 0 else "opposite azimuth"),
+        })
+    return pd.DataFrame(rows)
+
+
+st.title("College Baseball Wind")
+
+# Mode toggle
+mode = st.sidebar.radio("Mode", ["Testing", "Live"], index=0)
+
+if mode == "Testing":
+    try:
+        df_mode = load_testing_data()
+    except FileNotFoundError as e:
+        st.error(str(e))
+        st.stop()
+else:
+    with st.spinner("Computing live winds per stadium..."):
+        try:
+            stads = load_stadium_master()
+            df_mode = build_live_df(stads)
+        except Exception as e:
+            st.error(f"Live mode error: {e}")
+            st.stop()
+
+try:
+    df_testing = load_testing_data()
+except FileNotFoundError as e:
+    st.error(str(e))
+    st.stop()
+
+# Optional filters (light)
+col1, col2 = st.columns([1, 1])
+with col1:
+    team_query = st.text_input("Filter by team/stadium name", value="")
+if team_query:
+    mask = (
+        df_mode.get("stadium_final", pd.Series(dtype=str)).astype(str).str.contains(team_query, case=False, na=False)
+        | df_mode.get("Stadium", pd.Series(dtype=str)).astype(str).str.contains(team_query, case=False, na=False)
+    )
+    df_mode = df_mode[mask]
+
+# Show top 5 view
+top5_view(df_mode)
+
+if mode == "Testing":
+    st.caption("Testing mode uses local noon forecast per stadium (Open-Meteo).")
+else:
+    st.caption("Live mode ranks stadiums using the hour closest to now (Open-Meteo).")
 # streamlit_app.py
 # ----------------
 # Division I Baseball Dashboard with map, filters, and optional password.
