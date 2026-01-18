@@ -210,7 +210,7 @@ def build_live_df(stads: pd.DataFrame) -> pd.DataFrame:
 
 # ---------- Testing/Demo view ----------
 def top5_view(df: pd.DataFrame, heading_date: str | None = None):
-    title = "Top 5 Stadiums by Azimuth-Aligned Wind"
+    title = "Top 5 Stadiums by Wind"
     if heading_date:
         title = f"{title} — {heading_date}"
     st.subheader(title)
