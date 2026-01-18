@@ -544,43 +544,6 @@ try:
 except FileNotFoundError as e:
     st.error(str(e))
     st.stop()
-
-# Optional filters (light)
-col1, col2 = st.columns([1, 1])
-    with t1:
-        mode_choice = st.radio("Mode", ["Testing (Noon Tomorrow)", "Live (Now)", "Demo (First Games 2026-02-13)"], index=0, help="Switch between testing, live, or demo wind selection")
-        if mode_choice.startswith("Testing"):
-            mode = "testing"
-            show_top_wind_games(fdf, mode)
-        elif mode_choice.startswith("Live"):
-            mode = "live"
-            show_top_wind_games(fdf, mode)
-        else:
-            mode = "demo"
-            # Prefer precomputed demo CSV
-            try:
-                df_demo = load_demo_data()
-                top5_view(df_demo)
-            except FileNotFoundError:
-                # Fallback: filter to 2026-02-13 from base data and compute like testing
-                try:
-                    base_df = load_games_espx(year=2026)
-                    base_df["event_dt_utc"] = base_df.get("event_date", pd.Series(dtype=str)).apply(parse_event_utc)
-                    base_df["date_only"] = base_df["event_dt_utc"].apply(lambda x: x.date() if pd.notna(x) else None)
-                    subset = base_df[base_df["date_only"] == date(2026, 2, 13)].copy()
-                    if subset.empty:
-                        st.info("No games found for 2026-02-13.")
-                    else:
-                        show_top_wind_games(subset, mode="testing")
-                except Exception as ex:
-                    st.error(f"Demo fallback failed: {ex}")
-# Show top 5 view
-top5_view(df_mode)
-
-if mode == "Testing":
-    st.caption("Testing mode uses local noon forecast per stadium (Open-Meteo).")
-else:
-    st.caption("Live mode uses the selected date and forecasts nearest to each game's local start time (Open-Meteo).")
 # streamlit_app.py
 # ----------------
 # Division I Baseball Dashboard with map, filters, and optional password.
