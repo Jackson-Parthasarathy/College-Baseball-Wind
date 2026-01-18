@@ -8,7 +8,10 @@ from datetime import datetime, date
 from zoneinfo import ZoneInfo
 import math
 import glob
-from timezonefinder import TimezoneFinder
+try:
+    from timezonefinder import TimezoneFinder
+except Exception:
+    TimezoneFinder = None
 
 st.set_page_config(page_title="College Baseball Wind — Testing", layout="wide")
 
@@ -106,7 +109,34 @@ def top5_view(df: pd.DataFrame):
 OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
 SESSION = requests.Session()
 RAD = math.pi / 180.0
-TF = TimezoneFinder()
+TF = TimezoneFinder() if TimezoneFinder is not None else None
+
+# Fallback: infer timezone via Open-Meteo if TimezoneFinder isn't available
+_TZ_CACHE: dict[tuple[float, float], str] = {}
+
+def infer_tz_from_openmeteo(lat: float, lon: float) -> str | None:
+    try:
+        key = (round(float(lat), 4), round(float(lon), 4))
+    except Exception:
+        return None
+    if key in _TZ_CACHE:
+        return _TZ_CACHE[key]
+    params = {
+        "latitude": float(lat),
+        "longitude": float(lon),
+        "hourly": "wind_speed_10m",  # minimal payload
+        "timezone": "auto",
+    }
+    try:
+        r = SESSION.get(OPEN_METEO_URL, params=params, timeout=15)
+        r.raise_for_status()
+        tzname = (r.json() or {}).get("timezone")
+        if isinstance(tzname, str) and tzname:
+            _TZ_CACHE[key] = tzname
+            return tzname
+        return None
+    except Exception:
+        return None
 
 
 def wind_components(ws, wd_from_deg, az_deg):
@@ -319,10 +349,16 @@ def parse_event_utc(ts: str) -> datetime | None:
 def tz_from_latlon(lat, lon):
     if pd.isna(lat) or pd.isna(lon):
         return None
-    try:
-        return TF.timezone_at(lng=float(lon), lat=float(lat))
-    except Exception:
-        return None
+    # Prefer TimezoneFinder when available
+    if TF is not None:
+        try:
+            tz = TF.timezone_at(lng=float(lon), lat=float(lat))
+            if isinstance(tz, str) and tz:
+                return tz
+        except Exception:
+            pass
+    # Fallback to Open-Meteo timezone inference
+    return infer_tz_from_openmeteo(lat, lon)
 
 
 def get_fc_nearest_to_local_time(lat: float, lon: float, target_local_dt: datetime) -> dict:
@@ -431,6 +467,10 @@ else:
         except Exception as e:
             st.error(f"Live mode error: {e}")
             st.stop()
+    # If no rows (no games or unmatched venues), show a friendly message
+    if df_mode.empty:
+        st.info(f"No games found for {target_date.isoformat()} or venues could not be matched.")
+        st.stop()
 
 try:
     df_testing = load_testing_data()
