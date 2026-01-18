@@ -268,7 +268,7 @@ def build_live_df(stads: pd.DataFrame) -> pd.DataFrame:
             "Wind_Component_Azimuth_mph": comp_az * 2.23694,
             "Component_Along_Azimuth_abs_ms": abs(comp_az),
             "azimuth_comp_abs_mph": abs(comp_az) * 2.23694,
-            "azimuth_direction": ("toward azimuth" if comp_az >= 0 else "opposite azimuth"),
+            "azimuth_direction": ("blowing out" if comp_az >= 0 else "blowing in"),
         })
     return pd.DataFrame(rows)
 
