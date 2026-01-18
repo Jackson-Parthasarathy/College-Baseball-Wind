@@ -34,6 +34,56 @@ SESSION = requests.Session()
 RAD = math.pi / 180.0
 TF = TimezoneFinder() if TimezoneFinder is not None else None
 
+# ---------- Team logos ----------
+@st.cache_data(show_spinner=False)
+def load_team_logos(path: str = "team_logos.csv") -> dict:
+    """Load ESPN team logos CSV and return a normalized name→logo URL map."""
+    p = Path(path)
+    if not p.exists():
+        return {}
+    try:
+        logos = pd.read_csv(p)
+    except Exception:
+        return {}
+    # Normalize potential name columns
+    for col in ["displayName", "shortDisplayName", "name", "location", "abbreviation", "slug"]:
+        if col in logos.columns:
+            logos[f"{col}_norm"] = logos[col].fillna("").str.strip().str.lower()
+        else:
+            logos[f"{col}_norm"] = ""
+    lookup = {}
+    for _, row in logos.iterrows():
+        logo_url = row.get("logo_default") or row.get("logo_dark")
+        if not isinstance(logo_url, str) or not logo_url:
+            continue
+        for key in (
+            "displayName_norm",
+            "shortDisplayName_norm",
+            "name_norm",
+            "location_norm",
+            "abbreviation_norm",
+            "slug_norm",
+        ):
+            val = row.get(key)
+            if isinstance(val, str) and val and val not in lookup:
+                lookup[val] = logo_url
+    return lookup
+
+def attach_team_logos(df: pd.DataFrame, team_col: str = "Team") -> pd.DataFrame:
+    """Attach a 'team_logo_url' column by mapping normalized team names to logo URLs."""
+    try:
+        lookup = load_team_logos()
+    except Exception:
+        lookup = {}
+    if not lookup or (team_col not in df.columns):
+        if "team_logo_url" not in df.columns:
+            df["team_logo_url"] = np.nan
+        return df
+    out = df.copy()
+    out["_team_norm"] = out[team_col].astype(str).fillna("").str.strip().str.lower()
+    out["team_logo_url"] = out["_team_norm"].map(lookup)
+    return out.drop(columns=["_team_norm"])
+
 # ---------- Testing & Demo loaders ----------
 @st.cache_data(show_spinner=False)
 def load_testing_data(path: str = "stadium_wind_testing.csv") -> pd.DataFrame:
@@ -201,9 +251,11 @@ def build_live_df(stads: pd.DataFrame) -> pd.DataFrame:
         except Exception:
             continue
         comp_az, comp_ns, comp_ew = wind_components(fc["ws_ms"], fc["wd_from_deg"], az)
-        stadium_name = r.get("Stadium") or r.get("Team") or "Unknown"
+        stadium_name = r.get("Stadium") or "Unknown"
+        team_name = r.get("Team")
         rows.append({
             "Stadium": stadium_name,
+            "Team": team_name,
             "Azimuth_deg": az,
             "latitude": lat,
             "longitude": lon,
@@ -247,8 +299,13 @@ def _render_top5_map(df_top: pd.DataFrame):
         start_lat = float(r["latitude"])
         start_lon = float(r["longitude"])
 
+        logo_url = r.get("team_logo_url")
+        logo_tag = (
+            f'<img src="{logo_url}" width="40" style="vertical-align:middle;margin-right:6px;" />'
+            if isinstance(logo_url, str) and logo_url else ""
+        )
         popup_html = (
-            f"<b>{r.get('Stadium','')}</b><br/>"
+            f"{logo_tag}<b>{r.get('Stadium','')}</b><br/>"
             f"Team: {r.get('Team','')}<br/>"
             f"Wind: {ws_mph:.1f} mph<br/>"
             f"Toward: {wd_toward if wd_toward is not None else 'N/A'}°<br/>"
@@ -301,7 +358,7 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool 
         st.info("No rows to display.")
         return
     needed = [
-        "Stadium","Team","latitude","longitude","Azimuth_deg",
+        "team_logo_url","Stadium","Team","latitude","longitude","Azimuth_deg",
         "Wind_Speed_10m_mph","Wind_Component_Azimuth_mph",
         "azimuth_comp_abs_mph","azimuth_direction","Forecast_Time_Local","Timezone"
     ]
@@ -309,7 +366,13 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool 
         if c not in df.columns:
             df[c] = np.nan
     df_top = df.dropna(subset=["azimuth_comp_abs_mph"]).sort_values("azimuth_comp_abs_mph", ascending=False).head(5)
-    st.dataframe(df_top[[c for c in needed if c in df_top.columns]], width='stretch')
+    st.dataframe(
+        df_top[[c for c in needed if c in df_top.columns]],
+        width='stretch',
+        column_config={
+            "team_logo_url": st.column_config.ImageColumn("Logo", width=40),
+        },
+    )
     chart = alt.Chart(df_top).mark_bar().encode(
         x=alt.X("azimuth_comp_abs_mph:Q", title="|Azimuth Component| (mph)"),
         y=alt.Y("Stadium:N", sort="-x", title="Stadium"),
@@ -361,6 +424,8 @@ def main():
                 dates = dt.dt.date.dropna()
                 if not dates.empty:
                     heading_date = str(dates.mode().iloc[0])
+        # Attach team logos for display
+        df_mode = attach_team_logos(df_mode)
     elif mode == "Demo":
         try:
             df_mode = load_demo_data()
@@ -381,6 +446,8 @@ def main():
             except Exception as ex:
                 st.error(f"Demo fallback failed: {ex}")
                 st.stop()
+        # Attach team logos for display
+        df_mode = attach_team_logos(df_mode)
     else:
         try:
             stads = load_stadium_master()
@@ -392,6 +459,8 @@ def main():
         if df_mode.empty:
             st.info("No wind data available for stadiums.")
             st.stop()
+        # Attach team logos for display
+        df_mode = attach_team_logos(df_mode)
 
     # Optional text filter
     q = st.text_input("Filter by stadium/team", value="")
