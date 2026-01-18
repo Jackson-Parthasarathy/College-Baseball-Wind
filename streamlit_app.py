@@ -81,12 +81,16 @@ def top5_view(df: pd.DataFrame):
     # Sort and select
     df_top = df.dropna(subset=["azimuth_comp_abs_mph"]).sort_values("azimuth_comp_abs_mph", ascending=False).head(5)
 
-    # Display summary table
-    show_cols = [
+    # Display summary table (handle missing optional columns like home/away)
+    for c in ["home", "away"]:
+        if c not in df_top.columns:
+            df_top[c] = np.nan
+    base_cols = [
         "Stadium", "home", "away", "Azimuth_deg", "Wind_Speed_10m_mph", "Wind_Component_Azimuth_mph",
         "azimuth_direction", "Forecast_Time_Local", "Timezone"
     ]
-    st.dataframe(df_top[show_cols], use_container_width=True)
+    display_cols = [c for c in base_cols if c in df_top.columns]
+    st.dataframe(df_top[display_cols], use_container_width=True)
 
     # Small bar chart: abs azimuth component mph
     chart = alt.Chart(df_top).mark_bar().encode(
