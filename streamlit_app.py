@@ -8,7 +8,6 @@ from datetime import datetime, date
 from zoneinfo import ZoneInfo
 import math
 import glob
-pip install folium
 try:
     import folium
     import streamlit.components.v1 as components
