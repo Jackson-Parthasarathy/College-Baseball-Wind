@@ -61,6 +61,50 @@ def load_testing_data(path: str = "stadium_wind_testing.csv") -> pd.DataFrame:
     return df
 
 
+@st.cache_data(show_spinner=False)
+def load_demo_data(path: str = "stadium_wind_demo_20260213.csv") -> pd.DataFrame:
+    """Load precomputed demo dataset for first games (2026-02-13)."""
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"Demo dataset not found: {path}")
+    df = pd.read_csv(p)
+    # Normalize similar to testing
+    rename_map = {
+        "Lat": "latitude",
+        "Long": "longitude",
+        "Azimuth": "Azimuth_deg",
+    }
+    df = df.rename(columns=rename_map)
+    for c in [
+        "latitude",
+        "longitude",
+        "Azimuth_deg",
+        "Wind_Speed_10m_ms",
+        "Wind_Speed_10m_mph",
+        "Wind_Direction_From_deg",
+        "Wind_Component_Azimuth_ms",
+        "Wind_Component_Azimuth_mph",
+        "Component_Along_Azimuth_abs_ms",
+    ]:
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce")
+    if "Wind_Component_Azimuth_mph" in df.columns:
+        df["azimuth_comp_abs_mph"] = df["Wind_Component_Azimuth_mph"].abs()
+    elif "Wind_Component_Azimuth_ms" in df.columns:
+        df["azimuth_comp_abs_mph"] = (df["Wind_Component_Azimuth_ms"] * 2.23694).abs()
+    else:
+        df["azimuth_comp_abs_mph"] = np.nan
+    def direction_label(val):
+        if pd.isna(val):
+            return "unknown"
+        return "toward azimuth" if val >= 0 else "opposite azimuth"
+    if "Wind_Component_Azimuth_mph" in df.columns:
+        df["azimuth_direction"] = df["Wind_Component_Azimuth_mph"].apply(direction_label)
+    else:
+        df["azimuth_direction"] = np.nan
+    return df
+
+
 def top5_view(df: pd.DataFrame):
     st.subheader("Top 5 Stadiums by Azimuth-Aligned Wind (Testing — Noon Tomorrow)")
     if df.empty:
@@ -453,7 +497,7 @@ def build_live_games_for_date(target: date) -> pd.DataFrame:
 st.title("College Baseball Wind")
 
 # Mode toggle
-mode = st.sidebar.radio("Mode", ["Testing", "Live"], index=0)
+mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo"], index=0)
 
 if mode == "Testing":
     try:
@@ -461,6 +505,25 @@ if mode == "Testing":
     except FileNotFoundError as e:
         st.error(str(e))
         st.stop()
+elif mode == "Demo":
+    try:
+        df_mode = load_demo_data()
+    except FileNotFoundError as e:
+        st.warning(f"{e}\nFalling back to first-day games (2026-02-13) from base data.")
+        # Fallback: try ESPN base data filtered to 2026-02-13 and compute winds like testing
+        try:
+            base_df = load_games_espx(year=2026)
+            base_df["event_dt_utc"] = base_df.get("event_date", pd.Series(dtype=str)).apply(parse_event_utc)
+            base_df["date_only"] = base_df["event_dt_utc"].apply(lambda x: x.date() if pd.notna(x) else None)
+            subset = base_df[base_df["date_only"] == date(2026, 2, 13)].copy()
+            if subset.empty:
+                st.info("No games found for 2026-02-13.")
+                st.stop()
+            # Reuse live pipeline to attach stadiums then compute now-hour forecasts; we want noon-tomorrow, so call show_top_wind_games with testing mode
+            df_mode = subset
+        except Exception as ex:
+            st.error(f"Demo fallback failed: {ex}")
+            st.stop()
 else:
     # Sidebar date picker for Live mode
     selected_date = st.sidebar.date_input("Select date", value=date(2026, 2, 13))
@@ -484,15 +547,33 @@ except FileNotFoundError as e:
 
 # Optional filters (light)
 col1, col2 = st.columns([1, 1])
-with col1:
-    team_query = st.text_input("Filter by team/stadium name", value="")
-if team_query:
-    mask = (
-        df_mode.get("stadium_final", pd.Series(dtype=str)).astype(str).str.contains(team_query, case=False, na=False)
-        | df_mode.get("Stadium", pd.Series(dtype=str)).astype(str).str.contains(team_query, case=False, na=False)
-    )
-    df_mode = df_mode[mask]
-
+    with t1:
+        mode_choice = st.radio("Mode", ["Testing (Noon Tomorrow)", "Live (Now)", "Demo (First Games 2026-02-13)"], index=0, help="Switch between testing, live, or demo wind selection")
+        if mode_choice.startswith("Testing"):
+            mode = "testing"
+            show_top_wind_games(fdf, mode)
+        elif mode_choice.startswith("Live"):
+            mode = "live"
+            show_top_wind_games(fdf, mode)
+        else:
+            mode = "demo"
+            # Prefer precomputed demo CSV
+            try:
+                df_demo = load_demo_data()
+                top5_view(df_demo)
+            except FileNotFoundError:
+                # Fallback: filter to 2026-02-13 from base data and compute like testing
+                try:
+                    base_df = load_games_espx(year=2026)
+                    base_df["event_dt_utc"] = base_df.get("event_date", pd.Series(dtype=str)).apply(parse_event_utc)
+                    base_df["date_only"] = base_df["event_dt_utc"].apply(lambda x: x.date() if pd.notna(x) else None)
+                    subset = base_df[base_df["date_only"] == date(2026, 2, 13)].copy()
+                    if subset.empty:
+                        st.info("No games found for 2026-02-13.")
+                    else:
+                        show_top_wind_games(subset, mode="testing")
+                except Exception as ex:
+                    st.error(f"Demo fallback failed: {ex}")
 # Show top 5 view
 top5_view(df_mode)
 
@@ -815,6 +896,38 @@ def show_top_wind_games(df: pd.DataFrame, mode: str):
             df = df_today
     df["home_norm"] = df[HOME_COL].apply(norm_team)
     dfj = df.merge(stadiums, left_on="home_norm", right_on="team_norm", how="left")
+    # Guard: ensure expected columns exist before dropna
+    # Try to rename alternative lat/lon columns and compute Azimuth_deg if only Azimuth exists.
+    def pick_col(frame: pd.DataFrame, candidates: list[str]) -> str | None:
+        cols_lower = {c.lower(): c for c in frame.columns}
+        for cand in candidates:
+            if cand.lower() in cols_lower:
+                return cols_lower[cand.lower()]
+        return None
+
+    lat_col = "latitude" if "latitude" in dfj.columns else pick_col(dfj, ["Lat", "lat", "latitude"]) or None
+    lon_col = "longitude" if "longitude" in dfj.columns else pick_col(dfj, ["Long", "lon", "longitude"]) or None
+    if lat_col and lat_col != "latitude":
+        dfj = dfj.rename(columns={lat_col: "latitude"})
+    if lon_col and lon_col != "longitude":
+        dfj = dfj.rename(columns={lon_col: "longitude"})
+    if "Azimuth_deg" not in dfj.columns and "Azimuth" in dfj.columns:
+        def parse_azimuth(x):
+            if pd.isna(x):
+                return np.nan
+            s = str(x)
+            s = "".join(ch for ch in s if ch.isdigit() or ch == ".")
+            try:
+                return float(s) % 360.0
+            except Exception:
+                return np.nan
+        dfj["Azimuth_deg"] = dfj["Azimuth"].apply(parse_azimuth)
+
+    # If still missing, show friendly message
+    missing_cols = [c for c in ["latitude", "longitude", "Azimuth_deg"] if c not in dfj.columns]
+    if missing_cols:
+        st.info(f"No games with matched stadium coordinates/azimuth (missing columns: {', '.join(missing_cols)}).")
+        return
     dfj = dfj.dropna(subset=["latitude", "longitude", "Azimuth_deg"]).copy()
     if dfj.empty:
         st.info("No games with matched stadium azimuth/coordinates.")
@@ -825,7 +938,9 @@ def show_top_wind_games(df: pd.DataFrame, mode: str):
     forecasts = {}
     for (lat, lon) in dfj[["latitude", "longitude"]].drop_duplicates().itertuples(index=False):
         try:
-            fc = get_wind_fc(lat, lon, mode=mode)
+            # Demo uses testing (noon tomorrow) behavior
+            fc_mode = "testing" if mode in ("testing", "demo") else "live"
+            fc = get_wind_fc(lat, lon, mode=fc_mode)
         except Exception as e:
             fc = None
         forecasts[(lat, lon)] = fc
@@ -1072,8 +1187,13 @@ def main():
     # Tabs (without map)
     t1, t2, t3 = st.tabs(["Wind", "Games", "Teams"])
     with t1:
-        mode_choice = st.radio("Mode", ["Testing (Noon Tomorrow)", "Live (Now)"], index=0, help="Switch between testing and live wind selection")
-        mode = "testing" if mode_choice.startswith("Testing") else "live"
+        mode_choice = st.radio("Mode", ["Testing (Noon Tomorrow)", "Live (Now)", "Demo (First Games 2026-02-13)"], index=0, help="Switch between testing, live, or demo wind selection")
+        if mode_choice.startswith("Testing"):
+            mode = "testing"
+        elif mode_choice.startswith("Live"):
+            mode = "live"
+        else:
+            mode = "demo"
         show_top_wind_games(fdf, mode)
     with t2:
         games_table(fdf)
