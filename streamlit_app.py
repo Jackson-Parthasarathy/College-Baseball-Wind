@@ -14,6 +14,12 @@ try:
     FOLIUM_AVAILABLE = True
 except Exception:
     FOLIUM_AVAILABLE = False
+try:
+    from geopy.distance import distance as geopy_distance
+    from geopy import Point as GeopyPoint
+    GEOPY_AVAILABLE = True
+except Exception:
+    GEOPY_AVAILABLE = False
 
 # Optional timezone finder
 try:
@@ -219,6 +225,8 @@ def _render_top5_map(df_top: pd.DataFrame):
     if not FOLIUM_AVAILABLE:
         st.info("Map rendering is unavailable (install 'folium' to enable).")
         return
+    if not GEOPY_AVAILABLE:
+        st.info("Geodesic arrows unavailable (install 'geopy' to enable direction arrows).")
     pts = df_top.dropna(subset=["latitude", "longitude"]).copy()
     if pts.empty:
         st.info("No coordinates available to render map.")
@@ -233,22 +241,54 @@ def _render_top5_map(df_top: pd.DataFrame):
         red = int(255 * ratio)
         green = int(255 * (1.0 - ratio))
         color = f"#{red:02x}{green:02x}50"
+        ws_mph = float(r.get("Wind_Speed_10m_mph", 0.0) or 0.0)
+        wd_from = float(r.get("Wind_Direction_From_deg", np.nan)) if pd.notna(r.get("Wind_Direction_From_deg")) else np.nan
+        wd_toward = (wd_from + 180.0) % 360.0 if not pd.isna(wd_from) else None
+        start_lat = float(r["latitude"])
+        start_lon = float(r["longitude"])
+
         popup_html = (
             f"<b>{r.get('Stadium','')}</b><br/>"
             f"Team: {r.get('Team','')}<br/>"
+            f"Wind: {ws_mph:.1f} mph<br/>"
+            f"Toward: {wd_toward if wd_toward is not None else 'N/A'}°<br/>"
             f"Azimuth Comp: {float(r.get('Wind_Component_Azimuth_mph', np.nan)) if pd.notna(r.get('Wind_Component_Azimuth_mph')) else np.nan:.1f} mph<br/>"
-            f"Wind: {float(r.get('Wind_Speed_10m_mph', np.nan)) if pd.notna(r.get('Wind_Speed_10m_mph')) else np.nan:.1f} mph<br/>"
             f"Time: {r.get('Forecast_Time_Local','')} ({r.get('Timezone','')})"
         )
+
+        # Marker at stadium
         folium.CircleMarker(
-            location=[float(r["latitude"]), float(r["longitude"])],
-            radius=8,
+            location=[start_lat, start_lon],
+            radius=7,
             color=color,
             fill=True,
             fill_color=color,
-            fill_opacity=0.8,
+            fill_opacity=0.9,
             popup=folium.Popup(html=popup_html, max_width=300),
         ).add_to(m)
+
+        # Draw wind direction arrow (toward). Length proportional to speed.
+        if GEOPY_AVAILABLE and (wd_toward is not None):
+            # Arrow length: 0.4 km per 10 mph, capped 8 km
+            length_km = min(8.0, max(0.8, ws_mph * 0.04))
+            start_pt = GeopyPoint(start_lat, start_lon)
+            end_pt = geopy_distance(kilometers=length_km).destination(start_pt, wd_toward)
+            # Main vector line
+            folium.PolyLine(
+                locations=[[start_lat, start_lon], [end_pt.latitude, end_pt.longitude]],
+                color=color,
+                weight=4,
+                opacity=0.9,
+            ).add_to(m)
+            # Arrowhead: two short lines at ±25° from end
+            for offset in (-25.0, 25.0):
+                head_pt = geopy_distance(kilometers=length_km * 0.25).destination(end_pt, (wd_toward + 180.0 + offset) % 360.0)
+                folium.PolyLine(
+                    locations=[[end_pt.latitude, end_pt.longitude], [head_pt.latitude, head_pt.longitude]],
+                    color=color,
+                    weight=3,
+                    opacity=0.9,
+                ).add_to(m)
     components.html(m.get_root().render(), height=500, scrolling=False)
 
 
@@ -269,7 +309,7 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool 
         if c not in df.columns:
             df[c] = np.nan
     df_top = df.dropna(subset=["azimuth_comp_abs_mph"]).sort_values("azimuth_comp_abs_mph", ascending=False).head(5)
-    st.dataframe(df_top[[c for c in needed if c in df_top.columns]], use_container_width=True)
+    st.dataframe(df_top[[c for c in needed if c in df_top.columns]], width='stretch')
     chart = alt.Chart(df_top).mark_bar().encode(
         x=alt.X("azimuth_comp_abs_mph:Q", title="|Azimuth Component| (mph)"),
         y=alt.Y("Stadium:N", sort="-x", title="Stadium"),
@@ -283,7 +323,7 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool 
             alt.Tooltip("Timezone", title="TZ"),
         ]
     ).properties(height=220)
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width='stretch')
     if show_map:
         st.markdown("**Forecast Map (Top 5)**")
         _render_top5_map(df_top)
@@ -336,7 +376,7 @@ def main():
                     st.info("No games found for 2026-02-13.")
                     st.stop()
                 st.info("Demo CSV missing; showing first-day games list only. Run the notebook cell to generate demo CSV.")
-                st.dataframe(subset[[c for c in ["home","away","venue","location","event_date"] if c in subset.columns]], use_container_width=True)
+                st.dataframe(subset[[c for c in ["home","away","venue","location","event_date"] if c in subset.columns]], width='stretch')
                 st.stop()
             except Exception as ex:
                 st.error(f"Demo fallback failed: {ex}")

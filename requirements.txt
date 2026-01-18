@@ -5,3 +5,5 @@ altair>=5.0
 requests>=2.31
 timezonefinder>=6.2
 tzdata>=2024.1
+folium>=0.14
+geopy>=2.4

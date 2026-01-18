@@ -1,0 +1,11 @@
+.git
+.devcontainer
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+.env
+.ipynb_checkpoints
+node_modules
+build
