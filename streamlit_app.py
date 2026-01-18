@@ -9,7 +9,11 @@ from typing import Optional, Tuple
 
 import pandas as pd
 import streamlit as st
-# Mapping disabled for now
+import requests
+import math
+import numpy as np
+import altair as alt
+from zoneinfo import ZoneInfo
 
 
 # =========================
@@ -104,6 +108,225 @@ def filter_data(
 
     out = df[m].copy()
     return out
+
+
+# =========================
+# ----- WIND RANKING -------
+# =========================
+
+@st.cache_data(show_spinner=False)
+def load_stadiums(path: str = "Stadium_list_final.csv") -> pd.DataFrame:
+    df = pd.read_csv(path, encoding="cp1252")
+    cols = list(df.columns)
+    if "Azimuth" not in df.columns:
+        raise ValueError("Azimuth column not found in Stadium_list_final.csv")
+    az_idx = cols.index("Azimuth")
+    lat_col = None
+    lon_col = None
+    for i in range(az_idx + 1, len(cols)):
+        cname = cols[i].strip().lower()
+        if cname == "lat" and lat_col is None:
+            lat_col = cols[i]
+        elif cname == "long" and lon_col is None:
+            lon_col = cols[i]
+        if lat_col and lon_col:
+            break
+    if lat_col is None or lon_col is None:
+        raise ValueError("Could not find Lat/Long columns following Azimuth")
+
+    def parse_azimuth(x):
+        if pd.isna(x):
+            return np.nan
+        s = str(x)
+        s = ''.join(ch for ch in s if ch.isdigit() or ch == '.')
+        try:
+            val = float(s)
+            return val % 360.0
+        except Exception:
+            return np.nan
+
+    df = df.rename(columns={"Team": "team", "Stadium": "stadium"}).copy()
+    df["Azimuth_deg"] = df["Azimuth"].apply(parse_azimuth)
+    df = df.dropna(subset=["Azimuth_deg", lat_col, lon_col]).copy()
+    df = df.rename(columns={lat_col: "latitude", lon_col: "longitude"})
+    # Normalize team name for joining
+    def norm_team(name: str) -> str:
+        if not isinstance(name, str):
+            return ""
+        return name.strip().lower()
+    df["team_norm"] = df["team"].astype(str).apply(norm_team)
+    return df[["team", "team_norm", "stadium", "City", "State", "latitude", "longitude", "Azimuth_deg"]]
+
+
+@st.cache_data(show_spinner=False)
+def get_wind_fc(lat: float, lon: float, mode: str = "testing") -> dict:
+    """Fetch hourly winds and return a single hour record based on mode.
+    mode: "testing" → noon tomorrow (local); "live" → hour closest to now (local).
+    """
+    OPEN_METEO_URL = 'https://api.open-meteo.com/v1/forecast'
+    params = {
+        'latitude': float(lat),
+        'longitude': float(lon),
+        'hourly': 'wind_speed_10m,wind_direction_10m',
+        'timezone': 'auto',
+        'windspeed_unit': 'ms'
+    }
+    r = requests.get(OPEN_METEO_URL, params=params, timeout=20)
+    r.raise_for_status()
+    data = r.json()
+    tzname = data.get('timezone', 'UTC')
+    times = data['hourly']['time']
+    speeds = data['hourly']['wind_speed_10m']
+    dirs_from = data['hourly']['wind_direction_10m']
+
+    idx = None
+    if mode == "testing":
+        # Local tomorrow at 12:00
+        tomorrow_local_date = (dt.datetime.now(ZoneInfo(tzname))).date() + dt.timedelta(days=1)
+        for i, t in enumerate(times):
+            try:
+                parsed = dt.datetime.fromisoformat(t)
+            except Exception:
+                continue
+            if parsed.date() == tomorrow_local_date and parsed.hour == 12:
+                idx = i
+                break
+        if idx is None:
+            target = dt.datetime.combine(tomorrow_local_date, dt.time(hour=12))
+            diffs = []
+            for i, t in enumerate(times):
+                try:
+                    parsed = dt.datetime.fromisoformat(t)
+                except Exception:
+                    continue
+                diffs.append((abs((parsed - target).total_seconds()), i))
+            idx = min(diffs)[1] if diffs else 0
+    else:
+        # Live: hour closest to now in local stadium time
+        now_local = dt.datetime.now(ZoneInfo(tzname)).replace(minute=0, second=0, microsecond=0)
+        diffs = []
+        for i, t in enumerate(times):
+            try:
+                parsed = dt.datetime.fromisoformat(t)
+            except Exception:
+                continue
+            diffs.append((abs((parsed - now_local).total_seconds()), i))
+        idx = min(diffs)[1] if diffs else 0
+
+    return {'time': times[idx], 'timezone': tzname, 'ws': float(speeds[idx]), 'wd_from': float(dirs_from[idx])}
+
+
+RAD = math.pi / 180.0
+def wind_components(ws: float, wd_from_deg: float, az_deg: float):
+    if ws is None or wd_from_deg is None or az_deg is None:
+        return (np.nan, np.nan, np.nan)
+    wt_deg = (wd_from_deg + 180.0) % 360.0  # toward direction
+    wt = wt_deg * RAD
+    az = az_deg * RAD
+    w_ex = math.sin(wt)
+    w_ny = math.cos(wt)
+    a_ex = math.sin(az)
+    a_ny = math.cos(az)
+    comp_along_az = ws * (w_ex * a_ex + w_ny * a_ny)
+    comp_ns = ws * w_ny
+    comp_ew = ws * w_ex
+    return (comp_along_az, comp_ns, comp_ew)
+
+
+def show_top_wind_games(df: pd.DataFrame, mode: str):
+    st.subheader("🌬️ Top 5 wind games")
+    st.caption("Mode: Testing → noon tomorrow, Live → closest to now")
+    # Expect df columns: date, home_team, away_team, venue, city, state
+    if not {HOME_COL, AWAY_COL}.issubset(df.columns):
+        st.info("Team columns not found in data.")
+        return
+
+    # Load stadiums and join on home team
+    try:
+        stadiums = load_stadiums()
+    except Exception as e:
+        st.error(f"Could not load stadium list: {e}")
+        return
+
+    def norm_team(name: str) -> str:
+        return str(name).strip().lower() if pd.notna(name) else ""
+
+    # Optionally restrict to today's games in Live mode
+    df = df.copy()
+    if mode == "live" and DATE_COL in df.columns and df[DATE_COL].notna().any():
+        today = dt.date.today()
+        df_today = df[df[DATE_COL] == today]
+        if not df_today.empty:
+            df = df_today
+    df["home_norm"] = df[HOME_COL].apply(norm_team)
+    dfj = df.merge(stadiums, left_on="home_norm", right_on="team_norm", how="left")
+    dfj = dfj.dropna(subset=["latitude", "longitude", "Azimuth_deg"]).copy()
+    if dfj.empty:
+        st.info("No games with matched stadium azimuth/coordinates.")
+        return
+
+    # Compute forecast per unique (lat,lon)
+    # Cache results to limit requests
+    forecasts = {}
+    for (lat, lon) in dfj[["latitude", "longitude"]].drop_duplicates().itertuples(index=False):
+        try:
+            fc = get_wind_fc(lat, lon, mode=mode)
+        except Exception as e:
+            fc = None
+        forecasts[(lat, lon)] = fc
+
+    # Compute components and rank
+    rows = []
+    for _, r in dfj.iterrows():
+        lat = float(r["latitude"])
+        lon = float(r["longitude"])
+        az = float(r["Azimuth_deg"])
+        fc = forecasts.get((lat, lon))
+        if not fc:
+            continue
+        comp_along_az, comp_ns, comp_ew = wind_components(fc['ws'], fc['wd_from'], az)
+        rows.append({
+            "home": r[HOME_COL],
+            "away": r[AWAY_COL],
+            "stadium": r.get("stadium", r.get(VENUE_COL, "")),
+            "city": r.get("City", r.get(CITY_COL, "")),
+            "state": r.get("State", r.get(STATE_COL, "")),
+            "ws_ms": fc['ws'],
+            "wd_from": fc['wd_from'],
+            "comp_az_ms": comp_along_az,
+        })
+
+    if not rows:
+        st.info("No wind data available.")
+        return
+
+    out = pd.DataFrame(rows)
+    out["abs_comp"] = out["comp_az_ms"].abs()
+    out = out.sort_values("abs_comp", ascending=False).head(5)
+    out["direction"] = out["comp_az_ms"].apply(lambda x: "Out" if x > 0 else "In")
+    out["label"] = out.apply(lambda r: f"{r['home']} vs {r['away']}\n{r['stadium']} ({r['city']}, {r['state']})", axis=1)
+
+    # Display cards
+    for _, r in out.iterrows():
+        c1, c2 = st.columns([2, 1])
+        with c1:
+            st.write(f"**{r['home']} (Home)** vs **{r['away']} (Away)**")
+            st.caption(f"{r['stadium']} — {r['city']}, {r['state']}")
+        with c2:
+            st.metric("Wind along azimuth (m/s)", f"{r['comp_az_ms']:.2f}", help="Positive=Out (toward CF), Negative=In")
+        # Simple horizontal bar showing direction and magnitude
+        bar_df = pd.DataFrame({"comp": [r["comp_az_ms"]], "dir": [r["direction"]], "label": [""]})
+        color_scale = alt.Scale(domain=["In", "Out"], range=["#4e79a7", "#e15759"])  # blue vs red
+        chart = (
+            alt.Chart(bar_df)
+            .mark_bar()
+            .encode(
+                x=alt.X("comp", scale=alt.Scale(domain=[-max(1.0, abs(r["comp_az_ms"]) * 1.2), max(1.0, abs(r["comp_az_ms"]) * 1.2)]), title=None),
+                color=alt.Color("dir", scale=color_scale, legend=None),
+            )
+            .properties(height=30)
+        )
+        st.altair_chart(chart, use_container_width=True)
 
 
 # =========================
@@ -351,10 +574,14 @@ def main():
     kpi_tiles(fdf)
 
     # Tabs (without map)
-    t1, t2 = st.tabs(["Games", "Teams"])
+    t1, t2, t3 = st.tabs(["Wind", "Games", "Teams"])
     with t1:
-        games_table(fdf)
+        mode_choice = st.radio("Mode", ["Testing (Noon Tomorrow)", "Live (Now)"], index=0, help="Switch between testing and live wind selection")
+        mode = "testing" if mode_choice.startswith("Testing") else "live"
+        show_top_wind_games(fdf, mode)
     with t2:
+        games_table(fdf)
+    with t3:
         team_spotlight(fdf)
 
     # Footer
