@@ -346,84 +346,7 @@ def _render_top5_map(df_top: pd.DataFrame):
                     weight=3,
                     opacity=0.9,
                 ).add_to(m)
-    components.html(m.get_root().render(), height=500, scrolling=False)
-
-
-def render_live_wind_map():
-    st.subheader("Live Map — Global Wind (earth.nullschool.net)")
-    # Controls: timezone + time offset
-    c1, c2 = st.columns(2)
-    with c1:
-        tz_choice = st.radio("Timezone", ["UTC", "Local"], index=0)
-    with c2:
-        hour_offset = st.slider("Offset from now (hours)", min_value=-120, max_value=120, value=0, step=1)
-
-    # Team selection to center and show logo
-    try:
-        master = load_stadium_master()
-    except Exception:
-        master = pd.DataFrame(columns=["Team","Stadium","latitude","longitude"])  # fallback empty
-    teams = master.dropna(subset=["Team","latitude","longitude"]).copy()
-    teams = teams.sort_values("Team")
-    team_names = teams["Team"].unique().tolist()
-
-    sel_col1, sel_col2, sel_col3 = st.columns([2,1,1])
-    with sel_col1:
-        selected_team = st.selectbox("Team", team_names, index=0 if team_names else None)
-    # Show logo for selected team
-    logo_url = None
-    if selected_team:
-        try:
-            logos_lookup = load_team_logos()
-            key = str(selected_team).strip().lower()
-            logo_url = logos_lookup.get(key)
-        except Exception:
-            logo_url = None
-    with sel_col2:
-        if logo_url:
-            st.image(logo_url, width=64, caption=selected_team)
-    with sel_col3:
-        center_on_team = st.checkbox("Center on team", value=True)
-
-    # Default center and zoom
-    center_lat = 37.67
-    center_lon = -122.53
-    zoom = st.slider("Initial zoom", min_value=500, max_value=5000, value=2500, step=250)
-
-    # If a team is selected and centering is enabled, use its first stadium coords
-    if selected_team and center_on_team and not teams.empty:
-        trow = teams[teams["Team"] == selected_team].iloc[0]
-        center_lat = float(trow["latitude"]) if pd.notna(trow.get("latitude")) else center_lat
-        center_lon = float(trow["longitude"]) if pd.notna(trow.get("longitude")) else center_lon
-
-    # Compute target time
-    now_utc = datetime.now(timezone.utc)
-    target_utc = now_utc + timedelta(hours=hour_offset)
-    # Display label in chosen TZ and set suffix
-    if tz_choice == "Local":
-        display_dt = target_utc.astimezone()
-        time_suffix = ""
-        display_str = f"{display_dt:%Y-%m-%d %H:%M %Z}"
-    else:
-        display_dt = target_utc
-        time_suffix = "Z"
-        display_str = f"{display_dt:%Y-%m-%d %H:%M} UTC"
-
-    # Earth URL fragment and projection centered on team
-    earth_fragment = target_utc.strftime(f"%Y/%m/%d/%H00{time_suffix}")
-        earth_url = f"https://earth.nullschool.net/#{earth_fragment}/wind/surface/orthographic={center_lon:.4f},{center_lat:.4f},{int(zoom)}"
-
-        # High contrast + overlay time label
-        html = f"""
-        <div style="position:relative;width:100%;height:650px;background:#000;">
-            <div style="position:absolute;top:8px;left:10px;color:#fff;background:rgba(0,0,0,0.55);padding:6px 10px;border-radius:6px;font-family:system-ui,Segoe UI,Arial;font-size:13px;">
-                Showing: {display_str}
-            </div>
-            <div style="position:absolute;top:8px;right:10px;color:#fff;background:rgba(0,0,0,0.55);padding:6px 10px;border-radius:6px;font-size:12px;">Scroll inside the map to zoom</div>
-            <iframe src="{earth_url}" style="width:100%;height:100%;border:0;filter:contrast(1.5) brightness(1.12) saturate(1.25);" allowfullscreen></iframe>
-        </div>
-        """
-        components.html(html, height=700, scrolling=False)
+        components.html(m.get_root().render(), height=500, scrolling=False)
 
 
 def render_earth_live_map():
@@ -516,15 +439,11 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool 
 # ---------- Main ----------
 def main():
     st.title("College Baseball Wind")
-    mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo", "Live Wind", "Live Map"], index=0)
+    mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo", "Live Map"], index=0)
 
     if mode == "Live Map":
         render_earth_live_map()
         st.caption("Interactive global wind from earth.nullschool.net with time controls.")
-        return
-    elif mode == "Live Wind":
-        render_live_wind_map()
-        st.caption("Global wind visualisation using leaflet-velocity demo data.")
         return
     elif mode == "Testing":
         try:
