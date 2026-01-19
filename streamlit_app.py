@@ -4,7 +4,7 @@ import numpy as np
 import altair as alt
 from pathlib import Path
 import requests
-from datetime import datetime, date
+from datetime import datetime, date, timedelta, timezone
 from zoneinfo import ZoneInfo
 import math
 import glob
@@ -408,6 +408,51 @@ def render_live_wind_map():
         components.html(html, height=650, scrolling=False)
 
 
+def render_earth_live_map():
+    st.subheader("Live Map — Global Wind (earth.nullschool.net)")
+    # Controls
+    c1, c2, c3 = st.columns([1,1,2])
+    with c1:
+        tz_choice = st.radio("Timezone", ["UTC", "Local"], index=0, help="Set map timestamp as UTC or your browser's local time.")
+    with c2:
+        zoom = st.slider("Zoom", min_value=500, max_value=5000, value=2500, step=250)
+    with c3:
+        hour_offset = st.slider("Offset from now (hours)", min_value=-120, max_value=120, value=0, step=3)
+
+    c4, c5 = st.columns(2)
+    with c4:
+        center_lat = st.number_input("Center latitude", value=37.67, format="%.2f")
+    with c5:
+        center_lon = st.number_input("Center longitude", value=-122.53, format="%.2f")
+
+    now_utc = datetime.now(timezone.utc)
+    target_utc = now_utc + timedelta(hours=int(hour_offset))
+
+    # Display label in chosen TZ and set time suffix
+    if tz_choice == "Local":
+        local_dt = target_utc.astimezone()
+        st.caption(f"Selected time (Local): {local_dt:%Y-%m-%d %H:%M %Z}")
+        time_suffix = ""  # local time (Earth will interpret without Z)
+    else:
+        st.caption(f"Selected time (UTC): {target_utc:%Y-%m-%d %H:%M} UTC")
+        time_suffix = "Z"  # explicit UTC
+
+    # Earth URL fragment #YYYY/MM/DD/HH(Z?) with layer + projection
+    earth_fragment = target_utc.strftime(f"%Y/%m/%d/%H{time_suffix}")
+    earth_url = (
+        f"https://earth.nullschool.net/#{earth_fragment}/wind/surface/orthographic={center_lon:.2f},{center_lat:.2f},{int(zoom)}"
+    )
+
+    # High contrast via CSS filter to improve visibility
+    html = f"""
+    <div style=\"width:100%; height:650px; background:#000;\">
+      <iframe src=\"{earth_url}\" style=\"width:100%; height:100%; border:0; filter: contrast(1.45) brightness(1.1) saturate(1.25);\" allowfullscreen></iframe>
+    </div>
+    <div style=\"font-size:12px;margin-top:6px;opacity:0.8;\">URL: {earth_url}</div>
+    """
+    components.html(html, height=700, scrolling=False)
+
+
 def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool = False):
     title = "Top 5 Stadiums by Wind"
     if heading_date:
@@ -453,9 +498,13 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool 
 # ---------- Main ----------
 def main():
     st.title("College Baseball Wind")
-    mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo", "Live Wind"], index=0)
+    mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo", "Live Wind", "Live Map"], index=0)
 
-    if mode == "Live Wind":
+    if mode == "Live Map":
+        render_earth_live_map()
+        st.caption("Interactive global wind from earth.nullschool.net with time controls.")
+        return
+    elif mode == "Live Wind":
         render_live_wind_map()
         st.caption("Global wind visualisation using leaflet-velocity demo data.")
         return
