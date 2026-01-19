@@ -635,7 +635,9 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool 
         _render_top5_map(df_top)
 
 def _render_stadiums_map(df_all: pd.DataFrame):
-    """Render one Folium map with all provided stadiums."""
+    """Render one Folium map with all provided stadiums.
+    Scales markers by `azimuth_comp_abs_mph` if available, else by wind speed.
+    """
     if not FOLIUM_AVAILABLE:
         st.info("Map rendering is unavailable (install 'folium' to enable).")
         return
@@ -646,11 +648,16 @@ def _render_stadiums_map(df_all: pd.DataFrame):
     center_lat = float(pts["latitude"].mean())
     center_lon = float(pts["longitude"].mean())
     m = folium.Map(location=[center_lat, center_lon], zoom_start=5, tiles="OpenStreetMap")
-    # Scale markers by wind speed
-    max_ws = max(1.0, float(pts["Wind_Speed_10m_mph"].max())) if "Wind_Speed_10m_mph" in pts.columns else 1.0
+    # Choose metric for marker scaling
+    metric_col = "azimuth_comp_abs_mph" if "azimuth_comp_abs_mph" in pts.columns else (
+        "Wind_Speed_10m_mph" if "Wind_Speed_10m_mph" in pts.columns else None
+    )
+    max_metric = 1.0
+    if metric_col is not None:
+        max_metric = max(1.0, float(pts[metric_col].max()))
     for _, r in pts.iterrows():
-        ws_mph = float(r.get("Wind_Speed_10m_mph", 0.0) or 0.0)
-        ratio = min(1.0, ws_mph / max_ws)
+        metric_val = float(r.get(metric_col, 0.0) or 0.0) if metric_col is not None else 0.0
+        ratio = min(1.0, metric_val / max_metric)
         red = int(255 * ratio)
         green = int(255 * (1.0 - ratio))
         color = f"#{red:02x}{green:02x}50"
@@ -664,7 +671,8 @@ def _render_stadiums_map(df_all: pd.DataFrame):
         popup_html = (
             f"{logo_tag}<b>{r.get('Stadium','')}</b><br/>"
             f"Team: {r.get('Team','')}<br/>"
-            f"Wind: {ws_mph:.1f} mph<br/>"
+            f"|Azimuth Comp|: {float(r.get('azimuth_comp_abs_mph', np.nan)) if pd.notna(r.get('azimuth_comp_abs_mph')) else np.nan:.1f} mph<br/>"
+            f"Direction: {r.get('azimuth_direction','')}<br/>"
             f"From: {float(r.get('Wind_Direction_From_deg', np.nan)) if pd.notna(r.get('Wind_Direction_From_deg')) else np.nan}°<br/>"
             f"Time: {r.get('Forecast_Time_Local','')} ({r.get('Timezone','')})"
         )
@@ -679,9 +687,9 @@ def _render_stadiums_map(df_all: pd.DataFrame):
         ).add_to(m)
     components.html(m.get_root().render(), height=640, scrolling=False)
 
-def threshold_view(df: pd.DataFrame, min_wind_mph: float = 12.0):
-    """Display all stadiums with absolute wind speed >= min_wind_mph and one map."""
-    st.subheader(f"Stadiums with Wind ≥ {min_wind_mph:.0f} mph")
+def rank_azimuth_view(df: pd.DataFrame, min_abs_mph: float = 12.0):
+    """Rank stadiums where |Azimuth Component| ≥ threshold; include direction and map."""
+    st.subheader(f"Ranked Stadiums — |Azimuth Component| ≥ {min_abs_mph:.0f} mph")
     if df.empty:
         st.info("No rows to display.")
         return
@@ -693,21 +701,37 @@ def threshold_view(df: pd.DataFrame, min_wind_mph: float = 12.0):
     for c in needed:
         if c not in df.columns:
             df[c] = np.nan
-    # Filter by wind speed threshold
-    df_filt = df.dropna(subset=["Wind_Speed_10m_mph"]).copy()
-    df_filt = df_filt[df_filt["Wind_Speed_10m_mph"].astype(float) >= float(min_wind_mph)]
+    # Ensure |Azimuth Component| exists
+    if "azimuth_comp_abs_mph" not in df.columns:
+        if "Wind_Component_Azimuth_mph" in df.columns:
+            df["azimuth_comp_abs_mph"] = df["Wind_Component_Azimuth_mph"].astype(float).abs()
+        else:
+            df["azimuth_comp_abs_mph"] = np.nan
+    # Ensure direction exists
+    if "azimuth_direction" not in df.columns:
+        if "Wind_Component_Azimuth_mph" in df.columns:
+            df["azimuth_direction"] = np.where(df["Wind_Component_Azimuth_mph"].astype(float) >= 0, "blowing out", "blowing in")
+        else:
+            df["azimuth_direction"] = ""
+    # Filter by |Azimuth Component| threshold
+    df_filt = df.dropna(subset=["azimuth_comp_abs_mph"]).copy()
+    df_filt = df_filt[df_filt["azimuth_comp_abs_mph"].astype(float) >= float(min_abs_mph)]
     if df_filt.empty:
         st.info("No stadiums meet the wind threshold.")
         return
-    df_filt = df_filt.sort_values("Wind_Speed_10m_mph", ascending=False)
+    # Sort by descending |Azimuth Component|
+    df_filt = df_filt.sort_values("azimuth_comp_abs_mph", ascending=False).reset_index(drop=True)
+    df_filt.insert(0, "Rank", range(1, len(df_filt) + 1))
     st.dataframe(
-        df_filt[[c for c in needed if c in df_filt.columns]],
+        df_filt[["Rank"] + [c for c in needed if c in df_filt.columns]],
         width='stretch',
         column_config={
             "team_logo_url": st.column_config.ImageColumn("Logo", width=40),
+            "azimuth_comp_abs_mph": st.column_config.NumberColumn("|Azimuth Component| (mph)", format="%.1f"),
+            "Wind_Speed_10m_mph": st.column_config.NumberColumn("Wind Speed (mph)", format="%.1f"),
         },
     )
-    st.markdown("**Map — All Stadiums Meeting Threshold**")
+    st.markdown("**Map — Stadiums Meeting Threshold (by |Azimuth Component|)**")
     _render_stadiums_map(df_filt)
 
 # ---------- Main ----------
@@ -798,8 +822,8 @@ def main():
         df_mode = df_mode[mask]
 
     if mode == "Testing":
-        # Show all stadiums with wind ≥ 12 mph and one map
-        threshold_view(df_mode, min_wind_mph=12.0)
+        # Show ranked stadiums by |Azimuth Component| ≥ 12 mph and one map
+        rank_azimuth_view(df_mode, min_abs_mph=12.0)
     else:
         # Default Top 5 view for non-Testing modes
         top5_view(
