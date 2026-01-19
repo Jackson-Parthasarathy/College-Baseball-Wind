@@ -360,11 +360,54 @@ def render_earth_live_map():
     with c3:
         hour_offset = st.slider("Offset from now (hours)", min_value=-120, max_value=120, value=0, step=3)
 
+    # Team dropdown with search and logo
+    try:
+        master = load_stadium_master()
+    except Exception:
+        master = pd.DataFrame(columns=["Team","Stadium","latitude","longitude"])  # fallback
+    teams_df = master.dropna(subset=["Team","latitude","longitude"]).copy()
+    teams_df = teams_df.sort_values("Team")
+    all_team_names = teams_df["Team"].astype(str).unique().tolist()
+
+    st.write("Select team to center the map")
+    search_q = st.text_input("Search team", value="", placeholder="Type to filter teams")
+    if search_q:
+        team_names = [t for t in all_team_names if search_q.lower() in str(t).lower()]
+    else:
+        team_names = all_team_names
+
+    sel_col1, sel_col2, sel_col3 = st.columns([2,1,1])
+    with sel_col1:
+        selected_team = st.selectbox("Team", team_names, index=0 if team_names else None)
+    logo_url = None
+    if selected_team:
+        try:
+            logos_lookup = load_team_logos()
+            key = str(selected_team).strip().lower()
+            logo_url = logos_lookup.get(key)
+        except Exception:
+            logo_url = None
+    with sel_col2:
+        if logo_url:
+            st.image(logo_url, width=64)
+    with sel_col3:
+        center_on_team = st.checkbox("Center on team", value=True)
+
+    # Default center
+    center_lat = 37.67
+    center_lon = -122.53
+    if selected_team and center_on_team and not teams_df.empty:
+        row = teams_df[teams_df["Team"] == selected_team].iloc[0]
+        if pd.notna(row.get("latitude")) and pd.notna(row.get("longitude")):
+            center_lat = float(row["latitude"])  # stadium lat
+            center_lon = float(row["longitude"])  # stadium lon
+
+    # Allow manual tweak of center after selection
     c4, c5 = st.columns(2)
     with c4:
-        center_lat = st.number_input("Center latitude", value=37.67, format="%.2f")
+        center_lat = st.number_input("Center latitude", value=center_lat, format="%.4f")
     with c5:
-        center_lon = st.number_input("Center longitude", value=-122.53, format="%.2f")
+        center_lon = st.number_input("Center longitude", value=center_lon, format="%.4f")
 
     now_utc = datetime.now(timezone.utc)
     target_utc = now_utc + timedelta(hours=int(hour_offset))
