@@ -106,134 +106,87 @@ def attach_team_logos(df: pd.DataFrame, team_col: str = "Team") -> pd.DataFrame:
     out = df.copy()
     out["_team_norm"] = out[team_col].astype(str).fillna("").str.strip().str.lower()
     out["team_logo_url"] = out["_team_norm"].map(lookup)
-    return out.drop(columns=["_team_norm"])
-
-# ---------- Testing & Demo loaders ----------
-@st.cache_data(show_spinner=False)
-def load_testing_data(path: str = "stadium_wind_testing.csv") -> pd.DataFrame:
-    p = Path(path)
-    if not p.exists():
-        raise FileNotFoundError(f"Testing dataset not found: {path}")
-    df = pd.read_csv(p)
-    # Normalize
-    df = df.rename(columns={"Lat": "latitude", "Long": "longitude", "Azimuth": "Azimuth_deg"})
-    for c in [
-        "latitude","longitude","Azimuth_deg",
-        "Wind_Speed_10m_ms","Wind_Speed_10m_mph",
-        "Wind_Direction_From_deg",
-        "Wind_Component_Azimuth_ms","Wind_Component_Azimuth_mph",
-        "Component_Along_Azimuth_abs_ms",
-    ]:
-        if c in df.columns:
-            df[c] = pd.to_numeric(df[c], errors="coerce")
-    if "Wind_Component_Azimuth_mph" in df.columns:
-        df["azimuth_comp_abs_mph"] = df["Wind_Component_Azimuth_mph"].abs()
-    elif "Wind_Component_Azimuth_ms" in df.columns:
-        df["azimuth_comp_abs_mph"] = (df["Wind_Component_Azimuth_ms"] * 2.23694).abs()
-    else:
-        df["azimuth_comp_abs_mph"] = np.nan
-    def direction_label(val):
-        if pd.isna(val):
-            return "unknown"
-        return "toward azimuth" if val >= 0 else "opposite azimuth"
-    if "Wind_Component_Azimuth_mph" in df.columns:
-        df["azimuth_direction"] = df["Wind_Component_Azimuth_mph"].apply(direction_label)
-    else:
-        df["azimuth_direction"] = np.nan
-    return df
-
-@st.cache_data(show_spinner=False)
-def load_demo_data(path: str = "stadium_wind_demo_20260213.csv") -> pd.DataFrame:
-    p = Path(path)
-    if not p.exists():
-        raise FileNotFoundError(f"Demo dataset not found: {path}")
-    df = pd.read_csv(p)
-    df = df.rename(columns={"Lat": "latitude", "Long": "longitude", "Azimuth": "Azimuth_deg"})
-    for c in [
-        "latitude","longitude","Azimuth_deg",
-        "Wind_Speed_10m_ms","Wind_Speed_10m_mph",
-        "Wind_Direction_From_deg",
-        "Wind_Component_Azimuth_ms","Wind_Component_Azimuth_mph",
-        "Component_Along_Azimuth_abs_ms",
-    ]:
-        if c in df.columns:
-            df[c] = pd.to_numeric(df[c], errors="coerce")
-    if "Wind_Component_Azimuth_mph" in df.columns:
-        df["azimuth_comp_abs_mph"] = df["Wind_Component_Azimuth_mph"].abs()
-    elif "Wind_Component_Azimuth_ms" in df.columns:
-        df["azimuth_comp_abs_mph"] = (df["Wind_Component_Azimuth_ms"] * 2.23694).abs()
-    else:
-        df["azimuth_comp_abs_mph"] = np.nan
-    def direction_label(val):
-        if pd.isna(val):
-            return "unknown"
-        return "toward azimuth" if val >= 0 else "opposite azimuth"
-    if "Wind_Component_Azimuth_mph" in df.columns:
-        df["azimuth_direction"] = df["Wind_Component_Azimuth_mph"].apply(direction_label)
-    else:
-        df["azimuth_direction"] = np.nan
-    return df
-
-# ---------- Core math ----------
-def wind_components(ws: float, wd_from_deg: float, az_deg: float):
-    if ws is None or pd.isna(ws) or wd_from_deg is None or pd.isna(wd_from_deg) or az_deg is None or pd.isna(az_deg):
-        return (np.nan, np.nan, np.nan)
-    wt_deg = (wd_from_deg + 180.0) % 360.0  # FROM → TOWARD
-    wt = wt_deg * RAD
-    az = az_deg * RAD
-    w_ex = math.sin(wt)
-    w_ny = math.cos(wt)
-    a_ex = math.sin(az)
-    a_ny = math.cos(az)
-    comp_along_az = ws * (w_ex * a_ex + w_ny * a_ny)
-    comp_ns = ws * w_ny
-    comp_ew = ws * w_ex
-    return (comp_along_az, comp_ns, comp_ew)
-
-# ---------- Stadium master ----------
-@st.cache_data(show_spinner=False)
-def load_stadium_master(path: str = "Stadium_list_final.csv") -> pd.DataFrame:
-    p = Path(path)
-    if not p.exists():
-        raise FileNotFoundError(f"Stadium list not found: {path}")
-    df = pd.read_csv(p, encoding="cp1252")
-    cols = list(df.columns)
-    if "Azimuth" not in df.columns:
-        raise ValueError("Azimuth column not found in Stadium_list_final.csv")
-    az_idx = cols.index("Azimuth")
-    lat_col, lon_col = None, None
-    for i in range(az_idx + 1, len(cols)):
-        name = str(cols[i]).strip().lower()
-        if name in ("lat", "latitude") and lat_col is None:
-            lat_col = cols[i]
-        elif name in ("long", "longitude", "lon") and lon_col is None:
-            lon_col = cols[i]
-        if lat_col and lon_col:
-            break
-    if lat_col is None or lon_col is None:
-        # Try anywhere
-        for c in df.columns:
-            n = str(c).strip().lower()
-            if n in ("lat", "latitude") and lat_col is None:
-                lat_col = c
-            elif n in ("long", "longitude", "lon") and lon_col is None:
-                lon_col = c
-    if lat_col is None or lon_col is None:
-        raise ValueError("Could not find latitude/longitude columns in Stadium_list_final.csv")
-    def parse_azimuth(x):
-        if pd.isna(x):
-            return np.nan
-        s = str(x)
-        s = "".join(ch for ch in s if ch.isdigit() or ch == ".")
-        try:
-            return float(s) % 360.0
-        except Exception:
-            return np.nan
-    df["Azimuth_deg"] = df["Azimuth"].apply(parse_azimuth)
-    df = df.rename(columns={lat_col: "latitude", lon_col: "longitude"})
-    keep = [c for c in ["Stadium", "Team", "Azimuth_deg", "latitude", "longitude"] if c in df.columns]
-    out = df[keep].dropna(subset=["Azimuth_deg", "latitude", "longitude"]).copy()
     return out
+
+# ---------- Stadium master & data loaders ----------
+def load_stadium_master(path: str = "Stadium_list_final.csv") -> pd.DataFrame:
+    """Load stadium master list and normalize key columns.
+    Expected source columns: Stadium, Team, Azimuth, Lat, Long
+    Output columns: Stadium, Team, Azimuth_deg, latitude, longitude
+    """
+    p = Path(path)
+    if not p.exists():
+        # Try alternative filenames
+        for alt in [
+            "Stadium_list.csv",
+            "Stadium_list_export.csv",
+            "Stadium_list_geocoded.csv",
+        ]:
+            if Path(alt).exists():
+                p = Path(alt)
+                break
+    if not p.exists():
+        raise FileNotFoundError("Stadium master CSV not found.")
+    df = pd.read_csv(p)
+    # Rename if needed
+    col_map = {}
+    if "Azimuth" in df.columns:
+        col_map["Azimuth"] = "Azimuth_deg"
+    if "Lat" in df.columns:
+        col_map["Lat"] = "latitude"
+    if "Long" in df.columns:
+        col_map["Long"] = "longitude"
+    df = df.rename(columns=col_map)
+    # Ensure required columns exist
+    for req in ["Stadium", "Team", "Azimuth_deg", "latitude", "longitude"]:
+        if req not in df.columns:
+            df[req] = np.nan
+    # Coerce types
+    df["Azimuth_deg"] = pd.to_numeric(df["Azimuth_deg"], errors="coerce")
+    df["latitude"] = pd.to_numeric(df["latitude"], errors="coerce")
+    df["longitude"] = pd.to_numeric(df["longitude"], errors="coerce")
+    return df
+
+def wind_components(ws_ms: float, wd_from_deg: float, azimuth_deg: float) -> tuple[float, float, float]:
+    """Compute wind components.
+    Returns (component along azimuth, north-south toward, east-west toward) in m/s.
+    Positive azimuth component means blowing out along field azimuth.
+    """
+    try:
+        ws = float(ws_ms)
+        theta = float(wd_from_deg) * RAD  # meteorological FROM degrees
+        az = float(azimuth_deg) * RAD     # stadium azimuth (CW from North)
+    except Exception:
+        return (np.nan, np.nan, np.nan)
+    # Wind TOWARD components (east = +x, north = +y)
+    u_to = ws * math.sin(theta)
+    v_to = ws * math.cos(theta)
+    # Component along stadium azimuth
+    comp_az = ws * math.cos(theta - az)
+    return (comp_az, v_to, u_to)
+
+def load_testing_data(path: str = "stadium_wind_testing.csv") -> pd.DataFrame:
+    """Load testing dataset with precomputed wind components per stadium."""
+    p = Path(path)
+    if not p.exists():
+        # Try alternative
+        alt = Path("Stadium_wind_components.csv")
+        if alt.exists():
+            p = alt
+        else:
+            raise FileNotFoundError("Testing CSV not found: stadium_wind_testing.csv")
+    df = pd.read_csv(p)
+    # Coerce numeric
+    for c in ["latitude","longitude","Azimuth_deg","Wind_Speed_10m_ms","Wind_Speed_10m_mph",
+              "Wind_Direction_From_deg","Wind_Component_Azimuth_ms","Wind_Component_Azimuth_mph",
+              "Wind_Component_NorthSouth_ms","Wind_Component_EastWest_ms","Component_Along_Azimuth_abs_ms"]:
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce")
+    return df
+
+def load_demo_data() -> pd.DataFrame:
+    """Placeholder loader for demo; raise to trigger fallback in main."""
+    raise FileNotFoundError("Demo data not prepared — run notebook to generate.")
 
 # ---------- Live helpers ----------
 def get_live_hour(lat: float, lon: float) -> dict:
@@ -467,15 +420,14 @@ def render_custom_wind_map():
 
         # Load stadiums and logos
         try:
-                master = load_stadium_master()
+            master = load_stadium_master()
         except Exception as e:
-                st.error(f"Could not load stadium list: {e}")
-                return
-        logos_lookup = {}
+            st.error(f"Could not load stadium list: {e}")
+            return
         try:
-                logos_lookup = load_team_logos()
+            logos_lookup = load_team_logos()
         except Exception:
-                logos_lookup = {}
+            logos_lookup = {}
 
         df = master.dropna(subset=["Team","latitude","longitude"]).copy()
         df = df.sort_values("Team")
@@ -485,108 +437,121 @@ def render_custom_wind_map():
         q = st.text_input("Search team", value="", placeholder="Type to filter")
         team_names = [t for t in all_teams if (q.lower() in t.lower())] if q else all_teams
         selected_team = st.selectbox("Team", team_names, index=0 if team_names else None)
-        # Show selected team logo beside dropdown
-        selected_logo = find_logo_for_team(selected_team) if selected_team else None
-        if selected_logo:
-            st.image(selected_logo, width=64)
+        # Selected logo preview
+        if selected_team:
+            sel_logo = find_logo_for_team(selected_team)
+            if sel_logo:
+                st.image(sel_logo, width=64)
 
         # Center defaults
         center_lat = 37.67
         center_lon = -122.53
-        if selected_team:
-                row = df[df["Team"] == selected_team].iloc[0]
-                if pd.notna(row.get("latitude")) and pd.notna(row.get("longitude")):
-                        center_lat = float(row["latitude"])
-                        center_lon = float(row["longitude"])
+        if selected_team and not df.empty:
+            row = df[df["Team"] == selected_team].iloc[0]
+            if pd.notna(row.get("latitude")) and pd.notna(row.get("longitude")):
+                center_lat = float(row["latitude"])
+                center_lon = float(row["longitude"])
 
-        # Initial zoom (Leaflet zoom levels; 2 global, 8 regional, 12 city)
+        # Initial zoom
         initial_zoom = st.slider("Initial zoom", min_value=2, max_value=14, value=6)
 
         # Build stadium marker payload
         stadiums = []
         for _, r in df.iterrows():
-                team = str(r.get("Team", ""))
-                logo_url = find_logo_for_team(team)
-                stadium = str(r.get("Stadium", ""))
-                lat = float(r["latitude"])
-                lon = float(r["longitude"])
-                logo_img = f'<img src="{logo_url}" width="32" style="vertical-align:middle;margin-right:6px;" />' if logo_url else ""
-                popup_html = f"{logo_img}<b>{stadium}</b><br/>{team}"
-                stadiums.append({
-                        "team": team,
-                        "stadium": stadium,
-                        "lat": lat,
-                        "lon": lon,
-                        "popup_html": popup_html,
-                })
+            team = str(r.get("Team", ""))
+            logo_url = find_logo_for_team(team)
+            stadium = str(r.get("Stadium", ""))
+            lat = float(r["latitude"]) 
+            lon = float(r["longitude"]) 
+            logo_img = f'<img src="{logo_url}" width="32" style="vertical-align:middle;margin-right:6px;" />' if logo_url else ""
+            popup_html = f"{logo_img}<b>{stadium}</b><br/>{team}"
+            stadiums.append({
+                "team": team,
+                "stadium": stadium,
+                "lat": lat,
+                "lon": lon,
+                "popup_html": popup_html,
+            })
         stadiums_json = json.dumps(stadiums)
 
         # Controls for wind layer appearance
         c1, c2, c3 = st.columns(3)
         with c1:
-                opacity = st.slider("Wind opacity", min_value=0.2, max_value=1.0, value=0.95)
+            opacity = st.slider("Wind opacity", min_value=0.2, max_value=1.0, value=0.95)
         with c2:
-                max_vel = st.slider("Max velocity (kt)", min_value=10, max_value=60, value=30)
+            max_vel = st.slider("Max velocity (kt)", min_value=10, max_value=60, value=30)
         with c3:
-                vel_scale = st.slider("Particle scale", min_value=0.001, max_value=0.02, value=0.006)
+            vel_scale = st.slider("Particle scale", min_value=0.001, max_value=0.02, value=0.006)
 
-        # HTML + JS (brace-escaped) for Leaflet map and velocity layer using demo data
+        # Fallback-first: render a folium map to guarantee base map and markers
+        if FOLIUM_AVAILABLE:
+            try:
+                m = folium.Map(location=[center_lat, center_lon], zoom_start=initial_zoom, tiles="OpenStreetMap")
+                for s in stadiums:
+                    folium.Marker(
+                        location=[s["lat"], s["lon"]],
+                        popup=folium.Popup(html=s["popup_html"], max_width=300)
+                    ).add_to(m)
+                components.html(m.get_root().render(), height=640, scrolling=False)
+                st.caption("Base map and stadiums rendered locally. Wind overlay may rely on external data.")
+            except Exception as e:
+                st.warning(f"Folium fallback failed: {e}")
+
+        # Wind overlay: load via Leaflet + velocity plugin (may require CDN/network)
         html_template = """
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/dist/leaflet-velocity.min.css" />
         <style>
-            html, body { height: 100%; margin: 0; }
-            #map { width: 100%; height: 640px; }
-            .leaflet-control { font-size: 14px; }
+          html, body { height: 100%; margin: 0; }
+          #map { width: 100%; height: 640px; }
+          .leaflet-control { font-size: 14px; }
         </style>
         <div id="map"></div>
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/dist/leaflet-velocity.min.js"></script>
         <script>
-            const center = [__CENTER_LAT__, __CENTER_LON__];
-            const zoom = __ZOOM__;
-            const stadiums = __STADIUMS__;
-            const map = L.map('map', {{ center: center, zoom: zoom }});
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {{
-                attribution: '© OpenStreetMap contributors'
-            }}).addTo(map);
+          const center = [__CENTER_LAT__, __CENTER_LON__];
+          const zoom = __ZOOM__;
+          const stadiums = __STADIUMS__;
+          const map = L.map('map', { center: center, zoom: zoom });
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+          }).addTo(map);
 
-            // Stadium markers
-            stadiums.forEach(function(s) {{
-                const m = L.marker([s.lat, s.lon]).addTo(map);
-                m.bindPopup(s.popup_html);
-            }});
+          stadiums.forEach(function(s) {
+            const m = L.marker([s.lat, s.lon]).addTo(map);
+            m.bindPopup(s.popup_html);
+          });
 
-            // Wind layer (demo data)
-            fetch('https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/demo/wind-global.json')
-                .then(r => r.json())
-                .then(function(data) {{
-                    L.velocityLayer({{
-                        displayValues: true,
-                        displayOptions: {{
-                            velocityType: 'Global Wind', position: 'bottomleft', emptyString: 'No velocity data',
-                            angleConvention: 'bearingCW', speedUnit: 'kt', directionString: 'Direction', speedString: 'Speed'
-                        }},
-                        data: data,
-                        minVelocity: 0,
-                        maxVelocity: __MAX_VEL__,
-                        velocityScale: __VEL_SCALE__,
-                        opacity: __OPACITY__,
-                        paneName: 'overlayPane'
-                    }}).addTo(map);
-                }});
+          fetch('https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/demo/wind-global.json')
+            .then(r => r.json())
+            .then(function(data) {
+              L.velocityLayer({
+                displayValues: true,
+                displayOptions: {
+                  velocityType: 'Global Wind', position: 'bottomleft', emptyString: 'No velocity data',
+                  angleConvention: 'bearingCW', speedUnit: 'kt', directionString: 'Direction', speedString: 'Speed'
+                },
+                data: data,
+                minVelocity: 0,
+                maxVelocity: __MAX_VEL__,
+                velocityScale: __VEL_SCALE__,
+                opacity: __OPACITY__,
+                paneName: 'overlayPane'
+              }).addTo(map);
+            });
         </script>
         """
 
         html = (
-                html_template
-                .replace("__CENTER_LAT__", str(center_lat))
-                .replace("__CENTER_LON__", str(center_lon))
-                .replace("__ZOOM__", str(initial_zoom))
-                .replace("__STADIUMS__", stadiums_json)
-                .replace("__MAX_VEL__", str(max_vel))
-                .replace("__VEL_SCALE__", str(vel_scale))
-                .replace("__OPACITY__", str(opacity))
+            html_template
+            .replace("__CENTER_LAT__", str(center_lat))
+            .replace("__CENTER_LON__", str(center_lon))
+            .replace("__ZOOM__", str(initial_zoom))
+            .replace("__STADIUMS__", stadiums_json)
+            .replace("__MAX_VEL__", str(max_vel))
+            .replace("__VEL_SCALE__", str(vel_scale))
+            .replace("__OPACITY__", str(opacity))
         )
 
         components.html(html, height=680, scrolling=False)
