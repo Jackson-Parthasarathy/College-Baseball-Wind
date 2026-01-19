@@ -4,7 +4,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401852735,2026-02-13T05:00Z,Scheduled,USC,Pepperdine,Great Park,"Irvine, California",Dedeaux Field,314.6,34.024068,-118.289916,,,,USC,Great Park,No Match,Dedeaux Field,,,,Conaty Park,Bryant,29.11,41.925751,-71.540025
 401852240,2026-02-13T05:00Z,Scheduled,Saint Mary's,Creighton,Louis Guisto Field,"Moraga, California",Louis Guisto Field,352,37.842266,-122.111807,,,,Saint Mary's,Louis Guisto Field,Louis Guisto Field,Louis Guisto Field,,,,Mahaney Diamond,Maine,307.97,44.905148,-68.670092
 401850139,2026-02-13T05:00Z,Scheduled,South Florida,Illinois,USF Baseball Stadium,"Tampa, Florida",USF Baseball Stadium,42.38,27.9449854,-82.4583107,,,,South Florida,USF Baseball Stadium,USF Baseball Stadium,USF Baseball Stadium,,,,Yogi Berra Stadium,NJIT,358.1,40.869285,-74.195209
-401848608,2026-02-13T05:00Z,Scheduled,Jax State,Cincinnati,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,Jax State,Rudy Abbott Field at Jim Case Stadium,No Match,John Sessions Stadium,,,,Edward A. LeLacheur Park,UMass Lowell,30.66,42.65384,-71.317609
+401848608,2026-02-13T05:00Z,Scheduled,Jax State,Cincinnati,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,Jax State,Rudy Abbott Field at Jim Case Stadium,Rudy Abbott Field at Jim Case Stadium,Rudy Abbott Field at Jim Case Stadium,,,,Edward A. LeLacheur Park,UMass Lowell,30.66,42.65384,-71.317609
 401848577,2026-02-13T05:00Z,Scheduled,Virginia Tech,William & Mary,English Field at Atlantic Union Bank Park,"Blacksburg, Virginia",English Field,130,37.217751,-80.42327,,,,Virginia Tech,English Field at Atlantic Union Bank Park,No Match,English Field,,,,The Baseball Factory Field at UMBC,UMBC,180.5,39.249481,-76.708378
 401847692,2026-02-13T05:00Z,Scheduled,Boston College,Seton Hall,Estadio Paquito Montaner,Ponce,Eddie Pellagrini Diamond,133,42.343859,-71.159615,,,,Boston College,Estadio Paquito Montaner,No Match,Eddie Pellagrini Diamond,,,,Robert and Mariam Hayes Stadium,Charlotte,139.58,35.3080937,-80.7389536
 401847426,2026-02-13T05:00Z,Scheduled,Mount St Marys,Missouri,E.T. Straw Family Stadium,"Emmitsburg, Maryland",Straw Family Stadium,63,39.678703,-77.344497,,,,Mount St Marys,E.T. Straw Family Stadium,No Match,Straw Family Stadium,,,,Clarke LeClair Stadium,East Carolina,301.45,35.5933957,-77.3670293
@@ -21,7 +21,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401853576,2026-02-13T20:00Z,Scheduled,NC A&T,N Illinois,World War Memorial Stadium,"Greensboro, North Carolina",World War Memorial Stadium,76,36.079733,-79.777165,,,,NC A&T,World War Memorial Stadium,World War Memorial Stadium,World War Memorial Stadium,,,,Bear Stadium,Central Arkansas,47.34,35.083403,-92.459763
 401853272,2026-02-13T20:00Z,Scheduled,Old Dominion,Quinnipiac,Bud Metheny Baseball Stadium,"Norfolk, Virginia",Bud Metheny Ballpark,53,36.883977,-76.308905,,,,Old Dominion,Bud Metheny Baseball Stadium,No Match,Bud Metheny Ballpark,,,,Turkey Hughes Field,E Kentucky,65.74,37.736291,-84.299795
 401853168,2026-02-13T20:00Z,Scheduled,Louisiana,Missouri St,"M.L. ""Tigue"" Moore Field at Russo Park","Lafayette, Louisiana",M. L. Tigue Moore Field at Russo Park,189,30.21295,-92.04165,,,,Louisiana,"M.L. ""Tigue"" Moore Field at Russo Park",No Match,M. L. Tigue Moore Field at Russo Park,,,,Swanson Stadium,Florida Gulf Coast,359.6,26.471068,-81.763258
-401852820,2026-02-13T20:00Z,Scheduled,App State,Canisius,Beaver Field at Jim and Bettie Smith Stadium,"Boone, North Carolina",Beaver Field at Jim and Bettie Smith Stadium,159,36.211125,-81.69276,,,,App State,Beaver Field at Jim and Bettie Smith Stadium,Beaver Field at Jim and Bettie Smith Stadium,Beaver Field at Jim and Bettie Smith Stadium,,,,John Sessions Stadium,Jax State,100.7,30.351395,-81.607159
+401852820,2026-02-13T20:00Z,Scheduled,App State,Canisius,Beaver Field at Jim and Bettie Smith Stadium,"Boone, North Carolina",Beaver Field at Jim and Bettie Smith Stadium,159,36.211125,-81.69276,,,,App State,Beaver Field at Jim and Bettie Smith Stadium,Beaver Field at Jim and Bettie Smith Stadium,Beaver Field at Jim and Bettie Smith Stadium,,,,Rudy Abbott Field at Jim Case Stadium,Jax State,100.7,30.351395,-81.607159
 401852691,2026-02-13T20:00Z,Scheduled,Winthrop,Georgetown,The Winthrop Ballpark,"Rock Hill, South Carolina",Winthrop Ballpark,282,34.945992,-81.019566,,,,Winthrop,The Winthrop Ballpark,No Match,Winthrop Ballpark,,,,Ken Dugan Field at Stephen Lee Marsh Stadium,Lipscomb,141.2,36.102431,-86.798816
 401852070,2026-02-13T20:00Z,Scheduled,Saint Louis,Ohio State,Blue Wahoos Stadium,"Pensacola, Florida",Billiken Sports Center,149.6,38.633984,-90.228727,,,,Saint Louis,Blue Wahoos Stadium,No Match,Billiken Sports Center,,,,Mike D. Lane Field at Bank Independent Stadium,North Alabama,17,34.809878,-87.685313
 401852024,2026-02-13T20:00Z,Scheduled,UT Martin,Butler,Skyhawk Baseball Field,"Martin, Tennessee",Skyhawk Baseball Field,316,36.342509,-88.871366,,,,UT Martin,Skyhawk Baseball Field,Skyhawk Baseball Field,Skyhawk Baseball Field,,,,Harmon Stadium,North Florida,45.7,30.275193,-81.508239
@@ -61,7 +61,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847507,2026-02-13T22:00Z,Scheduled,Ole Miss,Nevada,Oxford-University Stadium at Swayze Field,"Oxford, Mississippi",Swayze Field,44,34.362405,-89.528681,,,,Ole Miss,Oxford-University Stadium at Swayze Field,No Match,Swayze Field,,,,Capital One Park,Georgetown,359.1,38.926982,-77.207459
 401847022,2026-02-13T22:00Z,Scheduled,Alabama,Washington St,Sewell-Thomas Stadium,"Tuscaloosa, Alabama",Sewell–Thomas Stadium,162,33.204592,-87.538461,,,,Alabama,Sewell-Thomas Stadium,No Match,Sewell–Thomas Stadium,,,,"Mike Sheppard, Sr. Stadium at Owen T. Carroll Field",Seton Hall,221.7,40.740666,-74.248067
 401851888,2026-02-13T22:05Z,Scheduled,Memphis,Toledo,FedExPark Avron Fogelman Field,"Memphis, Tennessee",FedExPark,44.72,35.1460249,-89.0517638,,,,Memphis,FedExPark Avron Fogelman Field,No Match,FedExPark,,,,Jack Kaiser Stadium,St. John's,62.4,40.723726,-73.791391
-401854237,2026-02-13T23:00Z,Scheduled,Jacksonville,Rhode Island,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,Jacksonville,John Sessions Stadium,John Sessions Stadium,John Sessions Stadium,,,,Elliot Ballpark,UConn,355,41.800907,-72.256778
+401854237,2026-02-13T23:00Z,Scheduled,Jacksonville,Rhode Island,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,Jacksonville,John Sessions Stadium,No Match,No Team Match,,,,Elliot Ballpark,UConn,355,41.800907,-72.256778
 401853561,2026-02-13T23:00Z,Scheduled,Mercer,Troy,OrthoGeorgia Park at Claude Smith Field,"Macon, Georgia",OrthoGeorgia Park,188,32.82778,-83.653556,,,,Mercer,OrthoGeorgia Park at Claude Smith Field,No Match,OrthoGeorgia Park,,,,Villanova Ballpark at Plymouth,Villanova,356,40.123791,-75.289393
 401850969,2026-02-13T23:00Z,Scheduled,UNC Wilmington,Maryland,Brooks Field,"Wilmington, North Carolina",Brooks Field,193,34.221517,-77.873361,,,,UNC Wilmington,Brooks Field,Brooks Field,Brooks Field,,,,J. Page Hayden Field,Xavier,170,39.149587,-84.476651
 401850066,2026-02-13T23:00Z,Scheduled,UCF,Siena,John Euliano Park,"Orlando, Florida",John Euliano Park,54.2,28.609962,-81.195166,,,,UCF,John Euliano Park,John Euliano Park,John Euliano Park,,,,CSU Ballpark,Charleston So,356,32.983875,-80.067011
@@ -92,13 +92,13 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401853829,2026-02-14T02:05Z,Scheduled,UNLV,Austin Peay,Earl E. Wilson Stadium,"Paradise Valley, Nevada",Earl Wilson Stadium,43,36.111786,-115.147338,,,,UNLV,Earl E. Wilson Stadium,No Match,Earl Wilson Stadium,,,,Husky Ballpark,Washington,137.2,47.654419,-122.298411
 401847748,2026-02-14T02:05Z,Scheduled,California,Santa Clara,Stu Gordon Stadium,"Berkeley, California",Evans Diamond,216,37.869243,-122.263589,,,,California,Stu Gordon Stadium,No Match,Evans Diamond,,,,Phoenix Municipal Stadium,Arizona State,59.3,33.449353,-111.954459
 401847154,2026-02-14T05:00Z,Scheduled,Auburn,Youngstown St,Plainsman Park,"Auburn, Alabama",Samford Stadium – Hitchcock Field at Plainsman Park,138,32.599473,-85.489429,,,,Manhattan,Estadio Paquito Montaner,No Match,Van Cortlandt Park,,,,Hi Corbett Field,Arizona,226,32.212664,-110.920002
-401854521,2026-02-14T05:00Z,Scheduled,Jacksonville,Rhode Island,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,Indiana St,Estadio Paquito Montaner,No Match,Bob Warn Field at Sycamore Stadium,,,,Baylor Ballpark,Baylor,345,31.551434,-97.107656
+401854521,2026-02-14T05:00Z,Scheduled,Jacksonville,Rhode Island,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,Indiana St,Estadio Paquito Montaner,No Match,Bob Warn Field at Sycamore Stadium,,,,Baylor Ballpark,Baylor,345,31.551434,-97.107656
 401852987,2026-02-14T05:00Z,Scheduled,FIU,Villanova,FIU Baseball Stadium,"Miami, Florida",FIU Baseball Stadium,44.6,25.754772,-80.38059,,,,St John's,Melching Field at Conrad Park,Melching Field at Conrad Park,Melching Field at Conrad Park,,,,Larry H. Miller Field,BYU,112.2,40.254729,-111.651232
 401852763,2026-02-14T05:00Z,Scheduled,Manhattan,Seton Hall,Estadio Paquito Montaner,Ponce,Van Cortlandt Park,156,40.888183,-73.89614,,,,Kennesaw St,Mickey Dunn Stadium,No Match,Fred Stillwell Stadium,,,,UC Baseball Stadium,Cincinnati,319.6,39.130348,-84.513917
 401852736,2026-02-14T05:00Z,Scheduled,USC,Pepperdine,Great Park,"Irvine, California",Dedeaux Field,314.6,34.024068,-118.289916,,,,Oklahoma St,Globe Life Field,No Match,O'Brate Stadium,,,,Schroeder Park,Houston,70.3,29.726893,-95.345015
 401852242,2026-02-14T05:00Z,Scheduled,Saint Mary's,Creighton,Louis Guisto Field,"Moraga, California",Louis Guisto Field,352,37.842266,-122.111807,,,,Seton Hall,Parque Yldefonso Sola Morales,No Match,"Mike Sheppard, Sr. Stadium at Owen T. Carroll Field",,,,Hoglund Ballpark,Kansas,135.6,38.952595,-95.252442
 401850140,2026-02-14T05:00Z,Scheduled,South Florida,Illinois,USF Baseball Stadium,"Tampa, Florida",USF Baseball Stadium,42.38,27.9449854,-82.4583107,,,,Air Force,Salt River Fields at Talking Stick,No Match,Erdle Field,,,,Tointon Family Stadium,Kansas State,44.2,39.199345,-96.596894
-401848609,2026-02-14T05:00Z,Scheduled,Jax State,Cincinnati,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,Michigan,Surprise Stadium,No Match,Ray Fisher Stadium,,,,O'Brate Stadium,Oklahoma St,44.8,36.131651,-97.067938
+401848609,2026-02-14T05:00Z,Scheduled,Jax State,Cincinnati,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,Michigan,Surprise Stadium,No Match,Ray Fisher Stadium,,,,O'Brate Stadium,Oklahoma St,44.8,36.131651,-97.067938
 401848581,2026-02-14T05:00Z,Scheduled,Virginia Tech,William & Mary,English Field at Atlantic Union Bank Park,"Blacksburg, Virginia",English Field,130,37.217751,-80.42327,,,,Santa Clara,Stephen Schott Stadium,Stephen Schott Stadium,Stephen Schott Stadium,,,,Lupton Stadium,TCU,150.6,32.702575,-97.372058
 401847853,2026-02-14T05:00Z,Scheduled,Duke,Maine,Jack Coombs Field,"Durham, North Carolina",Jack Coombs Field,339,35.998255,-78.944238,,,,Samford,Joe Lee Griffin Field,No Match,Joe Lee Griffin Stadium,,,,Dan Law Field at Rip Griffin Park,Texas Tech,134.3,33.58841,-101.876635
 401847693,2026-02-14T05:00Z,Scheduled,Boston College,Houston,Estadio Paquito Montaner,Ponce,Eddie Pellagrini Diamond,133,42.343859,-71.159615,,,,E Kentucky,Turkey Hughes Field at Earle Combs Stadium,No Match,Turkey Hughes Field,,,,John Euliano Park,UCF,54.2,28.609962,-81.195166
@@ -114,7 +114,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401853390,2026-02-14T18:00Z,Scheduled,Southern Miss,Santa Barbara,Pete Taylor Park/Hill Denson Field,"Hattiesburg, Mississippi",Pete Taylor Park,47,31.333683,-89.337903,,,,SE Louisiana,Pat Kenelly Diamond at Alumni Field,Pat Kenelly Diamond at Alumni Field,Pat Kenelly Diamond at Alumni Field,,,,Cicerone Field at Anteater Ballpark,UC Irvine,67,33.651391,-117.847355
 401854302,2026-02-14T18:00Z,Scheduled,Queens,Navy,The Stick Williams Dream Fields,"Charlotte, North Carolina",Tuckaseegee Dream Fields,338.8,35.245233,-80.955049,,,,N'Western St,Brown-Stroud Field,No Match,H. Alvin Brown–C. C. Stroud Field,,,,Riverside Sports Complex,UC Riverside,44.2,33.98231,-117.333586
 401854301,2026-02-14T18:00Z,Scheduled,West Georgia,C Michigan,Cole Field,"Carrollton, Georgia",Cole Field,1.45,33.574749,-85.103254,,,,Nicholls,Ben Meyer Diamond at Ray E. Didier Field,Ben Meyer Diamond at Ray E. Didier Field,Ben Meyer Diamond at Ray E. Didier Field,,,,Triton Ballpark,UC San Diego,17.7,32.881756,-117.226057
-401854300,2026-02-14T18:00Z,Scheduled,Jacksonville,Rhode Island,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,Hou Christian,Husky Field,Husky Field,Husky Field,,,,Caesar Uyesaka Stadium,UC Santa Barbara,19.5,34.419332,-119.852238
+401854300,2026-02-14T18:00Z,Scheduled,Jacksonville,Rhode Island,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,Hou Christian,Husky Field,Husky Field,Husky Field,,,,Caesar Uyesaka Stadium,UC Santa Barbara,19.5,34.419332,-119.852238
 401853764,2026-02-14T18:00Z,Scheduled,Louisiana Tech,Hou Christian,J.C. Love Field at Pat Patterson Park,"Ruston, Louisiana",J. C. Love Field at Pat Patterson Park,151,32.529786,-92.651126,,,,UT Arlington,Globe Life Field,No Match,Clay Gould Ballpark,,,,Jim Perry Stadium,Campbell,140.5,35.409909,-78.735076
 401853319,2026-02-14T18:00Z,Scheduled,UTSA,S Dakota St,Roadrunner Field,"San Antonio, Texas",Roadrunner Field,12.59,29.58,-98.737192,,,,Arizona,Hi Corbett Field,Hi Corbett Field,Hi Corbett Field,,,,CofC Baseball Stadium at Patriots Point,Charleston,33.4,32.795877,-79.90172
 401852637,2026-02-14T18:00Z,Scheduled,Charleston,Rutgers,The Ballpark at Patriots Point,"Mount Pleasant, South Carolina",CofC Baseball Stadium at Patriots Point,33.4,32.795877,-79.90172,,,,Richmond,Pitt Field,No Match,Malcolm U. Pitt Field,,,,Walter C. Latham Park,Elon,225,36.107976,-79.508113
@@ -197,7 +197,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401852737,2026-02-15T05:00Z,Scheduled,USC,Pepperdine,Great Park,"Irvine, California",Dedeaux Field,314.6,34.024068,-118.289916,,,,Utah Tech,Bruce Hurst Field,Bruce Hurst Field,Bruce Hurst Field,,,,Bailey–Brayton Field,Washington St,4.7,46.735223,-117.155251
 401852244,2026-02-15T05:00Z,Scheduled,Saint Mary's,Creighton,Louis Guisto Field,"Moraga, California",Louis Guisto Field,352,37.842266,-122.111807,,,,S Dakota St,U.S. Bank Stadium,No Match,Erv Huether Field,,,,CCSU Baseball Field,Central Connecticut,25,41.696656,-72.759549
 401850141,2026-02-15T05:00Z,Scheduled,South Florida,Illinois,USF Baseball Stadium,"Tampa, Florida",USF Baseball Stadium,42.38,27.9449854,-82.4583107,,,,San JosÃ© St,Excite Ballpark,Excite Ballpark,Excite Ballpark,,,,Joe Cannon Stadium,Coppin State,17.7,39.154012,-76.715355
-401848610,2026-02-15T05:00Z,Scheduled,Jax State,Cincinnati,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,Presbyterian,PC Baseball Complex,No Match,Presbyterian Baseball Complex,,,,Soldier Field,Delaware State,152.5,39.184396,-75.545819
+401848610,2026-02-15T05:00Z,Scheduled,Jax State,Cincinnati,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,Presbyterian,PC Baseball Complex,No Match,Presbyterian Baseball Complex,,,,Soldier Field,Delaware State,152.5,39.184396,-75.545819
 401848583,2026-02-15T05:00Z,Scheduled,Virginia Tech,William & Mary,English Field at Atlantic Union Bank Park,"Blacksburg, Virginia",English Field,130,37.217751,-80.42327,,,,Butler,Bulldog Park,Bulldog Park,Bulldog Park,,,,Naimoli Family Baseball Complex,Fairleigh Dickinson,14,40.901749,-74.027795
 401847428,2026-02-15T05:00Z,Scheduled,Mount St Marys,Missouri,E.T. Straw Family Stadium,"Emmitsburg, Maryland",Straw Family Stadium,63,39.678703,-77.344497,,,,Elon,Walter C. Latham Park,Walter C. Latham Park,Walter C. Latham Park,,,,Dick Rockwell Field,Le Moyne,329,43.05092,-76.088268
 401851119,2026-02-15T15:00Z,Scheduled,Ball State,Minnesota,Melching Field at Conrad Park,"DeLand, Florida",Ball Diamond,42.6,40.21809,-85.421,,,,Bethune,Jackie Robinson Ballpark,Jackie Robinson Ballpark,Jackie Robinson Ballpark,,,,Frank Vieira Field,New Haven,118,41.29612,-72.965796
@@ -225,7 +225,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401848029,2026-02-15T18:00Z,Scheduled,Miami,Lehigh,Alex Rodriguez Park at Mark Light Field,"Coral Gables, Florida",Alex Rodriguez Park at Mark Light Field,21.7,25.71214,-80.282245,,,,Fairfield,Alumni Baseball Diamond,Alumni Baseball Diamond,Alumni Baseball Diamond,,,,Terwilliger Brothers Field at Max Bishop Stadium,Navy,39,38.987006,-76.494778
 401847641,2026-02-15T18:00Z,Scheduled,Texas A&M,Tennessee Tech,Olsen Field at Blue Bell Park,"College Station, Texas",Olsen Field at Blue Bell Park,6,30.606216,-96.341319,,,,Binghamton,Bearcats Baseball Complex,No Match,Binghamton Baseball Stadium Complex,,,,Sewell–Thomas Stadium,Alabama,162,33.204592,-87.538461
 401854312,2026-02-15T18:00Z,Scheduled,FGCU,N Dakota St,Swanson Stadium,"Fort Myers, Florida",Swanson Stadium,359.6,26.471068,-81.763258,,,,Incarnate Word,Daniel Sullivan Field,Daniel Sullivan Field,Daniel Sullivan Field,,,,Baum–Walker Stadium,Arkansas,138,36.04975,-94.182111
-401854311,2026-02-15T18:00Z,Scheduled,Jacksonville,Rhode Island,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,AR-Pine Bluff,Torii Hunter Baseball Complex,Torii Hunter Baseball Complex,Torii Hunter Baseball Complex,,,,Samford Stadium – Hitchcock Field at Plainsman Park,Auburn,138,32.599473,-85.489429
+401854311,2026-02-15T18:00Z,Scheduled,Jacksonville,Rhode Island,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,AR-Pine Bluff,Torii Hunter Baseball Complex,Torii Hunter Baseball Complex,Torii Hunter Baseball Complex,,,,Samford Stadium – Hitchcock Field at Plainsman Park,Auburn,138,32.599473,-85.489429
 401854310,2026-02-15T18:00Z,Scheduled,West Georgia,C Michigan,Cole Field,"Carrollton, Georgia",Cole Field,1.45,33.574749,-85.103254,,,,N Kentucky,Bill Aker Baseball Complex,Bill Aker Baseball Complex,Bill Aker Baseball Complex,,,,Condron Ballpark,Florida,44.6,29.636785,-82.363216
 401854217,2026-02-15T18:00Z,Scheduled,Alabama St,E Kentucky,Wheelerâ€“Watkins Baseball Complex,"Montgomery, Alabama",Wheeler–Watkins Baseball Complex,78,32.350737,-86.172085,,,,New Mexico,Santa Ana Star Field,Santa Ana Star Field,Santa Ana Star Field,,,,Foley Field,Georgia,108,33.940756,-83.380024
 401853797,2026-02-15T18:00Z,Scheduled,The Citadel,Liberty,"Joseph P. Riley, Jr. Park","Charleston, South Carolina",Joseph P. Riley Jr. Park,191,32.790129,-79.961418,,,,Bradley,Dozer Park,Dozer Park,Dozer Park,,,,Kentucky Proud Park,Kentucky,100.5,38.018045,-84.502213
@@ -312,7 +312,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401853727,2026-02-17T21:00Z,Scheduled,MTSU,Alabama A&M,Reese Smith Jr. Field,"Murfreesboro, Tennessee",Reese Smith Jr. Field,319,35.851432,-86.366791,,,,,,,,,,,,,,,
 401853656,2026-02-17T21:00Z,Scheduled,Oral Roberts,Missouri St,J. L. Johnson Stadium,"Tulsa, Oklahoma",J. L. Johnson Stadium,134,36.049396,-95.948041,,,,,,,,,,,,,,,
 401853250,2026-02-17T21:00Z,Scheduled,North Alabama,UAB,Mike D. Lane Field,"Florence, Alabama",Mike D. Lane Field at Bank Independent Stadium,17,34.809878,-87.685313,,,,,,,,,,,,,,,
-401853098,2026-02-17T21:00Z,Scheduled,Jax State,Georgia St,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401853098,2026-02-17T21:00Z,Scheduled,Jax State,Georgia St,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401850972,2026-02-17T21:00Z,Scheduled,Maryland,Georgetown,"Shipley Field at Bob ""Turtle"" Smith Stadium","College Park, Maryland",Shipley Field,13.7,38.989668,-76.94434,,,,,,,,,,,,,,,
 401850203,2026-02-17T21:00Z,Scheduled,Indiana,Bradley,Bart Kaufman Field,"Bloomington, Indiana",Bart Kaufman Field,45,39.18507,-86.522061,,,,,,,,,,,,,,,
 401847855,2026-02-17T21:00Z,Scheduled,Duke,App State,Jack Coombs Field,"Durham, North Carolina",Jack Coombs Field,339,35.998255,-78.944238,,,,,,,,,,,,,,,
@@ -327,7 +327,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847544,2026-02-17T22:30Z,Scheduled,Wofford,South Carolina,Fifth Third Park,"Spartanburg, South Carolina",Russell C. King Field,115,34.958848,-81.930592,,,,,,,,,,,,,,,
 401847612,2026-02-17T23:00Z,Scheduled,Texas,Lamar,UFCU Disch-Falk Field,"Austin, Texas",UFCU Disch–Falk Field,34,30.28016,-97.726017,,,,,,,,,,,,,,,
 401847951,2026-02-17T23:00Z,Scheduled,GA Southern,Georgia Tech,J. I. Clements Stadium,"Statesboro, Georgia",J. I. Clements Stadium,33,32.429738,-81.780943,,,,,,,,,,,,,,,
-401847906,2026-02-17T23:00Z,Scheduled,Jacksonville,Florida St,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401847906,2026-02-17T23:00Z,Scheduled,Jacksonville,Florida St,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401848030,2026-02-17T23:00Z,Scheduled,Miami,UCF,Alex Rodriguez Park at Mark Light Field,"Coral Gables, Florida",Alex Rodriguez Park at Mark Light Field,21.7,25.71214,-80.282245,,,,,,,,,,,,,,,
 401854316,2026-02-17T23:00Z,Scheduled,Queens,Radford,The Stick Williams Dream Fields,"Charlotte, North Carolina",Tuckaseegee Dream Fields,338.8,35.245233,-80.955049,,,,,,,,,,,,,,,
 401854317,2026-02-17T23:05Z,Scheduled,North Florida,Charleston So,Dusty Rhodes Field at Harmon Stadium,"Jacksonville, Florida",Harmon Stadium,45.7,30.275193,-81.508239,,,,,,,,,,,,,,,
@@ -430,7 +430,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847475,2026-02-20T22:00Z,Scheduled,Oklahoma,Coppin St,Kimrey Family Stadium,"Norman, Oklahoma",L. Dale Mitchell Baseball Park,44,35.191028,-97.445827,,,,,,,,,,,,,,,
 401847027,2026-02-20T22:00Z,Scheduled,Alabama,Rhode Island,Sewell-Thomas Stadium,"Tuscaloosa, Alabama",Sewell–Thomas Stadium,162,33.204592,-87.538461,,,,,,,,,,,,,,,
 401848332,2026-02-20T22:05Z,Scheduled,Stanford,Fullerton,Klein Field at Sunken Diamond,"Stanford, California",Klein Field at Sunken Diamond,183,37.431447,-122.158791,,,,,,,,,,,,,,,
-401854321,2026-02-20T23:00Z,Scheduled,Jacksonville,Long Island,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854321,2026-02-20T23:00Z,Scheduled,Jacksonville,Long Island,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401848587,2026-02-20T23:00Z,Scheduled,Virginia Tech,Rutgers,English Field at Atlantic Union Bank Park,"Blacksburg, Virginia",English Field,130,37.217751,-80.42327,,,,,,,,,,,,,,,
 401848104,2026-02-20T23:00Z,Scheduled,UCF,Notre Dame,VyStar Ballpark,"Jacksonville, Florida",John Euliano Park,54.2,28.609962,-81.195166,,,,,,,,,,,,,,,
 401854322,2026-02-20T23:05Z,Scheduled,North Florida,Quinnipiac,Dusty Rhodes Field at Harmon Stadium,"Jacksonville, Florida",Harmon Stadium,45.7,30.275193,-81.508239,,,,,,,,,,,,,,,
@@ -479,7 +479,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847990,2026-02-21T17:00Z,Scheduled,Michigan,Louisville,Globe Life Field,"Arlington, Texas",Ray Fisher Stadium,225,42.267346,-83.742719,,,,,,,,,,,,,,,
 401854137,2026-02-21T17:00Z,Scheduled,UL Monroe,Alabama A&M,Maestri Field,"New Orleans, Louisiana",Lou St. Amant Field,58,32.53239,-92.063398,,,,,,,,,,,,,,,
 401852029,2026-02-21T17:00Z,Scheduled,Murray St,Butler,Johnny Reagan Field,"Murray, Kentucky",Reagan Field,41,36.623264,-88.317303,,,,,,,,,,,,,,,
-401854326,2026-02-21T18:00Z,Scheduled,Jacksonville,Long Island,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854326,2026-02-21T18:00Z,Scheduled,Jacksonville,Long Island,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854325,2026-02-21T18:00Z,Scheduled,C Arkansas,N'Western St,Bear Stadium,"Conway, Arkansas",Bear Stadium,47.34,35.083403,-92.459763,,,,,,,,,,,,,,,
 401853729,2026-02-21T18:00Z,Scheduled,MTSU,St Bonaventure,Reese Smith Jr. Field,"Murfreesboro, Tennessee",Reese Smith Jr. Field,319,35.851432,-86.366791,,,,,,,,,,,,,,,
 401853101,2026-02-21T18:00Z,Scheduled,Georgia St,Bellarmine,GSU Baseball Complex,"Decatur, Georgia",Georgia State Baseball Complex,138,33.687519,-84.279102,,,,,,,,,,,,,,,
@@ -587,7 +587,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847807,2026-02-22T18:00Z,Scheduled,Clemson,Bryant,Doug Kingsmore Stadium,"Clemson, South Carolina",Doug Kingsmore Stadium,190.8,34.678497,-82.849346,,,,,,,,,,,,,,,
 401849863,2026-02-22T18:00Z,Scheduled,Wake Forest,Siena,David F. Couch Ballpark,"Winston-Salem, North Carolina",David F. Couch Ballpark,43.3,36.129991,-80.251766,,,,,,,,,,,,,,,
 401848035,2026-02-22T18:00Z,Scheduled,Miami,Lafayette,Alex Rodriguez Park at Mark Light Field,"Coral Gables, Florida",Alex Rodriguez Park at Mark Light Field,21.7,25.71214,-80.282245,,,,,,,,,,,,,,,
-401854334,2026-02-22T18:00Z,Scheduled,Jacksonville,Long Island,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854334,2026-02-22T18:00Z,Scheduled,Jacksonville,Long Island,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854333,2026-02-22T18:00Z,Scheduled,FGCU,Stonehill,Swanson Stadium,"Fort Myers, Florida",Swanson Stadium,359.6,26.471068,-81.763258,,,,,,,,,,,,,,,
 401854332,2026-02-22T18:00Z,Scheduled,Little Rock,West Georgia,Gary Hogan Field,"Little Rock, Arkansas",Gary Hogan Field,49,34.729473,-92.329813,,,,,,,,,,,,,,,
 401853730,2026-02-22T18:00Z,Scheduled,MTSU,St Bonaventure,Reese Smith Jr. Field,"Murfreesboro, Tennessee",Reese Smith Jr. Field,319,35.851432,-86.366791,,,,,,,,,,,,,,,
@@ -693,7 +693,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847674,2026-02-24T22:30Z,Scheduled,Vanderbilt,Evansville,Hawkins Field,"Nashville, Tennessee",Hawkins Field,63,36.143442,-86.807226,,,,,,,,,,,,,,,
 401853623,2026-02-24T23:00Z,Scheduled,New Mexico St,TBD,Presley Askew Field,"Las Cruces, New Mexico",Presley Askew Field,32,32.279221,-106.744043,,,,,,,,,,,,,,,
 401853054,2026-02-24T23:00Z,Scheduled,GA Southern,Kennesaw St,J. I. Clements Stadium,"Statesboro, Georgia",J. I. Clements Stadium,33,32.429738,-81.780943,,,,,,,,,,,,,,,
-401850070,2026-02-24T23:00Z,Scheduled,Jacksonville,UCF,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401850070,2026-02-24T23:00Z,Scheduled,Jacksonville,UCF,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854338,2026-02-24T23:05Z,Scheduled,North Florida,SC Upstate,Dusty Rhodes Field at Harmon Stadium,"Jacksonville, Florida",Harmon Stadium,45.7,30.275193,-81.508239,,,,,,,,,,,,,,,
 401847209,2026-02-24T23:30Z,Scheduled,Florida,FIU,Condron Family Ballpark,"Gainesville, Florida",Condron Ballpark,44.6,29.636785,-82.363216,,,,,,,,,,,,,,,
 401854339,2026-02-24T23:30Z,Scheduled,FGCU,Indiana St,Swanson Stadium,"Fort Myers, Florida",Swanson Stadium,359.6,26.471068,-81.763258,,,,,,,,,,,,,,,
@@ -1159,7 +1159,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401851694,2026-03-06T23:00Z,Scheduled,Coastal,East Carolina,Springs Brooks Stadium,"Conway, South Carolina",Springs Brooks Stadium,123,33.793201,-79.014719,,,,,,,,,,,,,,,
 401847915,2026-03-06T23:00Z,Scheduled,Florida St,N Kentucky,Mike Martin Field at Dick Howser Stadium,"Tallahassee, Florida",Mike Martin Field at Dick Howser Stadium,45.2,30.440902,-84.303625,,,,,,,,,,,,,,,
 401848341,2026-03-06T23:00Z,Scheduled,Wake Forest,Stanford,David F. Couch Ballpark,"Winston-Salem, North Carolina",David F. Couch Ballpark,43.3,36.129991,-80.251766,,,,,,,,,,,,,,,
-401854361,2026-03-06T23:00Z,Scheduled,Jacksonville,UNC Wilmington,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854361,2026-03-06T23:00Z,Scheduled,Jacksonville,UNC Wilmington,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401853666,2026-03-06T23:00Z,Scheduled,Elon,NC A&T,Walter C. Latham Park,"Elon, North Carolina",Walter C. Latham Park,225,36.107976,-79.508113,,,,,,,,,,,,,,,
 401853210,2026-03-06T23:00Z,Scheduled,Marshall,St Bonaventure,Jack Cook Field,"Huntington, West Virginia",Jack Cook Field,25,38.428306,-82.419776,,,,,,,,,,,,,,,
 401852256,2026-03-06T23:00Z,Scheduled,Creighton,Gonzaga,Charles Schwab Field,"Omaha, Nebraska",Tony Gwynn Stadium,47,32.774675,-117.077949,,,,,,,,,,,,,,,
@@ -1227,7 +1227,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847916,2026-03-07T19:00Z,Scheduled,Florida St,N Kentucky,Mike Martin Field at Dick Howser Stadium,"Tallahassee, Florida",Mike Martin Field at Dick Howser Stadium,45.2,30.440902,-84.303625,,,,,,,,,,,,,,,
 401848076,2026-03-07T19:00Z,Scheduled,NC State,Lafayette,Doak Field at Dail Park,"Raleigh, North Carolina",Doak Field,159,35.787026,-78.679543,,,,,,,,,,,,,,,
 401848342,2026-03-07T19:00Z,Scheduled,Wake Forest,Stanford,David F. Couch Ballpark,"Winston-Salem, North Carolina",David F. Couch Ballpark,43.3,36.129991,-80.251766,,,,,,,,,,,,,,,
-401854365,2026-03-07T19:00Z,Scheduled,Jacksonville,UNC Wilmington,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854365,2026-03-07T19:00Z,Scheduled,Jacksonville,UNC Wilmington,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854364,2026-03-07T19:00Z,Scheduled,Bethune,FGCU,Jackie Robinson Ballpark,"Daytona Beach, Florida",Jackie Robinson Ballpark,354,29.210019,-81.016116,,,,,,,,,,,,,,,
 401853804,2026-03-07T19:00Z,Scheduled,Liberty,Harvard,Worthington Field at Liberty Baseball Stadium,"Lynchburg, Virginia",Liberty Baseball Stadium,27,37.356744,-79.176904,,,,,,,,,,,,,,,
 401853667,2026-03-07T19:00Z,Scheduled,Elon,NC A&T,Walter C. Latham Park,"Elon, North Carolina",Walter C. Latham Park,225,36.107976,-79.508113,,,,,,,,,,,,,,,
@@ -1320,7 +1320,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847813,2026-03-08T17:00Z,Scheduled,Clemson,La Salle,Doug Kingsmore Stadium,"Clemson, South Carolina",Doug Kingsmore Stadium,190.8,34.678497,-82.849346,,,,,,,,,,,,,,,
 401848343,2026-03-08T17:00Z,Scheduled,Wake Forest,Stanford,David F. Couch Ballpark,"Winston-Salem, North Carolina",David F. Couch Ballpark,43.3,36.129991,-80.251766,,,,,,,,,,,,,,,
 401847706,2026-03-08T17:00Z,Scheduled,Miami,Boston College,Alex Rodriguez Park at Mark Light Field,"Coral Gables, Florida",Alex Rodriguez Park at Mark Light Field,21.7,25.71214,-80.282245,,,,,,,,,,,,,,,
-401854368,2026-03-08T17:00Z,Scheduled,Jacksonville,UNC Wilmington,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854368,2026-03-08T17:00Z,Scheduled,Jacksonville,UNC Wilmington,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854367,2026-03-08T17:00Z,Scheduled,Bethune,FGCU,Jackie Robinson Ballpark,"Daytona Beach, Florida",Jackie Robinson Ballpark,354,29.210019,-81.016116,,,,,,,,,,,,,,,
 401854182,2026-03-08T17:00Z,Scheduled,Bellarmine,E Illinois,Knights Field,"Louisville, Kentucky",Knights Field,149.7,38.216903,-85.70556,,,,,,,,,,,,,,,
 401853668,2026-03-08T17:00Z,Scheduled,Elon,NC A&T,Walter C. Latham Park,"Elon, North Carolina",Walter C. Latham Park,225,36.107976,-79.508113,,,,,,,,,,,,,,,
@@ -1382,7 +1382,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401851127,2026-03-08T23:05Z,Scheduled,Minnesota,Omaha,U.S. Bank Stadium,"Minneapolis, Minnesota",Siebert Field,134.8,44.982096,-93.229062,,,,,,,,,,,,,,,
 401847113,2026-03-09T17:00Z,Scheduled,Arkansas,Stetson,Baum-Walker Stadium,"Fayetteville, Arkansas",Baum–Walker Stadium,138,36.04975,-94.182111,,,,,,,,,,,,,,,
 401850016,2026-03-09T19:00Z,Scheduled,Utah,Grand Canyon,Smith's Ballpark,"Salt Lake City, Utah",Smith's Ballpark,135,40.740458,-111.892512,,,,,,,,,,,,,,,
-401854369,2026-03-09T22:00Z,Scheduled,Jacksonville,South Florida,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854369,2026-03-09T22:00Z,Scheduled,Jacksonville,South Florida,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401849890,2026-03-10T00:35Z,Scheduled,Oregon St,Xavier,Goss Stadium at Coleman Field,"Corvallis, Oregon",Goss Stadium at Coleman Field,134,44.562736,-123.276945,,,,,,,,,,,,,,,
 401852747,2026-03-10T04:00Z,Scheduled,USC,Long Beach St,Great Park,"Irvine, California",Dedeaux Field,314.6,34.024068,-118.289916,,,,,,,,,,,,,,,
 401852157,2026-03-10T04:00Z,Scheduled,Georgetown,Penn State,Capital One Park,"Tysons, Virginia",Capital One Park,359.1,38.926982,-77.207459,,,,,,,,,,,,,,,
@@ -1825,7 +1825,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401848040,2026-03-20T23:00Z,Scheduled,Miami,Creighton,Alex Rodriguez Park at Mark Light Field,"Coral Gables, Florida",Alex Rodriguez Park at Mark Light Field,21.7,25.71214,-80.282245,,,,,,,,,,,,,,,
 401854184,2026-03-20T23:00Z,Scheduled,C Arkansas,Bellarmine,Bear Stadium,"Conway, Arkansas",Bear Stadium,47.34,35.083403,-92.459763,,,,,,,,,,,,,,,
 401854145,2026-03-20T23:00Z,Scheduled,Austin Peay,Lipscomb,Raymond C. Hand Park,"Clarksville, Tennessee",Raymond C. Hand Park,333.86,36.53818,-87.356316,,,,,,,,,,,,,,,
-401853463,2026-03-20T23:00Z,Scheduled,Jax State,Western KY,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401853463,2026-03-20T23:00Z,Scheduled,Jax State,Western KY,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401853183,2026-03-20T23:00Z,Scheduled,Texas St,Louisiana,Bobcat Ballpark (TX),"San Marcos, Texas",Bobcat Ballpark,0.7,29.888173,-97.928234,,,,,,,,,,,,,,,
 401852879,2026-03-20T23:00Z,Scheduled,UT Arlington,St John's,Clay Gould Ballpark,"Arlington, Texas",Clay Gould Ballpark,216,32.721847,-97.131025,,,,,,,,,,,,,,,
 401851652,2026-03-20T23:00Z,Scheduled,Wichita St,Charlotte,Eck Stadium Home of Tyler Field,"Wichita, Kansas",Eck Stadium,45.58,37.7214559,-97.28874,,,,,,,,,,,,,,,
@@ -1897,7 +1897,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401850159,2026-03-21T20:00Z,Scheduled,Illinois,Rutgers,Illinois Field,"Champaign, Illinois",Illinois Field,43.2,40.097241,-88.229298,,,,,,,,,,,,,,,
 401851009,2026-03-21T21:00Z,Scheduled,UCLA,Maryland,Jackie Robinson Stadium,"Los Angeles, California",Jackie Robinson Stadium,9.2,34.059551,-118.459278,,,,,,,,,,,,,,,
 401854185,2026-03-21T21:00Z,Scheduled,C Arkansas,Bellarmine,Bear Stadium,"Conway, Arkansas",Bear Stadium,47.34,35.083403,-92.459763,,,,,,,,,,,,,,,
-401853464,2026-03-21T21:00Z,Scheduled,Jax State,Western KY,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401853464,2026-03-21T21:00Z,Scheduled,Jax State,Western KY,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401848423,2026-03-21T21:00Z,Scheduled,Kansas St,Arizona St,Tointon Family Stadium,"Manhattan, Kansas",Tointon Family Stadium,44.2,39.199345,-96.596894,,,,,,,,,,,,,,,
 401852005,2026-03-21T21:05Z,Scheduled,Oregon,Northwestern,PK Park,"Eugene, Oregon",PK Park,129.6,44.058931,-123.065244,,,,,,,,,,,,,,,
 401848345,2026-03-21T21:05Z,Scheduled,Stanford,Utah Valley,Klein Field at Sunken Diamond,"Stanford, California",Klein Field at Sunken Diamond,183,37.431447,-122.158791,,,,,,,,,,,,,,,
@@ -1916,7 +1916,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847876,2026-03-22T04:00Z,Scheduled,Virginia Tech,Duke,English Field at Atlantic Union Bank Park,"Blacksburg, Virginia",English Field,130,37.217751,-80.42327,,,,,,,,,,,,,,,
 401847715,2026-03-22T04:00Z,Scheduled,Boston College,California,Eddie Pellagrini Baseball Diamond,"Brighton, Massachusetts",Eddie Pellagrini Diamond,133,42.343859,-71.159615,,,,,,,,,,,,,,,
 401853595,2026-03-22T16:00Z,Scheduled,FIU,Sam Houston,FIU Baseball Stadium,"Miami, Florida",FIU Baseball Stadium,44.6,25.754772,-80.38059,,,,,,,,,,,,,,,
-401853465,2026-03-22T16:00Z,Scheduled,Jax State,Western KY,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401853465,2026-03-22T16:00Z,Scheduled,Jax State,Western KY,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401852780,2026-03-22T16:00Z,Scheduled,Seton Hall,Hofstra,"Mike Sheppard, Sr. Stadium at Owen T. Carroll Field","South Orange, New Jersey","Mike Sheppard, Sr. Stadium at Owen T. Carroll Field",221.7,40.740666,-74.248067,,,,,,,,,,,,,,,
 401851865,2026-03-22T16:00Z,Scheduled,FAU,UTSA,FAU Baseball Stadium,"Boca Raton, Florida",FAU Baseball Stadium,179.52,26.3586885,-80.0830984,,,,,,,,,,,,,,,
 401851785,2026-03-22T16:00Z,Scheduled,East Carolina,UAB,Lewis Field at Clark-LeClair Stadium,"Greenville, North Carolina",Clarke LeClair Stadium,301.45,35.5933957,-77.3670293,,,,,,,,,,,,,,,
@@ -2008,7 +2008,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401848080,2026-03-24T22:00Z,Scheduled,NC State,Campbell,Doak Field at Dail Park,"Raleigh, North Carolina",Doak Field,159,35.787026,-78.679543,,,,,,,,,,,,,,,
 401849872,2026-03-24T22:00Z,Scheduled,Wake Forest,Elon,David F. Couch Ballpark,"Winston-Salem, North Carolina",David F. Couch Ballpark,43.3,36.129991,-80.251766,,,,,,,,,,,,,,,
 401848043,2026-03-24T22:00Z,Scheduled,Miami,FAU,Alex Rodriguez Park at Mark Light Field,"Coral Gables, Florida",Alex Rodriguez Park at Mark Light Field,21.7,25.71214,-80.282245,,,,,,,,,,,,,,,
-401854401,2026-03-24T22:00Z,Scheduled,Jacksonville,Bethune,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854401,2026-03-24T22:00Z,Scheduled,Jacksonville,Bethune,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854399,2026-03-24T22:00Z,Scheduled,West Georgia,Mercer,Cole Field,"Carrollton, Georgia",Cole Field,1.45,33.574749,-85.103254,,,,,,,,,,,,,,,
 401854251,2026-03-24T22:00Z,Scheduled,E Kentucky,Morehead St,Turkey Hughes Field at Earle Combs Stadium,"Richmond, Kentucky",Turkey Hughes Field,65.74,37.736291,-84.299795,,,,,,,,,,,,,,,
 401853674,2026-03-24T22:00Z,Scheduled,Gardner-Webb,NC A&T,Bill Masters Field at John Henry Moss Stadium,"Boiling Springs, North Carolina",John Henry Moss Stadium,322,35.243803,-81.669322,,,,,,,,,,,,,,,
@@ -2109,7 +2109,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401850105,2026-03-27T23:00Z,Scheduled,TCU,Texas Tech,Charlie and Marie Lupton Baseball Stadium at Williams-Reilly Field,"Fort Worth, Texas",Lupton Stadium,150.6,32.702575,-97.372058,,,,,,,,,,,,,,,
 401847825,2026-03-27T23:00Z,Scheduled,Clemson,Miami,Doug Kingsmore Stadium,"Clemson, South Carolina",Doug Kingsmore Stadium,190.8,34.678497,-82.849346,,,,,,,,,,,,,,,
 401852842,2026-03-27T23:00Z,Scheduled,Southern Miss,App State,Pete Taylor Park/Hill Denson Field,"Hattiesburg, Mississippi",Pete Taylor Park,47,31.333683,-89.337903,,,,,,,,,,,,,,,
-401854404,2026-03-27T23:00Z,Scheduled,Jacksonville,North Florida,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854404,2026-03-27T23:00Z,Scheduled,Jacksonville,North Florida,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854252,2026-03-27T23:00Z,Scheduled,Lipscomb,E Kentucky,Ken Dugan Field at Stephen Lee Marsh Stadium,"Nashville, Tennessee",Ken Dugan Field at Stephen Lee Marsh Stadium,141.2,36.102431,-86.798816,,,,,,,,,,,,,,,
 401854148,2026-03-27T23:00Z,Scheduled,C Arkansas,Austin Peay,Bear Stadium,"Conway, Arkansas",Bear Stadium,47.34,35.083403,-92.459763,,,,,,,,,,,,,,,
 401853774,2026-03-27T23:00Z,Scheduled,Louisiana Tech,Jax State,J.C. Love Field at Pat Patterson Park,"Ruston, Louisiana",J. C. Love Field at Pat Patterson Park,151,32.529786,-92.651126,,,,,,,,,,,,,,,
@@ -2191,7 +2191,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401854149,2026-03-28T21:00Z,Scheduled,C Arkansas,Austin Peay,Bear Stadium,"Conway, Arkansas",Bear Stadium,47.34,35.083403,-92.459763,,,,,,,,,,,,,,,
 401848381,2026-03-28T22:00Z,Scheduled,UCF,Arizona,John Euliano Park,"Orlando, Florida",John Euliano Park,54.2,28.609962,-81.195166,,,,,,,,,,,,,,,
 401852126,2026-03-28T22:05Z,Scheduled,Santa Barbara,Oregon,Caesar Uyesaka Stadium,"Santa Barbara, California",Caesar Uyesaka Stadium,19.5,34.419332,-119.852238,,,,,,,,,,,,,,,
-401854407,2026-03-28T23:00Z,Scheduled,Jacksonville,North Florida,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854407,2026-03-28T23:00Z,Scheduled,Jacksonville,North Florida,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401853636,2026-03-28T23:00Z,Scheduled,MTSU,New Mexico St,Reese Smith Jr. Field,"Murfreesboro, Tennessee",Reese Smith Jr. Field,319,35.851432,-86.366791,,,,,,,,,,,,,,,
 401852924,2026-03-28T23:00Z,Scheduled,Arkansas St,James Madison,Tomlinson Stadiumâ€“Kell Field,"Jonesboro, Arkansas",Tomlinson Stadium–Kell Field,202,35.841791,-90.668808,,,,,,,,,,,,,,,
 401848512,2026-03-28T23:30Z,Scheduled,Houston,Baylor,Darryl & Lori Schroeder Park,"Houston, Texas",Schroeder Park,70.3,29.726893,-95.345015,,,,,,,,,,,,,,,
@@ -2220,7 +2220,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847772,2026-03-29T17:00Z,Scheduled,Wake Forest,California,David F. Couch Ballpark,"Winston-Salem, North Carolina",David F. Couch Ballpark,43.3,36.129991,-80.251766,,,,,,,,,,,,,,,
 401848382,2026-03-29T17:00Z,Scheduled,UCF,Arizona,John Euliano Park,"Orlando, Florida",John Euliano Park,54.2,28.609962,-81.195166,,,,,,,,,,,,,,,
 401854410,2026-03-29T17:00Z,Scheduled,FGCU,Stetson,Swanson Stadium,"Fort Myers, Florida",Swanson Stadium,359.6,26.471068,-81.763258,,,,,,,,,,,,,,,
-401854409,2026-03-29T17:00Z,Scheduled,Jacksonville,North Florida,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854409,2026-03-29T17:00Z,Scheduled,Jacksonville,North Florida,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854190,2026-03-29T17:00Z,Scheduled,Bellarmine,North Alabama,Knights Field,"Louisville, Kentucky",Knights Field,149.7,38.216903,-85.70556,,,,,,,,,,,,,,,
 401853813,2026-03-29T17:00Z,Scheduled,Liberty,FIU,Worthington Field at Liberty Baseball Stadium,"Lynchburg, Virginia",Liberty Baseball Stadium,27,37.356744,-79.176904,,,,,,,,,,,,,,,
 401853512,2026-03-29T17:00Z,Scheduled,Campbell,Charleston,Jim Perry Stadium,"Buies Creek, North Carolina",Jim Perry Stadium,140.5,35.409909,-78.735076,,,,,,,,,,,,,,,
@@ -2269,7 +2269,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401848480,2026-03-31T04:00Z,Scheduled,Virginia,Old Dominion,Davenport Field at Disharoon Park,"Charlottesville, Virginia",Davenport Field at Disharoon Park,88,38.045782,-78.513308,,,,,,,,,,,,,,,
 401847721,2026-03-31T04:00Z,Scheduled,Boston College,Maine,Eddie Pellagrini Baseball Diamond,"Brighton, Massachusetts",Eddie Pellagrini Diamond,133,42.343859,-71.159615,,,,,,,,,,,,,,,
 401847452,2026-03-31T04:00Z,Scheduled,Missouri,Kansas,Taylor Stadium,"Columbia, Missouri",Taylor Stadium,44.8,38.93598,-92.337942,,,,,,,,,,,,,,,
-401847071,2026-03-31T04:00Z,Scheduled,Jax State,Alabama,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401847071,2026-03-31T04:00Z,Scheduled,Jax State,Alabama,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401853404,2026-03-31T15:05Z,Scheduled,Wichita St,TBD,Eck Stadium Home of Tyler Field,"Wichita, Kansas",Eck Stadium,45.58,37.7214559,-97.28874,,,,,,,,,,,,,,,
 401847530,2026-03-31T16:00Z,Scheduled,Ole Miss,Little Rock,Oxford-University Stadium at Swayze Field,"Oxford, Mississippi",Swayze Field,44,34.362405,-89.528681,,,,,,,,,,,,,,,
 401853284,2026-03-31T18:00Z,Scheduled,UAB,North Alabama,Jerry D. Young Memorial Field,"Birmingham, Alabama",Jerry D. Young Memorial Field,301.68,33.5206824,-86.8024326,,,,,,,,,,,,,,,
@@ -2362,10 +2362,10 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401851870,2026-04-02T22:30Z,Scheduled,FAU,UAB,FAU Baseball Stadium,"Boca Raton, Florida",FAU Baseball Stadium,179.52,26.3586885,-80.0830984,,,,,,,,,,,,,,,
 401847562,2026-04-02T23:00Z,Scheduled,South Carolina,Texas,Founders Park,"Columbia, South Carolina",Founders Park,20.1,33.986689,-81.042586,,,,,,,,,,,,,,,
 401847127,2026-04-02T23:00Z,Scheduled,Auburn,Arkansas,Plainsman Park,"Auburn, Alabama",Samford Stadium – Hitchcock Field at Plainsman Park,138,32.599473,-85.489429,,,,,,,,,,,,,,,
-401854416,2026-04-02T23:00Z,Scheduled,Jacksonville,Stetson,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854416,2026-04-02T23:00Z,Scheduled,Jacksonville,Stetson,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854151,2026-04-02T23:00Z,Scheduled,E Kentucky,Austin Peay,Turkey Hughes Field at Earle Combs Stadium,"Richmond, Kentucky",Turkey Hughes Field,65.74,37.736291,-84.299795,,,,,,,,,,,,,,,
 401853778,2026-04-02T23:00Z,Scheduled,FIU,Louisiana Tech,FIU Baseball Stadium,"Miami, Florida",FIU Baseball Stadium,44.6,25.754772,-80.38059,,,,,,,,,,,,,,,
-401853744,2026-04-02T23:00Z,Scheduled,Jax State,MTSU,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401853744,2026-04-02T23:00Z,Scheduled,Jax State,MTSU,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401853470,2026-04-02T23:00Z,Scheduled,Western KY,Liberty,Nick Denes Field,"Bowling Green, Kentucky",Nick Denes Field,169,36.982887,-86.46094,,,,,,,,,,,,,,,
 401853119,2026-04-02T23:00Z,Scheduled,UL Monroe,Georgia St,Lou St. Amant Field,"Monroe, Louisiana",Lou St. Amant Field,58,32.53239,-92.063398,,,,,,,,,,,,,,,
 401853074,2026-04-02T23:00Z,Scheduled,Texas St,GA Southern,Bobcat Ballpark (TX),"San Marcos, Texas",Bobcat Ballpark,0.7,29.888173,-97.928234,,,,,,,,,,,,,,,
@@ -2387,7 +2387,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847280,2026-04-03T04:00Z,Scheduled,Mississippi St,Georgia,Dudy Noble Field,"Starkville, Mississippi","Dudy Noble Field, Polk–DeMent Stadium",45.7,33.463138,-88.793861,,,,,,,,,,,,,,,
 401847659,2026-04-03T04:00Z,Scheduled,Texas A&M,Vanderbilt,Olsen Field at Blue Bell Park,"College Station, Texas",Olsen Field at Blue Bell Park,6,30.606216,-96.341319,,,,,,,,,,,,,,,
 401851097,2026-04-03T04:00Z,Scheduled,Northwestern,Michigan St,Rocky and Berenice Miller Park,"Evanston, Illinois",Rocky Miller Park,117.1,42.067978,-87.692431,,,,,,,,,,,,,,,
-401854419,2026-04-03T17:00Z,Scheduled,Jacksonville,Stetson,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854419,2026-04-03T17:00Z,Scheduled,Jacksonville,Stetson,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401847927,2026-04-03T18:00Z,Scheduled,Virginia,Florida St,Davenport Field at Disharoon Park,"Charlottesville, Virginia",Davenport Field at Disharoon Park,88,38.045782,-78.513308,,,,,,,,,,,,,,,
 401852053,2026-04-03T18:00Z,Scheduled,Villanova,Butler,Villanova Ballpark at Plymouth,"Plymouth Meeting, Pennsylvania",Villanova Ballpark at Plymouth,356,40.123791,-75.289393,,,,,,,,,,,,,,,
 401853311,2026-04-03T19:00Z,Scheduled,Old Dominion,Southern Miss,Bud Metheny Baseball Stadium,"Norfolk, Virginia",Bud Metheny Ballpark,53,36.883977,-76.308905,,,,,,,,,,,,,,,
@@ -2397,7 +2397,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401852717,2026-04-03T19:00Z,Scheduled,Georgetown,Xavier,Capital One Park,"Tysons, Virginia",Capital One Park,359.1,38.926982,-77.207459,,,,,,,,,,,,,,,
 401854417,2026-04-03T19:05Z,Scheduled,North Florida,Queens,Dusty Rhodes Field at Harmon Stadium,"Jacksonville, Florida",Harmon Stadium,45.7,30.275193,-81.508239,,,,,,,,,,,,,,,
 401854283,2026-04-03T19:30Z,Scheduled,North Alabama,C Arkansas,Mike D. Lane Field,"Florence, Alabama",Mike D. Lane Field at Bank Independent Stadium,17,34.809878,-87.685313,,,,,,,,,,,,,,,
-401853745,2026-04-03T20:00Z,Scheduled,Jax State,MTSU,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401853745,2026-04-03T20:00Z,Scheduled,Jax State,MTSU,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401853151,2026-04-03T20:00Z,Scheduled,James Madison,Louisiana,Eagle Field at Veterans Memorial Park,"Harrisonburg, Virginia",Eagle Field at Veterans Memorial Park,74,38.447106,-78.876389,,,,,,,,,,,,,,,
 401851057,2026-04-03T20:00Z,Scheduled,Michigan,Oregon,Ray Fisher Stadium,"Ann Arbor, Michigan",Ray Fisher Stadium,225,42.267346,-83.742719,,,,,,,,,,,,,,,
 401853471,2026-04-03T21:00Z,Scheduled,Western KY,Liberty,Nick Denes Field,"Bowling Green, Kentucky",Nick Denes Field,169,36.982887,-86.46094,,,,,,,,,,,,,,,
@@ -2457,7 +2457,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401853033,2026-04-04T17:00Z,Scheduled,Coastal,South Alabama,Springs Brooks Stadium,"Conway, South Carolina",Springs Brooks Stadium,123,33.793201,-79.014719,,,,,,,,,,,,,,,
 401847884,2026-04-04T17:00Z,Scheduled,Duke,Louisville,Jack Coombs Field,"Durham, North Carolina",Jack Coombs Field,339,35.998255,-78.944238,,,,,,,,,,,,,,,
 401854421,2026-04-04T17:00Z,Scheduled,West Georgia,FGCU,Cole Field,"Carrollton, Georgia",Cole Field,1.45,33.574749,-85.103254,,,,,,,,,,,,,,,
-401854420,2026-04-04T17:00Z,Scheduled,Jacksonville,Stetson,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854420,2026-04-04T17:00Z,Scheduled,Jacksonville,Stetson,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854194,2026-04-04T17:00Z,Scheduled,Bellarmine,Lipscomb,Knights Field,"Louisville, Kentucky",Knights Field,149.7,38.216903,-85.70556,,,,,,,,,,,,,,,
 401853641,2026-04-04T17:00Z,Scheduled,New Mexico St,Delaware,Presley Askew Field,"Las Cruces, New Mexico",Presley Askew Field,32,32.279221,-106.744043,,,,,,,,,,,,,,,
 401852848,2026-04-04T17:00Z,Scheduled,App State,Marshall,Beaver Field at Jim and Bettie Smith Stadium,"Boone, North Carolina",Beaver Field at Jim and Bettie Smith Stadium,159,36.211125,-81.69276,,,,,,,,,,,,,,,
@@ -2472,7 +2472,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847322,2026-04-04T18:00Z,Scheduled,Kentucky,Missouri,Kentucky Proud Park,"Lexington, Kentucky",Kentucky Proud Park,100.5,38.018045,-84.502213,,,,,,,,,,,,,,,
 401854284,2026-04-04T18:00Z,Scheduled,North Alabama,C Arkansas,Mike D. Lane Field,"Florence, Alabama",Mike D. Lane Field at Bank Independent Stadium,17,34.809878,-87.685313,,,,,,,,,,,,,,,
 401853780,2026-04-04T18:00Z,Scheduled,FIU,Louisiana Tech,FIU Baseball Stadium,"Miami, Florida",FIU Baseball Stadium,44.6,25.754772,-80.38059,,,,,,,,,,,,,,,
-401853746,2026-04-04T18:00Z,Scheduled,Jax State,MTSU,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401853746,2026-04-04T18:00Z,Scheduled,Jax State,MTSU,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401853677,2026-04-04T18:00Z,Scheduled,NC A&T,Elon,World War Memorial Stadium,"Greensboro, North Carolina",World War Memorial Stadium,76,36.079733,-79.777165,,,,,,,,,,,,,,,
 401853472,2026-04-04T18:00Z,Scheduled,Western KY,Liberty,Nick Denes Field,"Bowling Green, Kentucky",Nick Denes Field,169,36.982887,-86.46094,,,,,,,,,,,,,,,
 401853121,2026-04-04T18:00Z,Scheduled,UL Monroe,Georgia St,Lou St. Amant Field,"Monroe, Louisiana",Lou St. Amant Field,58,32.53239,-92.063398,,,,,,,,,,,,,,,
@@ -2929,7 +2929,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847371,2026-04-17T23:00Z,Scheduled,LSU,Texas A&M,"Alex Box Stadium, Skip Bertman Field","Baton Rouge, Louisiana","Alex Box Stadium, Skip Bertman Field",26,30.406735,-91.187388,,,,,,,,,,,,,,,
 401847136,2026-04-17T23:00Z,Scheduled,Arkansas,Georgia,Baum-Walker Stadium,"Fayetteville, Arkansas",Baum–Walker Stadium,138,36.04975,-94.182111,,,,,,,,,,,,,,,
 401853426,2026-04-17T23:00Z,Scheduled,Southern Miss,Texas St,Pete Taylor Park/Hill Denson Field,"Hattiesburg, Mississippi",Pete Taylor Park,47,31.333683,-89.337903,,,,,,,,,,,,,,,
-401854447,2026-04-17T23:00Z,Scheduled,Jacksonville,West Georgia,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854447,2026-04-17T23:00Z,Scheduled,Jacksonville,West Georgia,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854256,2026-04-17T23:00Z,Scheduled,C Arkansas,E Kentucky,Bear Stadium,"Conway, Arkansas",Bear Stadium,47.34,35.083403,-92.459763,,,,,,,,,,,,,,,
 401854159,2026-04-17T23:00Z,Scheduled,Austin Peay,Bellarmine,Raymond C. Hand Park,"Clarksville, Tennessee",Raymond C. Hand Park,333.86,36.53818,-87.356316,,,,,,,,,,,,,,,
 401853783,2026-04-17T23:00Z,Scheduled,Kennesaw St,Louisiana Tech,Mickey Dunn Stadium,"Kennesaw, Georgia",Fred Stillwell Stadium,22,34.033991,-84.581646,,,,,,,,,,,,,,,
@@ -3014,7 +3014,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401848054,2026-04-18T21:05Z,Scheduled,Stanford,Miami,Klein Field at Sunken Diamond,"Stanford, California",Klein Field at Sunken Diamond,183,37.431447,-122.158791,,,,,,,,,,,,,,,
 401847534,2026-04-18T22:00Z,Scheduled,Tennessee,Ole Miss,Lindsey Nelson Stadium,"Knoxville, Tennessee",Lindsey Nelson Stadium,184,35.948675,-83.929455,,,,,,,,,,,,,,,
 401848640,2026-04-18T22:00Z,Scheduled,UCF,Cincinnati,John Euliano Park,"Orlando, Florida",John Euliano Park,54.2,28.609962,-81.195166,,,,,,,,,,,,,,,
-401854450,2026-04-18T23:00Z,Scheduled,Jacksonville,West Georgia,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854450,2026-04-18T23:00Z,Scheduled,Jacksonville,West Georgia,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401852934,2026-04-18T23:00Z,Scheduled,UL Monroe,Arkansas St,Lou St. Amant Field,"Monroe, Louisiana",Lou St. Amant Field,58,32.53239,-92.063398,,,,,,,,,,,,,,,
 401848735,2026-04-18T23:00Z,Scheduled,Oklahoma St,Kansas,O'Brate Stadium,"Stillwater, Oklahoma",O'Brate Stadium,44.8,36.131651,-97.067938,,,,,,,,,,,,,,,
 401847372,2026-04-19T00:00Z,Scheduled,LSU,Texas A&M,"Alex Box Stadium, Skip Bertman Field","Baton Rouge, Louisiana","Alex Box Stadium, Skip Bertman Field",26,30.406735,-91.187388,,,,,,,,,,,,,,,
@@ -3025,7 +3025,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401852298,2026-04-19T04:00Z,Scheduled,Villanova,Creighton,Villanova Ballpark at Plymouth,"Plymouth Meeting, Pennsylvania",Villanova Ballpark at Plymouth,356,40.123791,-75.289393,,,,,,,,,,,,,,,
 401848320,2026-04-19T04:00Z,Scheduled,Virginia Tech,Pitt,English Field at Atlantic Union Bank Park,"Blacksburg, Virginia",English Field,130,37.217751,-80.42327,,,,,,,,,,,,,,,
 401847732,2026-04-19T04:00Z,Scheduled,Boston College,Duke,Eddie Pellagrini Baseball Diamond,"Brighton, Massachusetts",Eddie Pellagrini Diamond,133,42.343859,-71.159615,,,,,,,,,,,,,,,
-401854451,2026-04-19T16:00Z,Scheduled,Jacksonville,West Georgia,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854451,2026-04-19T16:00Z,Scheduled,Jacksonville,West Georgia,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401852790,2026-04-19T16:00Z,Scheduled,Seton Hall,Xavier,"Mike Sheppard, Sr. Stadium at Owen T. Carroll Field","South Orange, New Jersey","Mike Sheppard, Sr. Stadium at Owen T. Carroll Field",221.7,40.740666,-74.248067,,,,,,,,,,,,,,,
 401851879,2026-04-19T16:00Z,Scheduled,FAU,Tulane,FAU Baseball Stadium,"Boca Raton, Florida",FAU Baseball Stadium,179.52,26.3586885,-80.0830984,,,,,,,,,,,,,,,
 401847976,2026-04-19T17:00Z,Scheduled,North Carolina,Georgia Tech,Bryson Field at Boshamer Stadium,"Chapel Hill, North Carolina",Boshamer Stadium,195,35.905585,-79.043216,,,,,,,,,,,,,,,
@@ -3212,10 +3212,10 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401848696,2026-04-24T23:00Z,Scheduled,TCU,Houston,Charlie and Marie Lupton Baseball Stadium at Williams-Reilly Field,"Fort Worth, Texas",Lupton Stadium,150.6,32.702575,-97.372058,,,,,,,,,,,,,,,
 401847329,2026-04-24T23:00Z,Scheduled,South Carolina,Kentucky,Founders Park,"Columbia, South Carolina",Founders Park,20.1,33.986689,-81.042586,,,,,,,,,,,,,,,
 401847786,2026-04-24T23:00Z,Scheduled,Miami,California,Alex Rodriguez Park at Mark Light Field,"Coral Gables, Florida",Alex Rodriguez Park at Mark Light Field,21.7,25.71214,-80.282245,,,,,,,,,,,,,,,
-401854461,2026-04-24T23:00Z,Scheduled,Jacksonville,Queens,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854461,2026-04-24T23:00Z,Scheduled,Jacksonville,Queens,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854162,2026-04-24T23:00Z,Scheduled,Lipscomb,Austin Peay,Ken Dugan Field at Stephen Lee Marsh Stadium,"Nashville, Tennessee",Ken Dugan Field at Stephen Lee Marsh Stadium,141.2,36.102431,-86.798816,,,,,,,,,,,,,,,
 401853714,2026-04-24T23:00Z,Scheduled,Louisiana Tech,Missouri St,J.C. Love Field at Pat Patterson Park,"Ruston, Louisiana",J. C. Love Field at Pat Patterson Park,151,32.529786,-92.651126,,,,,,,,,,,,,,,
-401853643,2026-04-24T23:00Z,Scheduled,Jax State,New Mexico St,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401853643,2026-04-24T23:00Z,Scheduled,Jax State,New Mexico St,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401853607,2026-04-24T23:00Z,Scheduled,Sam Houston,MTSU,Don Sanders Stadium,"Huntsville, Texas",Don Sanders Stadium,40.6,30.713624,-95.539686,,,,,,,,,,,,,,,
 401853482,2026-04-24T23:00Z,Scheduled,Western KY,Kennesaw St,Nick Denes Field,"Bowling Green, Kentucky",Nick Denes Field,169,36.982887,-86.46094,,,,,,,,,,,,,,,
 401853155,2026-04-24T23:00Z,Scheduled,UL Monroe,James Madison,Lou St. Amant Field,"Monroe, Louisiana",Lou St. Amant Field,58,32.53239,-92.063398,,,,,,,,,,,,,,,
@@ -3291,8 +3291,8 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847787,2026-04-25T22:00Z,Scheduled,Miami,California,Alex Rodriguez Park at Mark Light Field,"Coral Gables, Florida",Alex Rodriguez Park at Mark Light Field,21.7,25.71214,-80.282245,,,,,,,,,,,,,,,
 401847188,2026-04-25T23:00Z,Scheduled,Auburn,Oklahoma,Plainsman Park,"Auburn, Alabama",Samford Stadium – Hitchcock Field at Plainsman Park,138,32.599473,-85.489429,,,,,,,,,,,,,,,
 401848697,2026-04-25T23:00Z,Scheduled,TCU,Houston,Charlie and Marie Lupton Baseball Stadium at Williams-Reilly Field,"Fort Worth, Texas",Lupton Stadium,150.6,32.702575,-97.372058,,,,,,,,,,,,,,,
-401854464,2026-04-25T23:00Z,Scheduled,Jacksonville,Queens,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
-401853644,2026-04-25T23:00Z,Scheduled,Jax State,New Mexico St,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854464,2026-04-25T23:00Z,Scheduled,Jacksonville,Queens,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
+401853644,2026-04-25T23:00Z,Scheduled,Jax State,New Mexico St,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401852938,2026-04-25T23:00Z,Scheduled,Arkansas St,Louisiana,Tomlinson Stadiumâ€“Kell Field,"Jonesboro, Arkansas",Tomlinson Stadium–Kell Field,202,35.841791,-90.668808,,,,,,,,,,,,,,,
 401847376,2026-04-25T23:30Z,Scheduled,Mississippi St,LSU,Dudy Noble Field,"Starkville, Mississippi","Dudy Noble Field, Polk–DeMent Stadium",45.7,33.463138,-88.793861,,,,,,,,,,,,,,,
 401853237,2026-04-25T23:30Z,Scheduled,Tulane,UTSA,Green Field at Turchin Stadium,"New Orleans, Louisiana",Greer Field at Turchin Stadium,341.16,29.9561422,-90.0733934,,,,,,,,,,,,,,,
@@ -3310,7 +3310,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847842,2026-04-26T17:00Z,Scheduled,Louisville,Clemson,Jim Patterson Stadium,"Louisville, Kentucky",Jim Patterson Stadium,58.8,38.205798,-85.762068,,,,,,,,,,,,,,,
 401847237,2026-04-26T17:00Z,Scheduled,Florida,Texas A&M,Condron Family Ballpark,"Gainesville, Florida",Condron Ballpark,44.6,29.636785,-82.363216,,,,,,,,,,,,,,,
 401847788,2026-04-26T17:00Z,Scheduled,Miami,California,Alex Rodriguez Park at Mark Light Field,"Coral Gables, Florida",Alex Rodriguez Park at Mark Light Field,21.7,25.71214,-80.282245,,,,,,,,,,,,,,,
-401854468,2026-04-26T17:00Z,Scheduled,Jacksonville,Queens,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854468,2026-04-26T17:00Z,Scheduled,Jacksonville,Queens,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854467,2026-04-26T17:00Z,Scheduled,FGCU,North Florida,Swanson Stadium,"Fort Myers, Florida",Swanson Stadium,359.6,26.471068,-81.763258,,,,,,,,,,,,,,,
 401854465,2026-04-26T17:00Z,Scheduled,West Georgia,Stetson,Cole Field,"Carrollton, Georgia",Cole Field,1.45,33.574749,-85.103254,,,,,,,,,,,,,,,
 401854261,2026-04-26T17:00Z,Scheduled,E Kentucky,North Alabama,Turkey Hughes Field at Earle Combs Stadium,"Richmond, Kentucky",Turkey Hughes Field,65.74,37.736291,-84.299795,,,,,,,,,,,,,,,
@@ -3336,7 +3336,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401853380,2026-04-26T18:00Z,Scheduled,South Alabama,Southern Miss,Stanky Field,"Mobile, Alabama",Eddie Stanky Field,35,30.691714,-88.184253,,,,,,,,,,,,,,,
 401854164,2026-04-26T18:00Z,Scheduled,Lipscomb,Austin Peay,Ken Dugan Field at Stephen Lee Marsh Stadium,"Nashville, Tennessee",Ken Dugan Field at Stephen Lee Marsh Stadium,141.2,36.102431,-86.798816,,,,,,,,,,,,,,,
 401853716,2026-04-26T18:00Z,Scheduled,Louisiana Tech,Missouri St,J.C. Love Field at Pat Patterson Park,"Ruston, Louisiana",J. C. Love Field at Pat Patterson Park,151,32.529786,-92.651126,,,,,,,,,,,,,,,
-401853645,2026-04-26T18:00Z,Scheduled,Jax State,New Mexico St,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401853645,2026-04-26T18:00Z,Scheduled,Jax State,New Mexico St,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401853609,2026-04-26T18:00Z,Scheduled,Sam Houston,MTSU,Don Sanders Stadium,"Huntsville, Texas",Don Sanders Stadium,40.6,30.713624,-95.539686,,,,,,,,,,,,,,,
 401853484,2026-04-26T18:00Z,Scheduled,Western KY,Kennesaw St,Nick Denes Field,"Bowling Green, Kentucky",Nick Denes Field,169,36.982887,-86.46094,,,,,,,,,,,,,,,
 401852939,2026-04-26T18:00Z,Scheduled,Arkansas St,Louisiana,Tomlinson Stadiumâ€“Kell Field,"Jonesboro, Arkansas",Tomlinson Stadium–Kell Field,202,35.841791,-90.668808,,,,,,,,,,,,,,,
@@ -3914,7 +3914,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401847335,2026-05-12T22:30Z,Scheduled,Kentucky,N Kentucky,Kentucky Proud Park,"Lexington, Kentucky",Kentucky Proud Park,100.5,38.018045,-84.502213,,,,,,,,,,,,,,,
 401851887,2026-05-12T22:30Z,Scheduled,FGCU,FAU,Swanson Stadium,"Fort Myers, Florida",Swanson Stadium,359.6,26.471068,-81.763258,,,,,,,,,,,,,,,
 401847572,2026-05-12T22:30Z,Scheduled,South Carolina,Winthrop,Founders Park,"Columbia, South Carolina",Founders Park,20.1,33.986689,-81.042586,,,,,,,,,,,,,,,
-401847197,2026-05-12T23:00Z,Scheduled,Jax State,Auburn,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401847197,2026-05-12T23:00Z,Scheduled,Jax State,Auburn,Rudy Abbott Field at Jim Case Stadium,"Jacksonville, Alabama",Rudy Abbott Field at Jim Case Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
 401853616,2026-05-12T23:00Z,Scheduled,Sam Houston,Hou Christian,Don Sanders Stadium,"Huntsville, Texas",Don Sanders Stadium,40.6,30.713624,-95.539686,,,,,,,,,,,,,,,
 401853347,2026-05-12T23:00Z,Scheduled,UTSA,Texas St,Roadrunner Field,"San Antonio, Texas",Roadrunner Field,12.59,29.58,-98.737192,,,,,,,,,,,,,,,
 401851990,2026-05-12T23:00Z,Scheduled,Creighton,Nebraska,Charles Schwab Field,"Omaha, Nebraska",Tony Gwynn Stadium,47,32.774675,-117.077949,,,,,,,,,,,,,,,
@@ -3962,7 +3962,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401853091,2026-05-14T23:00Z,Scheduled,Southern Miss,GA Southern,Pete Taylor Park/Hill Denson Field,"Hattiesburg, Mississippi",Pete Taylor Park,47,31.333683,-89.337903,,,,,,,,,,,,,,,
 401847573,2026-05-14T23:00Z,Scheduled,Vanderbilt,South Carolina,Hawkins Field,"Nashville, Tennessee",Hawkins Field,63,36.143442,-86.807226,,,,,,,,,,,,,,,
 401850062,2026-05-14T23:00Z,Scheduled,Oklahoma St,Arizona,O'Brate Stadium,"Stillwater, Oklahoma",O'Brate Stadium,44.8,36.131651,-97.067938,,,,,,,,,,,,,,,
-401854495,2026-05-14T23:00Z,Scheduled,Jacksonville,FGCU,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854495,2026-05-14T23:00Z,Scheduled,Jacksonville,FGCU,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854492,2026-05-14T23:00Z,Scheduled,C Arkansas,Lipscomb,Bear Stadium,"Conway, Arkansas",Bear Stadium,47.34,35.083403,-92.459763,,,,,,,,,,,,,,,
 401853617,2026-05-14T23:00Z,Scheduled,Louisiana Tech,Sam Houston,J.C. Love Field at Pat Patterson Park,"Ruston, Louisiana",J. C. Love Field at Pat Patterson Park,151,32.529786,-92.651126,,,,,,,,,,,,,,,
 401853572,2026-05-14T23:00Z,Scheduled,UL Monroe,Troy,Lou St. Amant Field,"Monroe, Louisiana",Lou St. Amant Field,58,32.53239,-92.063398,,,,,,,,,,,,,,,
@@ -4025,7 +4025,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401853092,2026-05-15T23:00Z,Scheduled,Southern Miss,GA Southern,Pete Taylor Park/Hill Denson Field,"Hattiesburg, Mississippi",Pete Taylor Park,47,31.333683,-89.337903,,,,,,,,,,,,,,,
 401847574,2026-05-15T23:00Z,Scheduled,Vanderbilt,South Carolina,Hawkins Field,"Nashville, Tennessee",Hawkins Field,63,36.143442,-86.807226,,,,,,,,,,,,,,,
 401850063,2026-05-15T23:00Z,Scheduled,Oklahoma St,Arizona,O'Brate Stadium,"Stillwater, Oklahoma",O'Brate Stadium,44.8,36.131651,-97.067938,,,,,,,,,,,,,,,
-401854499,2026-05-15T23:00Z,Scheduled,Jacksonville,FGCU,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854499,2026-05-15T23:00Z,Scheduled,Jacksonville,FGCU,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854496,2026-05-15T23:00Z,Scheduled,C Arkansas,Lipscomb,Bear Stadium,"Conway, Arkansas",Bear Stadium,47.34,35.083403,-92.459763,,,,,,,,,,,,,,,
 401853618,2026-05-15T23:00Z,Scheduled,Louisiana Tech,Sam Houston,J.C. Love Field at Pat Patterson Park,"Ruston, Louisiana",J. C. Love Field at Pat Patterson Park,151,32.529786,-92.651126,,,,,,,,,,,,,,,
 401853573,2026-05-15T23:00Z,Scheduled,UL Monroe,Troy,Lou St. Amant Field,"Monroe, Louisiana",Lou St. Amant Field,58,32.53239,-92.063398,,,,,,,,,,,,,,,
@@ -4061,7 +4061,7 @@ event_id,event_date,status,home,away,venue,location,Stadium Final ,Azimuth,Lat,L
 401848026,2026-05-16T17:00Z,Scheduled,Louisville,Virginia,Jim Patterson Stadium,"Louisville, Kentucky",Jim Patterson Stadium,58.8,38.205798,-85.762068,,,,,,,,,,,,,,,
 401850000,2026-05-16T17:00Z,Scheduled,West Virginia,TCU,Wagener Field at Monongalia County Ballpark,"Morgantown, West Virginia",Kendrick Family Ballpark,154,39.643656,-79.995987,,,,,,,,,,,,,,,
 401850064,2026-05-16T17:00Z,Scheduled,Oklahoma St,Arizona,O'Brate Stadium,"Stillwater, Oklahoma",O'Brate Stadium,44.8,36.131651,-97.067938,,,,,,,,,,,,,,,
-401854502,2026-05-16T17:00Z,Scheduled,Jacksonville,FGCU,John Sessions Stadium,"Jacksonville, Florida",John Sessions Stadium,100.7,30.351395,-81.607159,,,,,,,,,,,,,,,
+401854502,2026-05-16T17:00Z,Scheduled,Jacksonville,FGCU,John Sessions Stadium,"Jacksonville, Florida",No Team Match,No Match,No Match,No Match,,,,,,,,,,,,,,,
 401854214,2026-05-16T17:00Z,Scheduled,Bellarmine,E Kentucky,Knights Field,"Louisville, Kentucky",Knights Field,149.7,38.216903,-85.70556,,,,,,,,,,,,,,,
 401853723,2026-05-16T17:00Z,Scheduled,Kennesaw St,Missouri St,Mickey Dunn Stadium,"Kennesaw, Georgia",Fred Stillwell Stadium,22,34.033991,-84.581646,,,,,,,,,,,,,,,
 401853697,2026-05-16T17:00Z,Scheduled,Monmouth,NC A&T,MU Baseball Field,"West Long Branch, New Jersey",Monmouth Baseball Field,310,40.277439,-74.009409,,,,,,,,,,,,,,,

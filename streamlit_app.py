@@ -349,6 +349,65 @@ def _render_top5_map(df_top: pd.DataFrame):
     components.html(m.get_root().render(), height=500, scrolling=False)
 
 
+def render_live_wind_map():
+        st.subheader("Live Wind — Global (Leaflet Velocity)")
+        html = """
+        <!doctype html>
+        <html>
+        <head>
+            <meta charset=\"utf-8\" />
+            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+            <link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.css\" />
+            <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/dist/leaflet-velocity.min.css\" />
+            <style>
+                html, body { height: 100%; margin: 0; }
+                #map { width: 100%; height: 600px; }
+                .leaflet-control { font-size: 14px; }
+            </style>
+        </head>
+        <body>
+            <div id=\"map\"></div>
+            <script src=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.js\"></script>
+            <script src=\"https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/dist/leaflet-velocity.min.js\"></script>
+            <script>
+                const map = L.map('map', { center: [20, 0], zoom: 2 });
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                fetch('https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/demo/wind-global.json')
+                    .then(r => r.json())
+                    .then(data => {
+                        const velocityLayer = L.velocityLayer({
+                            displayValues: true,
+                            displayOptions: {
+                                velocityType: 'Global Wind',
+                                position: 'bottomleft',
+                                emptyString: 'No velocity data',
+                                angleConvention: 'bearingCW',
+                                speedUnit: 'kt',
+                                directionString: 'Direction',
+                                speedString: 'Speed'
+                            },
+                            data: data,
+                            minVelocity: 0,
+                            maxVelocity: 25,
+                            velocityScale: 0.005,
+                            opacity: 0.97,
+                            paneName: 'overlayPane'
+                        });
+                        velocityLayer.addTo(map);
+                    })
+                    .catch(err => {
+                        console.error('Failed to load wind data:', err);
+                    });
+            </script>
+        </body>
+        </html>
+        """
+        components.html(html, height=650, scrolling=False)
+
+
 def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool = False):
     title = "Top 5 Stadiums by Wind"
     if heading_date:
@@ -394,9 +453,13 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool 
 # ---------- Main ----------
 def main():
     st.title("College Baseball Wind")
-    mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo"], index=0)
+    mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo", "Live Wind"], index=0)
 
-    if mode == "Testing":
+    if mode == "Live Wind":
+        render_live_wind_map()
+        st.caption("Global wind visualisation using leaflet-velocity demo data.")
+        return
+    elif mode == "Testing":
         try:
             df_mode = load_testing_data()
         except FileNotFoundError as e:
