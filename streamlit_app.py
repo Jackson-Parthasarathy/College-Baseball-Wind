@@ -411,7 +411,7 @@ def render_live_wind_map():
 
     # Earth URL fragment and projection centered on team
     earth_fragment = target_utc.strftime(f"%Y/%m/%d/%H00{time_suffix}")
-    earth_url = f"https://earth.nullschool.net/#{earth_fragment}/wind/surface/orthographic={center_lon:.4f},{center_lat:.4f},{int(zoom)}"
+        earth_url = f"https://earth.nullschool.net/#{earth_fragment}/wind/surface/orthographic={center_lon:.4f},{center_lat:.4f},{int(zoom)}"
 
         # High contrast + overlay time label
         html = f"""
