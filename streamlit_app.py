@@ -35,6 +35,29 @@ SESSION = requests.Session()
 RAD = math.pi / 180.0
 TF = TimezoneFinder() if TimezoneFinder is not None else None
 
+# ---------- Logo helper ----------
+def _normalize_name(s: str) -> str:
+    return str(s or "").strip().lower()
+
+def find_logo_for_team(team_name: str) -> str | None:
+    """Best-effort logo lookup using normalized keys across team_logos.
+    Falls back to substring matching if direct lookup fails.
+    """
+    try:
+        lookup = load_team_logos()
+    except Exception:
+        lookup = {}
+    key = _normalize_name(team_name)
+    if key in lookup:
+        return lookup[key]
+    # fallback: substring match
+    for k, url in lookup.items():
+        if not isinstance(k, str) or not url:
+            continue
+        if key and (key in k or k in key):
+            return url
+    return None
+
 # ---------- Team logos ----------
 @st.cache_data(show_spinner=False)
 def load_team_logos(path: str = "team_logos.csv") -> dict:
@@ -462,6 +485,10 @@ def render_custom_wind_map():
         q = st.text_input("Search team", value="", placeholder="Type to filter")
         team_names = [t for t in all_teams if (q.lower() in t.lower())] if q else all_teams
         selected_team = st.selectbox("Team", team_names, index=0 if team_names else None)
+        # Show selected team logo beside dropdown
+        selected_logo = find_logo_for_team(selected_team) if selected_team else None
+        if selected_logo:
+            st.image(selected_logo, width=64)
 
         # Center defaults
         center_lat = 37.67
@@ -479,8 +506,7 @@ def render_custom_wind_map():
         stadiums = []
         for _, r in df.iterrows():
                 team = str(r.get("Team", ""))
-                logo_key = team.strip().lower()
-                logo_url = logos_lookup.get(logo_key)
+                logo_url = find_logo_for_team(team)
                 stadium = str(r.get("Stadium", ""))
                 lat = float(r["latitude"])
                 lon = float(r["longitude"])
@@ -509,9 +535,9 @@ def render_custom_wind_map():
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/dist/leaflet-velocity.min.css" />
         <style>
-            html, body {{ height: 100%; margin: 0; }}
-            #map {{ width: 100%; height: 640px; }}
-            .leaflet-control {{ font-size: 14px; }}
+            html, body { height: 100%; margin: 0; }
+            #map { width: 100%; height: 640px; }
+            .leaflet-control { font-size: 14px; }
         </style>
         <div id="map"></div>
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
