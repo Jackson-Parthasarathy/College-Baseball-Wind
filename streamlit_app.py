@@ -4,6 +4,7 @@ import numpy as np
 import altair as alt
 from pathlib import Path
 import requests
+import json
 from datetime import datetime, date, timedelta, timezone
 from zoneinfo import ZoneInfo
 import math
@@ -437,6 +438,134 @@ def render_earth_live_map():
     components.html(html, height=700, scrolling=False)
 
 
+def render_custom_wind_map():
+        st.subheader("Wind Map — Customizable Leaflet + Velocity")
+        st.caption("Scroll and click to zoom; select a team to center.")
+
+        # Load stadiums and logos
+        try:
+                master = load_stadium_master()
+        except Exception as e:
+                st.error(f"Could not load stadium list: {e}")
+                return
+        logos_lookup = {}
+        try:
+                logos_lookup = load_team_logos()
+        except Exception:
+                logos_lookup = {}
+
+        df = master.dropna(subset=["Team","latitude","longitude"]).copy()
+        df = df.sort_values("Team")
+        all_teams = df["Team"].astype(str).unique().tolist()
+
+        # Search + select
+        q = st.text_input("Search team", value="", placeholder="Type to filter")
+        team_names = [t for t in all_teams if (q.lower() in t.lower())] if q else all_teams
+        selected_team = st.selectbox("Team", team_names, index=0 if team_names else None)
+
+        # Center defaults
+        center_lat = 37.67
+        center_lon = -122.53
+        if selected_team:
+                row = df[df["Team"] == selected_team].iloc[0]
+                if pd.notna(row.get("latitude")) and pd.notna(row.get("longitude")):
+                        center_lat = float(row["latitude"])
+                        center_lon = float(row["longitude"])
+
+        # Initial zoom (Leaflet zoom levels; 2 global, 8 regional, 12 city)
+        initial_zoom = st.slider("Initial zoom", min_value=2, max_value=14, value=6)
+
+        # Build stadium marker payload
+        stadiums = []
+        for _, r in df.iterrows():
+                team = str(r.get("Team", ""))
+                logo_key = team.strip().lower()
+                logo_url = logos_lookup.get(logo_key)
+                stadium = str(r.get("Stadium", ""))
+                lat = float(r["latitude"])
+                lon = float(r["longitude"])
+                logo_img = f'<img src="{logo_url}" width="32" style="vertical-align:middle;margin-right:6px;" />' if logo_url else ""
+                popup_html = f"{logo_img}<b>{stadium}</b><br/>{team}"
+                stadiums.append({
+                        "team": team,
+                        "stadium": stadium,
+                        "lat": lat,
+                        "lon": lon,
+                        "popup_html": popup_html,
+                })
+        stadiums_json = json.dumps(stadiums)
+
+        # Controls for wind layer appearance
+        c1, c2, c3 = st.columns(3)
+        with c1:
+                opacity = st.slider("Wind opacity", min_value=0.2, max_value=1.0, value=0.95)
+        with c2:
+                max_vel = st.slider("Max velocity (kt)", min_value=10, max_value=60, value=30)
+        with c3:
+                vel_scale = st.slider("Particle scale", min_value=0.001, max_value=0.02, value=0.006)
+
+        # HTML + JS (brace-escaped) for Leaflet map and velocity layer using demo data
+        html_template = """
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/dist/leaflet-velocity.min.css" />
+        <style>
+            html, body {{ height: 100%; margin: 0; }}
+            #map {{ width: 100%; height: 640px; }}
+            .leaflet-control {{ font-size: 14px; }}
+        </style>
+        <div id="map"></div>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/dist/leaflet-velocity.min.js"></script>
+        <script>
+            const center = [__CENTER_LAT__, __CENTER_LON__];
+            const zoom = __ZOOM__;
+            const stadiums = __STADIUMS__;
+            const map = L.map('map', {{ center: center, zoom: zoom }});
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {{
+                attribution: '© OpenStreetMap contributors'
+            }}).addTo(map);
+
+            // Stadium markers
+            stadiums.forEach(function(s) {{
+                const m = L.marker([s.lat, s.lon]).addTo(map);
+                m.bindPopup(s.popup_html);
+            }});
+
+            // Wind layer (demo data)
+            fetch('https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/demo/wind-global.json')
+                .then(r => r.json())
+                .then(function(data) {{
+                    L.velocityLayer({{
+                        displayValues: true,
+                        displayOptions: {{
+                            velocityType: 'Global Wind', position: 'bottomleft', emptyString: 'No velocity data',
+                            angleConvention: 'bearingCW', speedUnit: 'kt', directionString: 'Direction', speedString: 'Speed'
+                        }},
+                        data: data,
+                        minVelocity: 0,
+                        maxVelocity: __MAX_VEL__,
+                        velocityScale: __VEL_SCALE__,
+                        opacity: __OPACITY__,
+                        paneName: 'overlayPane'
+                    }}).addTo(map);
+                }});
+        </script>
+        """
+
+        html = (
+                html_template
+                .replace("__CENTER_LAT__", str(center_lat))
+                .replace("__CENTER_LON__", str(center_lon))
+                .replace("__ZOOM__", str(initial_zoom))
+                .replace("__STADIUMS__", stadiums_json)
+                .replace("__MAX_VEL__", str(max_vel))
+                .replace("__VEL_SCALE__", str(vel_scale))
+                .replace("__OPACITY__", str(opacity))
+        )
+
+        components.html(html, height=680, scrolling=False)
+
+
 def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool = False):
     title = "Top 5 Stadiums by Wind"
     if heading_date:
@@ -482,9 +611,12 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool 
 # ---------- Main ----------
 def main():
     st.title("College Baseball Wind")
-    mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo", "Live Map"], index=0)
+    mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo", "Live Map", "Wind Map (Custom)"] , index=0)
 
-    if mode == "Live Map":
+    if mode == "Wind Map (Custom)":
+        render_custom_wind_map()
+        return
+    elif mode == "Live Map":
         render_earth_live_map()
         st.caption("Interactive global wind from earth.nullschool.net with time controls.")
         return
