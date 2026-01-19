@@ -413,48 +413,17 @@ def render_live_wind_map():
     earth_fragment = target_utc.strftime(f"%Y/%m/%d/%H00{time_suffix}")
     earth_url = f"https://earth.nullschool.net/#{earth_fragment}/wind/surface/orthographic={center_lon:.4f},{center_lat:.4f},{int(zoom)}"
 
-    # High contrast + overlay time label
-    html = f"
-    <div style=\"position:relative;width:100%;height:650px;background:#000;\">
-      <div style=\"position:absolute;top:8px;left:10px;color:#fff;background:rgba(0,0,0,0.55);padding:6px 10px;border-radius:6px;font-family:system-ui,Segoe UI,Arial;font-size:13px;\">
-        Showing: {display_str}
-      </div>
-      <div style=\"position:absolute;top:8px;right:10px;color:#fff;background:rgba(0,0,0,0.55);padding:6px 10px;border-radius:6px;font-size:12px;\">Scroll inside the map to zoom</div>
-      <iframe src=\"{earth_url}\" style=\"width:100%;height:100%;border:0;filter:contrast(1.5) brightness(1.12) saturate(1.25);\" allowfullscreen></iframe>
-    </div>
-    "
-    components.html(html, height=700, scrolling=False)
-                fetch('https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/demo/wind-global.json')
-                    .then(r => r.json())
-                    .then(data => {
-                        const velocityLayer = L.velocityLayer({
-                            displayValues: true,
-                            displayOptions: {
-                                velocityType: 'Global Wind',
-                                position: 'bottomleft',
-                                emptyString: 'No velocity data',
-                                angleConvention: 'bearingCW',
-                                speedUnit: 'kt',
-                                directionString: 'Direction',
-                                speedString: 'Speed'
-                            },
-                            data: data,
-                            minVelocity: 0,
-                            maxVelocity: 25,
-                            velocityScale: 0.005,
-                            opacity: 0.97,
-                            paneName: 'overlayPane'
-                        });
-                        velocityLayer.addTo(map);
-                    })
-                    .catch(err => {
-                        console.error('Failed to load wind data:', err);
-                    });
-            </script>
-        </body>
-        </html>
+        # High contrast + overlay time label
+        html = f"""
+        <div style="position:relative;width:100%;height:650px;background:#000;">
+            <div style="position:absolute;top:8px;left:10px;color:#fff;background:rgba(0,0,0,0.55);padding:6px 10px;border-radius:6px;font-family:system-ui,Segoe UI,Arial;font-size:13px;">
+                Showing: {display_str}
+            </div>
+            <div style="position:absolute;top:8px;right:10px;color:#fff;background:rgba(0,0,0,0.55);padding:6px 10px;border-radius:6px;font-size:12px;">Scroll inside the map to zoom</div>
+            <iframe src="{earth_url}" style="width:100%;height:100%;border:0;filter:contrast(1.5) brightness(1.12) saturate(1.25);" allowfullscreen></iframe>
+        </div>
         """
-        components.html(html, height=650, scrolling=False)
+        components.html(html, height=700, scrolling=False)
 
 
 def render_earth_live_map():
