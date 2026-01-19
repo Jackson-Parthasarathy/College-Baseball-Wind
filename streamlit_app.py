@@ -350,31 +350,80 @@ def _render_top5_map(df_top: pd.DataFrame):
 
 
 def render_live_wind_map():
-        st.subheader("Live Wind — Global (Leaflet Velocity)")
-        html = """
-        <!doctype html>
-        <html>
-        <head>
-            <meta charset=\"utf-8\" />
-            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-            <link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.css\" />
-            <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/dist/leaflet-velocity.min.css\" />
-            <style>
-                html, body { height: 100%; margin: 0; }
-                #map { width: 100%; height: 600px; }
-                .leaflet-control { font-size: 14px; }
-            </style>
-        </head>
-        <body>
-            <div id=\"map\"></div>
-            <script src=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.js\"></script>
-            <script src=\"https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/dist/leaflet-velocity.min.js\"></script>
-            <script>
-                const map = L.map('map', { center: [20, 0], zoom: 2 });
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
+    st.subheader("Live Map — Global Wind (earth.nullschool.net)")
+    # Controls: timezone + time offset
+    c1, c2 = st.columns(2)
+    with c1:
+        tz_choice = st.radio("Timezone", ["UTC", "Local"], index=0)
+    with c2:
+        hour_offset = st.slider("Offset from now (hours)", min_value=-120, max_value=120, value=0, step=1)
 
+    # Team selection to center and show logo
+    try:
+        master = load_stadium_master()
+    except Exception:
+        master = pd.DataFrame(columns=["Team","Stadium","latitude","longitude"])  # fallback empty
+    teams = master.dropna(subset=["Team","latitude","longitude"]).copy()
+    teams = teams.sort_values("Team")
+    team_names = teams["Team"].unique().tolist()
+
+    sel_col1, sel_col2, sel_col3 = st.columns([2,1,1])
+    with sel_col1:
+        selected_team = st.selectbox("Team", team_names, index=0 if team_names else None)
+    # Show logo for selected team
+    logo_url = None
+    if selected_team:
+        try:
+            logos_lookup = load_team_logos()
+            key = str(selected_team).strip().lower()
+            logo_url = logos_lookup.get(key)
+        except Exception:
+            logo_url = None
+    with sel_col2:
+        if logo_url:
+            st.image(logo_url, width=64, caption=selected_team)
+    with sel_col3:
+        center_on_team = st.checkbox("Center on team", value=True)
+
+    # Default center and zoom
+    center_lat = 37.67
+    center_lon = -122.53
+    zoom = st.slider("Initial zoom", min_value=500, max_value=5000, value=2500, step=250)
+
+    # If a team is selected and centering is enabled, use its first stadium coords
+    if selected_team and center_on_team and not teams.empty:
+        trow = teams[teams["Team"] == selected_team].iloc[0]
+        center_lat = float(trow["latitude"]) if pd.notna(trow.get("latitude")) else center_lat
+        center_lon = float(trow["longitude"]) if pd.notna(trow.get("longitude")) else center_lon
+
+    # Compute target time
+    now_utc = datetime.now(timezone.utc)
+    target_utc = now_utc + timedelta(hours=hour_offset)
+    # Display label in chosen TZ and set suffix
+    if tz_choice == "Local":
+        display_dt = target_utc.astimezone()
+        time_suffix = ""
+        display_str = f"{display_dt:%Y-%m-%d %H:%M %Z}"
+    else:
+        display_dt = target_utc
+        time_suffix = "Z"
+        display_str = f"{display_dt:%Y-%m-%d %H:%M} UTC"
+
+    # Earth URL fragment and projection centered on team
+    earth_fragment = target_utc.strftime(f"%Y/%m/%d/%H00{time_suffix}")
+    earth_url = f"https://earth.nullschool.net/#{earth_fragment}/wind/surface/orthographic={center_lon:.4f},{center_lat:.4f},{int(zoom)}"
+
+    # High contrast + overlay time label
+    html = f"
+    <div style=\"position:relative;width:100%;height:650px;background:#000;\">
+      <div style=\"position:absolute;top:8px;left:10px;color:#fff;background:rgba(0,0,0,0.55);padding:6px 10px;border-radius:6px;font-family:system-ui,Segoe UI,Arial;font-size:13px;\">
+        Showing: {display_str}
+      </div>
+      <div style=\"position:absolute;top:8px;right:10px;color:#fff;background:rgba(0,0,0,0.55);padding:6px 10px;border-radius:6px;font-size:12px;\">Scroll inside the map to zoom</div>
+      <iframe src=\"{earth_url}\" style=\"width:100%;height:100%;border:0;filter:contrast(1.5) brightness(1.12) saturate(1.25);\" allowfullscreen></iframe>
+    </div>
+    "
+    components.html(html, height=700, scrolling=False)
                 fetch('https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/demo/wind-global.json')
                     .then(r => r.json())
                     .then(data => {
