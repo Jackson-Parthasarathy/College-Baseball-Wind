@@ -634,6 +634,82 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool 
         st.markdown("**Forecast Map (Top 5)**")
         _render_top5_map(df_top)
 
+def _render_stadiums_map(df_all: pd.DataFrame):
+    """Render one Folium map with all provided stadiums."""
+    if not FOLIUM_AVAILABLE:
+        st.info("Map rendering is unavailable (install 'folium' to enable).")
+        return
+    pts = df_all.dropna(subset=["latitude", "longitude"]).copy()
+    if pts.empty:
+        st.info("No coordinates available to render map.")
+        return
+    center_lat = float(pts["latitude"].mean())
+    center_lon = float(pts["longitude"].mean())
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=5, tiles="OpenStreetMap")
+    # Scale markers by wind speed
+    max_ws = max(1.0, float(pts["Wind_Speed_10m_mph"].max())) if "Wind_Speed_10m_mph" in pts.columns else 1.0
+    for _, r in pts.iterrows():
+        ws_mph = float(r.get("Wind_Speed_10m_mph", 0.0) or 0.0)
+        ratio = min(1.0, ws_mph / max_ws)
+        red = int(255 * ratio)
+        green = int(255 * (1.0 - ratio))
+        color = f"#{red:02x}{green:02x}50"
+        start_lat = float(r["latitude"]) 
+        start_lon = float(r["longitude"]) 
+        logo_url = r.get("team_logo_url")
+        logo_tag = (
+            f'<img src="{logo_url}" width="40" style="vertical-align:middle;margin-right:6px;" />'
+            if isinstance(logo_url, str) and logo_url else ""
+        )
+        popup_html = (
+            f"{logo_tag}<b>{r.get('Stadium','')}</b><br/>"
+            f"Team: {r.get('Team','')}<br/>"
+            f"Wind: {ws_mph:.1f} mph<br/>"
+            f"From: {float(r.get('Wind_Direction_From_deg', np.nan)) if pd.notna(r.get('Wind_Direction_From_deg')) else np.nan}°<br/>"
+            f"Time: {r.get('Forecast_Time_Local','')} ({r.get('Timezone','')})"
+        )
+        folium.CircleMarker(
+            location=[start_lat, start_lon],
+            radius=max(5, int(5 + 10 * ratio)),
+            color=color,
+            fill=True,
+            fill_color=color,
+            fill_opacity=0.7,
+            popup=folium.Popup(html=popup_html, max_width=320)
+        ).add_to(m)
+    components.html(m.get_root().render(), height=640, scrolling=False)
+
+def threshold_view(df: pd.DataFrame, min_wind_mph: float = 12.0):
+    """Display all stadiums with absolute wind speed >= min_wind_mph and one map."""
+    st.subheader(f"Stadiums with Wind ≥ {min_wind_mph:.0f} mph")
+    if df.empty:
+        st.info("No rows to display.")
+        return
+    needed = [
+        "team_logo_url","Stadium","Team","latitude","longitude","Azimuth_deg",
+        "Wind_Speed_10m_mph","Wind_Component_Azimuth_mph",
+        "azimuth_comp_abs_mph","azimuth_direction","Forecast_Time_Local","Timezone"
+    ]
+    for c in needed:
+        if c not in df.columns:
+            df[c] = np.nan
+    # Filter by wind speed threshold
+    df_filt = df.dropna(subset=["Wind_Speed_10m_mph"]).copy()
+    df_filt = df_filt[df_filt["Wind_Speed_10m_mph"].astype(float) >= float(min_wind_mph)]
+    if df_filt.empty:
+        st.info("No stadiums meet the wind threshold.")
+        return
+    df_filt = df_filt.sort_values("Wind_Speed_10m_mph", ascending=False)
+    st.dataframe(
+        df_filt[[c for c in needed if c in df_filt.columns]],
+        width='stretch',
+        column_config={
+            "team_logo_url": st.column_config.ImageColumn("Logo", width=40),
+        },
+    )
+    st.markdown("**Map — All Stadiums Meeting Threshold**")
+    _render_stadiums_map(df_filt)
+
 # ---------- Main ----------
 def main():
     st.title("College Baseball Wind")
@@ -721,12 +797,16 @@ def main():
         )
         df_mode = df_mode[mask]
 
-    # Show Top 5
-    top5_view(
-        df_mode,
-        heading_date=heading_date if mode == "Testing" else None,
-        show_map=(mode == "Testing"),
-    )
+    if mode == "Testing":
+        # Show all stadiums with wind ≥ 12 mph and one map
+        threshold_view(df_mode, min_wind_mph=12.0)
+    else:
+        # Default Top 5 view for non-Testing modes
+        top5_view(
+            df_mode,
+            heading_date=heading_date if mode == "Testing" else None,
+            show_map=(mode == "Testing"),
+        )
 
     # Caption
     if mode == "Testing":
