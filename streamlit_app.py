@@ -724,7 +724,14 @@ def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool 
         st.markdown("**Forecast Map (Top 5)**")
         _render_top5_map(df_top)
 
-def _render_stadiums_map(df_all: pd.DataFrame):
+def _render_stadiums_map(
+    df_all: pd.DataFrame,
+    center_lat: float | None = None,
+    center_lon: float | None = None,
+    zoom_start: int = 5,
+    auto_center_on_popup: bool = False,
+    popup_zoom: int | None = None,
+):
     """Render one Folium map with all provided stadiums.
     Scales markers by `azimuth_comp_abs_mph` if available, else by wind speed.
     """
@@ -735,9 +742,10 @@ def _render_stadiums_map(df_all: pd.DataFrame):
     if pts.empty:
         st.info("No coordinates available to render map.")
         return
-    center_lat = float(pts["latitude"].mean())
-    center_lon = float(pts["longitude"].mean())
-    m = folium.Map(location=[center_lat, center_lon], zoom_start=5, tiles="OpenStreetMap")
+    if center_lat is None or center_lon is None:
+        center_lat = float(pts["latitude"].mean())
+        center_lon = float(pts["longitude"].mean())
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=int(zoom_start), tiles="OpenStreetMap")
     # Choose metric for marker scaling
     metric_col = "azimuth_comp_abs_mph" if "azimuth_comp_abs_mph" in pts.columns else (
         "Wind_Speed_10m_mph" if "Wind_Speed_10m_mph" in pts.columns else None
@@ -775,6 +783,21 @@ def _render_stadiums_map(df_all: pd.DataFrame):
             fill_opacity=0.7,
             popup=folium.Popup(html=popup_html, max_width=320)
         ).add_to(m)
+    if auto_center_on_popup:
+        # Auto-center and zoom when a marker popup opens
+        popup_zoom_val = int(popup_zoom if popup_zoom is not None else zoom_start)
+        script = f"""
+        <script>
+        (function() {{
+            var map = {m.get_name()};
+            map.on('popupopen', function(e) {{
+                var latlng = e.popup.getLatLng();
+                map.setView(latlng, {popup_zoom_val}, {{ animate: true }});
+            }});
+        }})();
+        </script>
+        """
+        m.get_root().html.add_child(folium.Element(script))
     components.html(m.get_root().render(), height=640, scrolling=False)
 
 def _render_wind_vane_map(
@@ -1030,6 +1053,56 @@ def main():
         if show_map:
             st.markdown("**Map — Scheduled Games**")
             _render_stadiums_map(df_mode)
+    elif mode == "Live":
+        st.subheader("Live — Stadiums with |Azimuth Component| ≥ 12 mph")
+        df_live = df_mode.copy()
+        if "azimuth_comp_abs_mph" not in df_live.columns:
+            if "Wind_Component_Azimuth_mph" in df_live.columns:
+                df_live["azimuth_comp_abs_mph"] = df_live["Wind_Component_Azimuth_mph"].astype(float).abs()
+            else:
+                df_live["azimuth_comp_abs_mph"] = np.nan
+        df_live = df_live.dropna(subset=["azimuth_comp_abs_mph"])
+        df_live = df_live[df_live["azimuth_comp_abs_mph"].astype(float) >= 12.0]
+        if df_live.empty:
+            st.info("No stadiums meet the 12 mph azimuth threshold right now.")
+            st.stop()
+        df_live = df_live.sort_values("azimuth_comp_abs_mph", ascending=False).reset_index(drop=True)
+        cols = [
+            "team_logo_url","Stadium","Team","Wind_Speed_10m_mph","Wind_Direction_From_deg",
+            "Wind_Component_Azimuth_mph","azimuth_comp_abs_mph","azimuth_direction",
+            "Forecast_Time_Local","Timezone",
+        ]
+        st.dataframe(
+            df_live[[c for c in cols if c in df_live.columns]],
+            width='stretch',
+            column_config={
+                "team_logo_url": st.column_config.ImageColumn("Logo", width=40),
+                "Wind_Speed_10m_mph": st.column_config.NumberColumn("Wind Speed (mph)", format="%.1f"),
+                "Wind_Component_Azimuth_mph": st.column_config.NumberColumn("Azimuth Comp (mph)", format="%.1f"),
+                "azimuth_comp_abs_mph": st.column_config.NumberColumn("|Azimuth Component| (mph)", format="%.1f"),
+            },
+        )
+
+        st.markdown("**Live Map — click a team to zoom**")
+        team_choices = df_live["Team"].astype(str).unique().tolist()
+        selected_team = st.selectbox("Team", team_choices, index=0 if team_choices else None)
+        zoom_on_team = st.checkbox("Zoom to team", value=True)
+        zoom_level = st.slider("Map zoom", min_value=3, max_value=13, value=10)
+        center_lat = None
+        center_lon = None
+        if selected_team and zoom_on_team:
+            row = df_live[df_live["Team"] == selected_team].iloc[0]
+            if pd.notna(row.get("latitude")) and pd.notna(row.get("longitude")):
+                center_lat = float(row["latitude"])
+                center_lon = float(row["longitude"])
+        _render_stadiums_map(
+            df_live,
+            center_lat=center_lat,
+            center_lon=center_lon,
+            zoom_start=zoom_level,
+            auto_center_on_popup=True,
+            popup_zoom=zoom_level,
+        )
     elif mode == "Testing":
         # Show ranked stadiums by |Azimuth Component| ≥ 12 mph and one map
         rank_azimuth_view(df_mode, min_abs_mph=12.0)
