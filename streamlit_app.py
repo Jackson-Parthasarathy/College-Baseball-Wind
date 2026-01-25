@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import altair as alt
 from pathlib import Path
 import requests
 import json
@@ -107,72 +106,6 @@ def attach_team_logos(df: pd.DataFrame, team_col: str = "Team") -> pd.DataFrame:
     out["_team_norm"] = out[team_col].astype(str).fillna("").str.strip().str.lower()
     out["team_logo_url"] = out["_team_norm"].map(lookup)
     return out.drop(columns=["_team_norm"])
-
-# ---------- Testing & Demo loaders ----------
-@st.cache_data(show_spinner=False)
-def load_testing_data(path: str = "stadium_wind_testing.csv") -> pd.DataFrame:
-    p = Path(path)
-    if not p.exists():
-        raise FileNotFoundError(f"Testing dataset not found: {path}")
-    df = pd.read_csv(p)
-    # Normalize
-    df = df.rename(columns={"Lat": "latitude", "Long": "longitude", "Azimuth": "Azimuth_deg"})
-    for c in [
-        "latitude","longitude","Azimuth_deg",
-        "Wind_Speed_10m_ms","Wind_Speed_10m_mph",
-        "Wind_Direction_From_deg",
-        "Wind_Component_Azimuth_ms","Wind_Component_Azimuth_mph",
-        "Component_Along_Azimuth_abs_ms",
-    ]:
-        if c in df.columns:
-            df[c] = pd.to_numeric(df[c], errors="coerce")
-    if "Wind_Component_Azimuth_mph" in df.columns:
-        df["azimuth_comp_abs_mph"] = df["Wind_Component_Azimuth_mph"].abs()
-    elif "Wind_Component_Azimuth_ms" in df.columns:
-        df["azimuth_comp_abs_mph"] = (df["Wind_Component_Azimuth_ms"] * 2.23694).abs()
-    else:
-        df["azimuth_comp_abs_mph"] = np.nan
-    def direction_label(val):
-        if pd.isna(val):
-            return "unknown"
-        return "toward azimuth" if val >= 0 else "opposite azimuth"
-    if "Wind_Component_Azimuth_mph" in df.columns:
-        df["azimuth_direction"] = df["Wind_Component_Azimuth_mph"].apply(direction_label)
-    else:
-        df["azimuth_direction"] = np.nan
-    return df
-
-@st.cache_data(show_spinner=False)
-def load_demo_data(path: str = "stadium_wind_demo_20260213.csv") -> pd.DataFrame:
-    p = Path(path)
-    if not p.exists():
-        raise FileNotFoundError(f"Demo dataset not found: {path}")
-    df = pd.read_csv(p)
-    df = df.rename(columns={"Lat": "latitude", "Long": "longitude", "Azimuth": "Azimuth_deg"})
-    for c in [
-        "latitude","longitude","Azimuth_deg",
-        "Wind_Speed_10m_ms","Wind_Speed_10m_mph",
-        "Wind_Direction_From_deg",
-        "Wind_Component_Azimuth_ms","Wind_Component_Azimuth_mph",
-        "Component_Along_Azimuth_abs_ms",
-    ]:
-        if c in df.columns:
-            df[c] = pd.to_numeric(df[c], errors="coerce")
-    if "Wind_Component_Azimuth_mph" in df.columns:
-        df["azimuth_comp_abs_mph"] = df["Wind_Component_Azimuth_mph"].abs()
-    elif "Wind_Component_Azimuth_ms" in df.columns:
-        df["azimuth_comp_abs_mph"] = (df["Wind_Component_Azimuth_ms"] * 2.23694).abs()
-    else:
-        df["azimuth_comp_abs_mph"] = np.nan
-    def direction_label(val):
-        if pd.isna(val):
-            return "unknown"
-        return "toward azimuth" if val >= 0 else "opposite azimuth"
-    if "Wind_Component_Azimuth_mph" in df.columns:
-        df["azimuth_direction"] = df["Wind_Component_Azimuth_mph"].apply(direction_label)
-    else:
-        df["azimuth_direction"] = np.nan
-    return df
 
 # ---------- Core math ----------
 def wind_components(ws: float, wd_from_deg: float, az_deg: float):
@@ -487,83 +420,6 @@ def build_schedule_wind_df(games_df: pd.DataFrame) -> pd.DataFrame:
         })
     return pd.DataFrame(rows)
 
-# ---------- Testing/Demo view ----------
-def _render_top5_map(df_top: pd.DataFrame):
-    if not FOLIUM_AVAILABLE:
-        st.info("Map rendering is unavailable (install 'folium' to enable).")
-        return
-    if not GEOPY_AVAILABLE:
-        st.info("Geodesic arrows unavailable (install 'geopy' to enable direction arrows).")
-    pts = df_top.dropna(subset=["latitude", "longitude"]).copy()
-    if pts.empty:
-        st.info("No coordinates available to render map.")
-        return
-    center_lat = float(pts["latitude"].mean())
-    center_lon = float(pts["longitude"].mean())
-    m = folium.Map(location=[center_lat, center_lon], zoom_start=5, tiles="OpenStreetMap")
-    max_mag = max(1.0, float(pts["azimuth_comp_abs_mph"].max()))
-    for _, r in pts.iterrows():
-        mag = float(r.get("azimuth_comp_abs_mph", 0.0) or 0.0)
-        ratio = min(1.0, mag / max_mag)
-        red = int(255 * ratio)
-        green = int(255 * (1.0 - ratio))
-        color = f"#{red:02x}{green:02x}50"
-        ws_mph = float(r.get("Wind_Speed_10m_mph", 0.0) or 0.0)
-        wd_from = float(r.get("Wind_Direction_From_deg", np.nan)) if pd.notna(r.get("Wind_Direction_From_deg")) else np.nan
-        wd_toward = (wd_from + 180.0) % 360.0 if not pd.isna(wd_from) else None
-        start_lat = float(r["latitude"])
-        start_lon = float(r["longitude"])
-
-        logo_url = r.get("team_logo_url")
-        logo_tag = (
-            f'<img src="{logo_url}" width="40" style="vertical-align:middle;margin-right:6px;" />'
-            if isinstance(logo_url, str) and logo_url else ""
-        )
-        popup_html = (
-            f"{logo_tag}<b>{r.get('Stadium','')}</b><br/>"
-            f"Team: {r.get('Team','')}<br/>"
-            f"Wind: {ws_mph:.1f} mph<br/>"
-            f"Toward: {wd_toward if wd_toward is not None else 'N/A'}°<br/>"
-            f"Azimuth Comp: {float(r.get('Wind_Component_Azimuth_mph', np.nan)) if pd.notna(r.get('Wind_Component_Azimuth_mph')) else np.nan:.1f} mph<br/>"
-            f"Time: {r.get('Forecast_Time_Local','')} ({r.get('Timezone','')})"
-        )
-
-        # Marker at stadium
-        folium.CircleMarker(
-            location=[start_lat, start_lon],
-            radius=7,
-            color=color,
-            fill=True,
-            fill_color=color,
-            fill_opacity=0.9,
-            popup=folium.Popup(html=popup_html, max_width=300),
-        ).add_to(m)
-
-        # Draw wind direction arrow (toward). Length proportional to speed.
-        if GEOPY_AVAILABLE and (wd_toward is not None):
-            # Arrow length: 0.4 km per 10 mph, capped 8 km
-            length_km = min(8.0, max(0.8, ws_mph * 0.04))
-            start_pt = GeopyPoint(start_lat, start_lon)
-            end_pt = geopy_distance(kilometers=length_km).destination(start_pt, wd_toward)
-            # Main vector line
-            folium.PolyLine(
-                locations=[[start_lat, start_lon], [end_pt.latitude, end_pt.longitude]],
-                color=color,
-                weight=4,
-                opacity=0.9,
-            ).add_to(m)
-            # Arrowhead: two short lines at ±25° from end
-            for offset in (-25.0, 25.0):
-                head_pt = geopy_distance(kilometers=length_km * 0.25).destination(end_pt, (wd_toward + 180.0 + offset) % 360.0)
-                folium.PolyLine(
-                    locations=[[end_pt.latitude, end_pt.longitude], [head_pt.latitude, head_pt.longitude]],
-                    color=color,
-                    weight=3,
-                    opacity=0.9,
-                ).add_to(m)
-        components.html(m.get_root().render(), height=500, scrolling=False)
-
-
 def render_earth_live_map():
     st.subheader("Live Map — Global Wind (earth.nullschool.net)")
     # Controls
@@ -681,48 +537,6 @@ def render_earth_live_map():
     """
     components.html(html, height=700, scrolling=False)
 
-
-def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool = False):
-    title = "Top 5 Stadiums by Wind"
-    if heading_date:
-        title = f"{title} — {heading_date}"
-    st.subheader(title)
-    if df.empty:
-        st.info("No rows to display.")
-        return
-    needed = [
-        "team_logo_url","Stadium","Team","latitude","longitude","Azimuth_deg",
-        "Wind_Speed_10m_mph","Wind_Component_Azimuth_mph",
-        "azimuth_comp_abs_mph","azimuth_direction","Forecast_Time_Local","Timezone"
-    ]
-    for c in needed:
-        if c not in df.columns:
-            df[c] = np.nan
-    df_top = df.dropna(subset=["azimuth_comp_abs_mph"]).sort_values("azimuth_comp_abs_mph", ascending=False).head(5)
-    st.dataframe(
-        df_top[[c for c in needed if c in df_top.columns]],
-        width='stretch',
-        column_config={
-            "team_logo_url": st.column_config.ImageColumn("Logo", width=40),
-        },
-    )
-    chart = alt.Chart(df_top).mark_bar().encode(
-        x=alt.X("azimuth_comp_abs_mph:Q", title="|Azimuth Component| (mph)"),
-        y=alt.Y("Stadium:N", sort="-x", title="Stadium"),
-        color=alt.Color("azimuth_direction:N", title="Direction"),
-        tooltip=[
-            alt.Tooltip("Stadium", title="Stadium"),
-            alt.Tooltip("Wind_Component_Azimuth_mph", title="Azimuth Comp (mph)"),
-            alt.Tooltip("Wind_Speed_10m_mph", title="Wind Speed (mph)"),
-            alt.Tooltip("Azimuth_deg", title="Azimuth (deg)"),
-            alt.Tooltip("Forecast_Time_Local", title="Local Time"),
-            alt.Tooltip("Timezone", title="TZ"),
-        ]
-    ).properties(height=220)
-    st.altair_chart(chart, width='stretch')
-    if show_map:
-        st.markdown("**Forecast Map (Top 5)**")
-        _render_top5_map(df_top)
 
 def _render_stadiums_map(
     df_all: pd.DataFrame,
@@ -868,59 +682,12 @@ def _render_wind_vane_map(
     ).add_to(m)
     components.html(m.get_root().render(), height=420, scrolling=False)
 
-def rank_azimuth_view(df: pd.DataFrame, min_abs_mph: float = 12.0):
-    """Rank stadiums where |Azimuth Component| ≥ threshold; include direction and map."""
-    st.subheader(f"Ranked Stadiums — |Azimuth Component| ≥ {min_abs_mph:.0f} mph")
-    if df.empty:
-        st.info("No rows to display.")
-        return
-    needed = [
-        "team_logo_url","Stadium","Team","latitude","longitude","Azimuth_deg",
-        "Wind_Speed_10m_mph","Wind_Component_Azimuth_mph",
-        "azimuth_comp_abs_mph","azimuth_direction","Forecast_Time_Local","Timezone"
-    ]
-    for c in needed:
-        if c not in df.columns:
-            df[c] = np.nan
-    # Ensure |Azimuth Component| exists
-    if "azimuth_comp_abs_mph" not in df.columns:
-        if "Wind_Component_Azimuth_mph" in df.columns:
-            df["azimuth_comp_abs_mph"] = df["Wind_Component_Azimuth_mph"].astype(float).abs()
-        else:
-            df["azimuth_comp_abs_mph"] = np.nan
-    # Ensure direction exists
-    if "azimuth_direction" not in df.columns:
-        if "Wind_Component_Azimuth_mph" in df.columns:
-            df["azimuth_direction"] = np.where(df["Wind_Component_Azimuth_mph"].astype(float) >= 0, "blowing out", "blowing in")
-        else:
-            df["azimuth_direction"] = ""
-    # Filter by |Azimuth Component| threshold
-    df_filt = df.dropna(subset=["azimuth_comp_abs_mph"]).copy()
-    df_filt = df_filt[df_filt["azimuth_comp_abs_mph"].astype(float) >= float(min_abs_mph)]
-    if df_filt.empty:
-        st.info("No stadiums meet the wind threshold.")
-        return
-    # Sort by descending |Azimuth Component|
-    df_filt = df_filt.sort_values("azimuth_comp_abs_mph", ascending=False).reset_index(drop=True)
-    df_filt.insert(0, "Rank", range(1, len(df_filt) + 1))
-    st.dataframe(
-        df_filt[["Rank"] + [c for c in needed if c in df_filt.columns]],
-        width='stretch',
-        column_config={
-            "team_logo_url": st.column_config.ImageColumn("Logo", width=40),
-            "azimuth_comp_abs_mph": st.column_config.NumberColumn("|Azimuth Component| (mph)", format="%.1f"),
-            "Wind_Speed_10m_mph": st.column_config.NumberColumn("Wind Speed (mph)", format="%.1f"),
-        },
-    )
-    st.markdown("**Map — Stadiums Meeting Threshold (by |Azimuth Component|)**")
-    _render_stadiums_map(df_filt)
-
 # ---------- Main ----------
 def main():
     st.title("College Baseball Wind")
-    mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo", "Schedule 2026", "Live Map"] , index=0)
+    mode = st.sidebar.radio("Mode", ["Live", "Schedule 2026", "Wind Map"] , index=0)
 
-    if mode == "Live Map":
+    if mode == "Wind Map":
         render_earth_live_map()
         st.caption("Interactive global wind from earth.nullschool.net with time controls.")
         return
@@ -958,58 +725,6 @@ def main():
             df_mode = build_schedule_wind_df(games)
         df_mode = attach_team_logos(df_mode, team_col="Team")
         st.caption("Forecasts are limited to the Open-Meteo window (about 16 days).")
-    elif mode == "Testing":
-        try:
-            df_mode = load_testing_data()
-        except FileNotFoundError as e:
-            st.error(str(e))
-            st.stop()
-        # Ensure Home team (from stadium master) and derive a common forecast date
-        try:
-            master = load_stadium_master()
-            # Merge to add Team where missing
-            if "Team" not in df_mode.columns:
-                df_mode = df_mode.merge(master[["Stadium","Team"]], on="Stadium", how="left")
-            else:
-                # Fill missing Team values from master
-                df_mode = df_mode.merge(master[["Stadium","Team"]], on="Stadium", how="left", suffixes=("", "_master"))
-                df_mode["Team"] = df_mode["Team"].fillna(df_mode.get("Team_master"))
-                if "Team_master" in df_mode.columns:
-                    df_mode = df_mode.drop(columns=["Team_master"])
-        except Exception:
-            pass
-        # Compute heading date from Forecast_Time_Local if available (most common date)
-        heading_date = None
-        if "Forecast_Time_Local" in df_mode.columns:
-            dt = pd.to_datetime(df_mode["Forecast_Time_Local"], errors="coerce")
-            if dt.notna().any():
-                dates = dt.dt.date.dropna()
-                if not dates.empty:
-                    heading_date = str(dates.mode().iloc[0])
-        # Attach team logos for display
-        df_mode = attach_team_logos(df_mode)
-    elif mode == "Demo":
-        try:
-            df_mode = load_demo_data()
-        except FileNotFoundError as e:
-            st.warning(f"{e}\nFalling back to first-day games (2026-02-13) from base ESPN data.")
-            try:
-                base_csv = "espn_2026_college_baseball_games.csv"
-                base_df = pd.read_csv(base_csv)
-                base_df["event_dt_utc"] = pd.to_datetime(base_df.get("event_date"), utc=True, errors="coerce")
-                base_df["date_only"] = base_df["event_dt_utc"].dt.date
-                subset = base_df[base_df["date_only"] == date(2026, 2, 13)].copy()
-                if subset.empty:
-                    st.info("No games found for 2026-02-13.")
-                    st.stop()
-                st.info("Demo CSV missing; showing first-day games list only. Run the notebook cell to generate demo CSV.")
-                st.dataframe(subset[[c for c in ["home","away","venue","location","event_date"] if c in subset.columns]], width='stretch')
-                st.stop()
-            except Exception as ex:
-                st.error(f"Demo fallback failed: {ex}")
-                st.stop()
-        # Attach team logos for display
-        df_mode = attach_team_logos(df_mode)
     else:
         try:
             stads = load_stadium_master()
@@ -1053,7 +768,7 @@ def main():
         if show_map:
             st.markdown("**Map — Scheduled Games**")
             _render_stadiums_map(df_mode)
-    elif mode == "Live":
+    else:
         st.subheader("Live — Stadiums with |Azimuth Component| ≥ 12 mph")
         df_live = df_mode.copy()
         if "azimuth_comp_abs_mph" not in df_live.columns:
@@ -1103,23 +818,9 @@ def main():
             auto_center_on_popup=True,
             popup_zoom=zoom_level,
         )
-    elif mode == "Testing":
-        # Show ranked stadiums by |Azimuth Component| ≥ 12 mph and one map
-        rank_azimuth_view(df_mode, min_abs_mph=12.0)
-    else:
-        # Default Top 5 view for non-Testing modes
-        top5_view(
-            df_mode,
-            heading_date=heading_date if mode == "Testing" else None,
-            show_map=(mode == "Testing"),
-        )
 
     # Caption
-    if mode == "Testing":
-        st.caption("Testing uses local noon forecast per stadium (Open-Meteo).")
-    elif mode == "Demo":
-        st.caption("Demo shows first-day (2026-02-13) stadium winds using noon tomorrow (from demo CSV).")
-    elif mode == "Schedule 2026":
+    if mode == "Schedule 2026":
         st.caption("Schedule uses game-time hourly forecasts by stadium azimuth (Open-Meteo).")
     else:
         st.caption("Live uses current hour forecast across stadiums.")
