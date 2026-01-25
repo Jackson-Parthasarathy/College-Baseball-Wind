@@ -631,6 +631,29 @@ def render_earth_live_map():
     with c5:
         center_lon = st.number_input("Center longitude", value=center_lon, format="%.4f")
 
+    # Stadium live wind vane
+    if selected_stadium and not teams_df.empty:
+        row = teams_df[teams_df["Stadium"] == selected_stadium].iloc[0]
+        lat = float(row["latitude"])
+        lon = float(row["longitude"])
+        try:
+            fc = get_live_hour(lat, lon)
+            ws_mph = fc["ws_ms"] * 2.23694
+            wd_from = fc["wd_from_deg"]
+            wd_toward = (wd_from + 180.0) % 360.0
+            st.markdown("**Live wind at selected stadium**")
+            st.caption(f"Speed: {ws_mph:.1f} mph • From: {wd_from:.0f}° • Toward: {wd_toward:.0f}°")
+            _render_wind_vane_map(
+                latitude=lat,
+                longitude=lon,
+                wind_speed_mph=ws_mph,
+                wind_from_deg=wd_from,
+                stadium_name=selected_stadium,
+                team_name=selected_team,
+            )
+        except Exception as e:
+            st.info(f"Live wind unavailable: {e}")
+
     now_utc = datetime.now(timezone.utc)
     target_utc = now_utc + timedelta(hours=int(hour_offset))
 
@@ -657,150 +680,6 @@ def render_earth_live_map():
     <div style=\"font-size:12px;margin-top:6px;opacity:0.8;\">URL: {earth_url}</div>
     """
     components.html(html, height=700, scrolling=False)
-
-
-def render_custom_wind_map():
-        st.subheader("Wind Map — Customizable Leaflet + Velocity")
-        st.caption("Scroll and click to zoom; select a team to center.")
-
-        # Load stadiums and logos
-        try:
-                master = load_stadium_master()
-        except Exception as e:
-                st.error(f"Could not load stadium list: {e}")
-                return
-        logos_lookup = {}
-        try:
-                logos_lookup = load_team_logos()
-        except Exception:
-                logos_lookup = {}
-
-        df = master.dropna(subset=["Stadium","Team","latitude","longitude"]).copy()
-        df = df.sort_values("Stadium")
-        all_stadiums = df["Stadium"].astype(str).unique().tolist()
-        stadium_to_team = df.set_index("Stadium")["Team"].to_dict()
-
-        # Search + select
-        q = st.text_input("Search stadium or team", value="", placeholder="Type to filter")
-        if q:
-                stadium_names = [
-                        s for s in all_stadiums
-                        if (q.lower() in s.lower())
-                        or (q.lower() in str(stadium_to_team.get(s, "")).lower())
-                ]
-        else:
-                stadium_names = all_stadiums
-        selected_stadium = st.selectbox("Stadium", stadium_names, index=0 if stadium_names else None)
-        selected_team = None
-        if selected_stadium:
-                selected_team = stadium_to_team.get(selected_stadium)
-        # Show selected team logo beside dropdown
-        selected_logo = find_logo_for_team(selected_team) if selected_team else None
-        if selected_logo:
-            st.image(selected_logo, width=64)
-
-        # Center defaults
-        center_lat = 37.67
-        center_lon = -122.53
-        if selected_stadium:
-                row = df[df["Stadium"] == selected_stadium].iloc[0]
-                if pd.notna(row.get("latitude")) and pd.notna(row.get("longitude")):
-                        center_lat = float(row["latitude"])
-                        center_lon = float(row["longitude"])
-
-        # Initial zoom (Leaflet zoom levels; 2 global, 8 regional, 12 city)
-        zoom_on_stadium = st.checkbox("Zoom to stadium", value=True)
-        default_zoom = 11 if (selected_stadium and zoom_on_stadium) else 6
-        initial_zoom = st.slider("Initial zoom", min_value=2, max_value=14, value=int(default_zoom))
-
-        # Build stadium marker payload
-        stadiums = []
-        for _, r in df.iterrows():
-                team = str(r.get("Team", ""))
-                logo_url = find_logo_for_team(team)
-                stadium = str(r.get("Stadium", ""))
-                lat = float(r["latitude"])
-                lon = float(r["longitude"])
-                logo_img = f'<img src="{logo_url}" width="32" style="vertical-align:middle;margin-right:6px;" />' if logo_url else ""
-                popup_html = f"{logo_img}<b>{stadium}</b><br/>{team}"
-                stadiums.append({
-                        "team": team,
-                        "stadium": stadium,
-                        "lat": lat,
-                        "lon": lon,
-                        "popup_html": popup_html,
-                })
-        stadiums_json = json.dumps(stadiums)
-
-        # Controls for wind layer appearance
-        c1, c2, c3 = st.columns(3)
-        with c1:
-                opacity = st.slider("Wind opacity", min_value=0.2, max_value=1.0, value=0.95)
-        with c2:
-                max_vel = st.slider("Max velocity (kt)", min_value=10, max_value=60, value=30)
-        with c3:
-                vel_scale = st.slider("Particle scale", min_value=0.001, max_value=0.02, value=0.006)
-
-        # HTML + JS (brace-escaped) for Leaflet map and velocity layer using demo data
-        html_template = """
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/dist/leaflet-velocity.min.css" />
-        <style>
-            html, body { height: 100%; margin: 0; }
-            #map { width: 100%; height: 640px; }
-            .leaflet-control { font-size: 14px; }
-        </style>
-        <div id="map"></div>
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/dist/leaflet-velocity.min.js"></script>
-        <script>
-            const center = [__CENTER_LAT__, __CENTER_LON__];
-            const zoom = __ZOOM__;
-            const stadiums = __STADIUMS__;
-            const map = L.map('map', {{ center: center, zoom: zoom }});
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {{
-                attribution: '© OpenStreetMap contributors'
-            }}).addTo(map);
-
-            // Stadium markers
-            stadiums.forEach(function(s) {{
-                const m = L.marker([s.lat, s.lon]).addTo(map);
-                m.bindPopup(s.popup_html);
-            }});
-
-            // Wind layer (demo data)
-            fetch('https://cdn.jsdelivr.net/gh/onaci/leaflet-velocity/demo/wind-global.json')
-                .then(r => r.json())
-                .then(function(data) {{
-                    L.velocityLayer({{
-                        displayValues: true,
-                        displayOptions: {{
-                            velocityType: 'Global Wind', position: 'bottomleft', emptyString: 'No velocity data',
-                            angleConvention: 'bearingCW', speedUnit: 'kt', directionString: 'Direction', speedString: 'Speed'
-                        }},
-                        data: data,
-                        minVelocity: 0,
-                        maxVelocity: __MAX_VEL__,
-                        velocityScale: __VEL_SCALE__,
-                        opacity: __OPACITY__,
-                        paneName: 'overlayPane'
-                    }}).addTo(map);
-                }});
-        </script>
-        """
-
-        html = (
-                html_template
-                .replace("__CENTER_LAT__", str(center_lat))
-                .replace("__CENTER_LON__", str(center_lon))
-                .replace("__ZOOM__", str(initial_zoom))
-                .replace("__STADIUMS__", stadiums_json)
-                .replace("__MAX_VEL__", str(max_vel))
-                .replace("__VEL_SCALE__", str(vel_scale))
-                .replace("__OPACITY__", str(opacity))
-        )
-
-        components.html(html, height=680, scrolling=False)
 
 
 def top5_view(df: pd.DataFrame, heading_date: str | None = None, show_map: bool = False):
@@ -898,6 +777,74 @@ def _render_stadiums_map(df_all: pd.DataFrame):
         ).add_to(m)
     components.html(m.get_root().render(), height=640, scrolling=False)
 
+def _render_wind_vane_map(
+    latitude: float,
+    longitude: float,
+    wind_speed_mph: float,
+    wind_from_deg: float,
+    stadium_name: str | None = None,
+    team_name: str | None = None,
+):
+    if not FOLIUM_AVAILABLE:
+        st.info("Map rendering is unavailable (install 'folium' to enable).")
+        return
+    if not GEOPY_AVAILABLE:
+        st.info("Geodesic arrows unavailable (install 'geopy' to enable wind vane).")
+        return
+    start_lat = float(latitude)
+    start_lon = float(longitude)
+    m = folium.Map(location=[start_lat, start_lon], zoom_start=12, tiles="OpenStreetMap")
+    wd_toward = (float(wind_from_deg) + 180.0) % 360.0
+    # Arrow length: 0.5 km per 10 mph, capped 10 km
+    length_km = min(10.0, max(0.6, float(wind_speed_mph) * 0.05))
+    start_pt = GeopyPoint(start_lat, start_lon)
+    end_pt = geopy_distance(kilometers=length_km).destination(start_pt, wd_toward)
+    color = "#3b82f6"
+    popup_html = (
+        f"<b>{stadium_name or ''}</b><br/>"
+        f"Team: {team_name or ''}<br/>"
+        f"Wind: {wind_speed_mph:.1f} mph<br/>"
+        f"From: {wind_from_deg:.0f}°<br/>"
+        f"Toward: {wd_toward:.0f}°"
+    )
+    folium.CircleMarker(
+        location=[start_lat, start_lon],
+        radius=7,
+        color=color,
+        fill=True,
+        fill_color=color,
+        fill_opacity=0.9,
+        popup=folium.Popup(html=popup_html, max_width=320),
+    ).add_to(m)
+    # Main vector line (toward)
+    folium.PolyLine(
+        locations=[[start_lat, start_lon], [end_pt.latitude, end_pt.longitude]],
+        color=color,
+        weight=5,
+        opacity=0.9,
+    ).add_to(m)
+    # Arrowhead: two short lines at ±25° from end
+    for offset in (-25.0, 25.0):
+        head_pt = geopy_distance(kilometers=length_km * 0.28).destination(
+            end_pt, (wd_toward + 180.0 + offset) % 360.0
+        )
+        folium.PolyLine(
+            locations=[[end_pt.latitude, end_pt.longitude], [head_pt.latitude, head_pt.longitude]],
+            color=color,
+            weight=4,
+            opacity=0.9,
+        ).add_to(m)
+    # Add small crossbar to hint "vane" at the tail
+    tail_left = geopy_distance(kilometers=length_km * 0.12).destination(start_pt, (wd_toward + 90.0) % 360.0)
+    tail_right = geopy_distance(kilometers=length_km * 0.12).destination(start_pt, (wd_toward + 270.0) % 360.0)
+    folium.PolyLine(
+        locations=[[tail_left.latitude, tail_left.longitude], [tail_right.latitude, tail_right.longitude]],
+        color=color,
+        weight=4,
+        opacity=0.9,
+    ).add_to(m)
+    components.html(m.get_root().render(), height=420, scrolling=False)
+
 def rank_azimuth_view(df: pd.DataFrame, min_abs_mph: float = 12.0):
     """Rank stadiums where |Azimuth Component| ≥ threshold; include direction and map."""
     st.subheader(f"Ranked Stadiums — |Azimuth Component| ≥ {min_abs_mph:.0f} mph")
@@ -948,12 +895,9 @@ def rank_azimuth_view(df: pd.DataFrame, min_abs_mph: float = 12.0):
 # ---------- Main ----------
 def main():
     st.title("College Baseball Wind")
-    mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo", "Schedule 2026", "Live Map", "Wind Map (Custom)"] , index=0)
+    mode = st.sidebar.radio("Mode", ["Testing", "Live", "Demo", "Schedule 2026", "Live Map"] , index=0)
 
-    if mode == "Wind Map (Custom)":
-        render_custom_wind_map()
-        return
-    elif mode == "Live Map":
+    if mode == "Live Map":
         render_earth_live_map()
         st.caption("Interactive global wind from earth.nullschool.net with time controls.")
         return
